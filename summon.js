@@ -35,7 +35,7 @@ function stripslashes (str) {
 }
 
 function get_article_items(totalArticleItems, items) {
-  var seeAllArticlesLink = "http://ncsu.summon.serialssolutions.com/search?s.q=" + stripslashes(decodeURI(url_encoded_query)) + "&s.cmd=addFacetValueFilters%28ContentType%2CJournal+Article,Journal+%2F+eJournal,Book+Chapter%29 &keep_r=true";
+  var seeAllArticlesLink = "http://gw.summon.serialssolutions.com/search?s.q=" + stripslashes(decodeURI(url_encoded_query)) + "&s.cmd=addFacetValueFilters%28ContentType%2CJournal+Article,Journal+%2F+eJournal,Book+Chapter%29 &keep_r=true";
   var itemsHtml = "<dl>\n";
   for (i = 0; i < items.length && i <= 2; i++) {
     var resultNumber = i + 1;
@@ -94,7 +94,7 @@ function get_article_items(totalArticleItems, items) {
 
 $(function() {
   $.ajax( {
-    url: "/search/includes/summon.php",
+    url: "summon.php",
     data: "q=" + url_encoded_query,
     success: function(data) {
       if (searchpage != 'websearch.php') {
@@ -104,7 +104,7 @@ $(function() {
 				if (totalArticleItems > 0) {
 					get_article_items(totalArticleItems, data['documents']);
 				} else {
-					$("#articleSearchResultsItems").html("<p><em>No article results found. Please try another search in <a href=\"" + redirect_url + escape("http://ncsu.summon.serialssolutions.com") + "&amp;q=" + url_encoded_query + "&amp;cat=FA&amp;ref=FA_NORESULTS\">Summon</a>.</em></p>");
+					$("#articleSearchResultsItems").html("<p><em>No article results found. Please try another search in <a href=\"" + redirect_url + escape("http://gw.summon.serialssolutions.com") + "&amp;q=" + url_encoded_query + "&amp;cat=FA&amp;ref=FA_NORESULTS\">Summon</a>.</em></p>");
 				}
       }
       
@@ -131,7 +131,7 @@ $(function() {
     },
     error: function(data) {
         $("#articleSearchResultsSpinner").hide();
-        $("#articleSearchResultsItems").html("<p><em>Service temporarily unavailable. Please redo your search in <a href=\"" + redirect_url + escape("http://ncsu.summon.serialssolutions.com") + "&amp;q=" + url_encoded_query + "&amp;cat=FA&amp;ref=FA_TIMEOUT\">Summon</a>.</em></p>");
+        $("#articleSearchResultsItems").html("<p><em>Service temporarily unavailable. Please redo your search in <a href=\"" + redirect_url + escape("http://gw.summon.serialssolutions.com") + "&amp;q=" + url_encoded_query + "&amp;cat=FA&amp;ref=FA_TIMEOUT\">Summon</a>.</em></p>");
     },
     timeout: 8000,
     dataType: "json"
