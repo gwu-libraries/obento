@@ -3,7 +3,9 @@
 <title>Obento</title>
 <!-- jquery -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <!-- handles the summon search -->
   <script type="text/javascript" src="summon.js"></script>
+  <!-- number formatting (from ncsu) -->
   <script type="text/javascript" src="number_format.js"></script>
 </head>
 
