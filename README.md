@@ -47,10 +47,10 @@ PART II - Set up project environment
         $ sudo apt-get install python-setuptools
         $ sudo easy_install virtualenv
 
-2. Create a directory for your projects (replace &lt;INV_HOME&gt; with your desired directory path and name: for instance /obento or /home/&lt;username&gt;/obento)
+2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with your desired directory path and name: for instance /obento or /home/&lt;username&gt;/obento)
 
-        $ mkdir /<INV_HOME>
-        $ cd /<INV_HOME>
+        $ mkdir /<OBENTO_HOME>
+        $ cd /<OBENTO_HOME>
 
 3. Pull down the project from github
 
@@ -62,7 +62,7 @@ PART II - Set up project environment
 
 4. Create virtual Python environment for the project
 
-        $ cd /<INV_HOME>/obento
+        $ cd /<OBENTO_HOME>/obento
         $ virtualenv --no-site-packages ENV
 
 5. Activate your virtual environment
