@@ -1,0 +1,22 @@
+DEBUG = True
+
+ADMINS = (
+    ('Your Name', 'your.address@example.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'obi',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
+
+DATABASES_MORE_URL = ''

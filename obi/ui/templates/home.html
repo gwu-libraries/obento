@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>hi</h1>
+
+<div id='form'>
+    <form action='{% url "home" %}' method='GET'>
+        <input type='text' name='q' value='{{ q }}' />
+        <input type='submit' name='go' value='go'/>
+    </form>
+</div>
+
+<div id='results'>
+    <div id='aquabrowser'>
+        <h2>aquabrowser/xml</h2>
+    </div>
+</div>
+
+{% endblock content %}
