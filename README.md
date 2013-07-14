@@ -27,13 +27,13 @@ PART I - Basic server requirements
 
 3. Set up Postgresql
 
-    Create a user for django
+    Create a user for django (and make a note of the password you create)
 
         $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt django
 
     Create a database for the obento application
 
-        $ sudo -u postgres createdb -O django obento
+        $ sudo -u postgres createdb -O django obi
 
 4. Install Git
 
@@ -62,7 +62,7 @@ PART II - Set up project environment
 
 4. Create virtual Python environment for the project
 
-        $ cd /<OBENTO_HOME>/obento
+        $ cd <OBENTO_HOME>/obento
         $ virtualenv --no-site-packages ENV
 
 5. Activate your virtual environment
@@ -85,7 +85,7 @@ PART III - Configure your installation
         $ cd obento/obi/obi
         $ cp local_settings.py.template local_settings.py
 
-2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE.
+2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY.
 
         $ vim local_settings.py
 
@@ -96,3 +96,33 @@ PART III - Configure your installation
 4. Update the wsgi.py file. (Change the value of ENV to your environment path)
 
         $ vim wsgi.py
+        
+5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
+
+        (ENV)$ cd <OBENTO_HOME>/obento/obi
+        (ENV)$ python manage.py syncdb
+
+    If you encounter an authentication error with postgresql edit your local_settings.py file and set HOST = 'localhost'
+
+    If you encounter an error during the above command that ends with:
+
+        TypeError: decode() argument 1 must be string, not None
+
+    Then you need to add location values to your profile. Open your .bashrc file in an editor:
+
+        $ vim ~/.bashrc
+
+    Enter the following values at the end of the file and save.
+
+        export LC_ALL=en_US.UTF-8
+        export LANG=en_US.UTF-8
+
+    Now, reload your bashrc changes
+
+        source ~/.bashrc
+
+    Now, rerun the syncdb command
+
+6. Migrate the database to the latest updates
+
+        $ python manage.py migrate
