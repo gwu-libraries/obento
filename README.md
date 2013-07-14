@@ -72,3 +72,27 @@ PART II - Set up project environment
 6. install django, tastypie, and other python dependencies
 
         (ENV)$ pip install -r requirements.txt
+
+PART III - Configure your installation
+--------------------------------------
+
+0. Create a logs directory
+
+        $ mkdir logs
+
+1. Copy the local settings template to an active file
+
+        $ cd obento/obi
+        $ cp local_settings.py.template local_settings.py
+
+2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE.
+
+        $ vim local_settings.py
+
+3. Copy the WSGI file template to an active file
+
+        $ cp wsgi.py.template wsgi.py
+
+4. Update the wsgi.py file. (Change the value of ENV to your environment path)
+
+        $ vim wsgi.py
