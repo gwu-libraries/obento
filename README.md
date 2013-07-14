@@ -49,8 +49,8 @@ PART II - Set up project environment
 
 2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with your desired directory path and name: for instance /obento or /home/&lt;username&gt;/obento)
 
-        $ mkdir /<OBENTO_HOME>
-        $ cd /<OBENTO_HOME>
+        $ mkdir <OBENTO_HOME>
+        $ cd <OBENTO_HOME>
 
 3. Pull down the project from github
 
@@ -82,7 +82,7 @@ PART III - Configure your installation
 
 1. Copy the local settings template to an active file
 
-        $ cd obento/obi
+        $ cd obento/obi/obi
         $ cp local_settings.py.template local_settings.py
 
 2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY. Enter appropriate values for requester, minter, url and port under IDSERVICE and TEST_IDSERVICE.
