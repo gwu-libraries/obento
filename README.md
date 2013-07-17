@@ -19,21 +19,17 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler
-
-2. Install Postgresql
-
-        $ sudo apt-get install postgresql postgresql-contrib libpq-dev
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev
 
 3. Set up Postgresql
 
-    Create a user for django (and make a note of the password you create)
+    Create a user for django (and make a note of the password you create).  A name for MYDBUSER might be something like ```obentouser_m1``` (m1 for milestone 1)
 
-        $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt django
+        $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt MYDBUSER
 
-    Create a database for the obento application
+    Create a database for the obento application.  A name for MYDBNAME might be something like ```obi_m1```
 
-        $ sudo -u postgres createdb -O django obi
+        $ sudo -u postgres createdb -O MYDBUSER MYDBNAME
 
 4. Install Git
 
