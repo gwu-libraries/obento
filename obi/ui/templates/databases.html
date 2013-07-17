@@ -1,0 +1,17 @@
+{% if response.matches %}
+<ul id='databases'>
+    {% for match in response.matches %}
+    <li class='database'>
+        <a href='{{ match.url }}' title='{{ match.name }}'>
+            {{ match.name }}
+        </a>
+        <p>
+            {{ match.description }}
+        </p>
+    </li>
+    {% endfor %}
+</ul>
+<p>
+    <a href='{{ response.more_url }}'>See all {{ response.count_total }} database{{ response.count_total|pluralize }}</a>
+</p>
+{% endif %}
