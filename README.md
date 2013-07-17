@@ -19,7 +19,7 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev
 
 2. Set up Postgresql
 
