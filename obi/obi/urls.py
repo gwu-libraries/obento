@@ -7,7 +7,10 @@ urlpatterns = patterns('',
 
     url(r'^$', 'ui.views.home', name='home'),
 
-    url(r'^aquabrowser', 'ui.views.aquabrowser', name='aquabrowser'),
+    url(r'^aquabrowser_html', 'ui.views.aquabrowser_html',
+        name='aquabrowser_html'),
+    url(r'^aquabrowser_json', 'ui.views.aquabrowser_json',
+        name='aquabrowser_json'),
 
     url(r'^databases_html', 'ui.views.databases_html', name='databases_html'),
     url(r'^databases_json', 'ui.views.databases_json', name='databases_json'),
