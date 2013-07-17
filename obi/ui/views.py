@@ -32,7 +32,7 @@ def aquabrowser(request):
 
 
 def _databases_query(request):
-    q = request.GET.get('q', None)
+    q = request.GET.get('q', '')
     try:
         count = request.GET.get('count', DEFAULT_HIT_COUNT)
     except:
