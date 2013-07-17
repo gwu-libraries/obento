@@ -19,9 +19,9 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git
 
-3. Set up Postgresql
+2. Set up Postgresql
 
     Create a user for django (and make a note of the password you create).  A name for MYDBUSER might be something like ```obentouser_m1``` (m1 for milestone 1)
 
@@ -31,9 +31,6 @@ PART I - Basic server requirements
 
         $ sudo -u postgres createdb -O MYDBUSER MYDBNAME
 
-4. Install Git
-
-        $ sudo apt-get install git-core
 
 PART II - Set up project environment
 ------------------------------------
