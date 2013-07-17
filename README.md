@@ -66,6 +66,7 @@ PART II - Set up project environment
 
         (ENV)$ pip install -r requirements.txt
 
+
 PART III - Configure your installation
 --------------------------------------
 
@@ -119,3 +120,23 @@ PART III - Configure your installation
 6. Migrate the database to the latest updates
 
         $ python manage.py migrate
+
+
+
+Part IV - Load some data
+------------------------
+
+To load GW's list of databases from libguides:
+
+        #FIXME [configure local_settings with a list of page sids]
+
+Then run the management command '''load_databases''':
+
+        $ ./manage.py load_databases
+
+To test that that worked, try querying the html or json view (substitute
+in your server domain of course):
+
+        http://example.com/databases_html?q=proquest
+        http://example.com/databases_json?q=proquest
+
