@@ -142,14 +142,19 @@ def _summon_query(request):
     response = {'count_total': d['recordCount']}
     matches = []
     for document in d['documents'][:DEFAULT_HIT_COUNT]:
-        match = {'url': document['link'],
-                 'description': document['Author'][0]}
+        match = {'url': document['link']}
+        if document.get('Author', []):
+            match['description'] = document['Author'][0]
         if document.get('DocumentTitleAlternate', []):
             match['name'] = document['DocumentTitleAlternate'][0]
         else:
-            match['name'] = document['Title'][0]
+            if document.get('Title', []):
+                match['name'] = document['Title'][0]
+            else:
+                match['name'] = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
         matches.append(match)
-    response['source'] = d
+    if settings.DEBUG:
+        response['source'] = d
     response['matches'] = matches
     response['q'] = q
     response['more_url'] = '%s%s' %  \
