@@ -1,3 +1,7 @@
+import base64
+from datetime import datetime
+import hashlib
+import hmac
 import json
 
 from lxml import etree
@@ -13,18 +17,21 @@ from ui.models import Database
 
 # FIXME: make a local_setting
 DEFAULT_HIT_COUNT = 3
+RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 
 def home(request):
     q = request.GET.get('q', '')
-    aquabrowser_response = _aquabrowser_query(request)
-    databases_response = _databases_query(request)
-    return render(request, 'home.html', {
-        'title': 'home',
-        'q': q,
-        'aquabrowser_response': aquabrowser_response,
-        'databases_response': databases_response,
-    })
+    if q:
+        aquabrowser_response = _aquabrowser_query(request)
+        databases_response = _databases_query(request)
+        summon_response = _summon_query(request)
+    params = {'title': 'home', 'q': q}
+    if q:
+        params['aquabrowser_response'] = aquabrowser_response
+        params['databases_response'] = databases_response
+        params['summon_response'] = summon_response
+    return render(request, 'home.html', params)
 
 
 def _aquabrowser_query(request):
@@ -102,4 +109,64 @@ def databases_html(request):
 
 def databases_json(request):
     response = _databases_query(request)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def _summon_id_string(headers, params):
+    params_sorted = '&'.join(['%s=%s' % (k, v) for k, v
+                             in sorted(params.items())])
+    s = '\n'.join([headers['Accept'], headers['x-summon-date'],
+                   settings.SUMMON_HOST, settings.SUMMON_PATH, params_sorted])
+    # Don't forget the trailing '\n'!
+    return s + '\n'
+
+
+def _summon_query(request):
+    headers = {'Accept': 'application/json'}
+    headers['Host'] = settings.SUMMON_HOST
+    headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
+    # TODO: API docs say to reuse this once it's set for a user, punt for now
+    headers['x-summon-session-id'] = ''
+    params = settings.SUMMON_SCOPES['all']['params']
+    q = request.GET.get('q', '')
+    params['s.q'] = q
+    id_str = _summon_id_string(headers, params)
+    digest = base64.encodestring(hmac.new(settings.SUMMON_API_KEY,
+                                          unicode(id_str),
+                                          hashlib.sha1).digest())
+    auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
+    headers['Authorization'] = auth_str
+    url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
+    r = requests.get(url, params=params, headers=headers)
+    d = r.json()
+    response = {'count_total': d['recordCount']}
+    matches = []
+    for document in d['documents'][:DEFAULT_HIT_COUNT]:
+        match = {'url': document['link']}
+        if document.get('Author', []):
+            match['description'] = document['Author'][0]
+        if document.get('DocumentTitleAlternate', []):
+            match['name'] = document['DocumentTitleAlternate'][0]
+        else:
+            if document.get('Title', []):
+                match['name'] = document['Title'][0]
+            else:
+                match['name'] = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
+        matches.append(match)
+    if settings.DEBUG:
+        response['source'] = d
+    response['matches'] = matches
+    response['q'] = q
+    response['more_url'] = '%s%s' %  \
+        (settings.SUMMON_SCOPES['all']['more_url'], q)
+    return response
+
+
+def summon_html(request):
+    response = _summon_query(request)
+    return render(request, 'summon.html', {'response': response})
+
+
+def summon_json(request):
+    response = _summon_query(request)
     return HttpResponse(json.dumps(response), content_type='application/json')
