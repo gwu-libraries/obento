@@ -10,6 +10,7 @@
     </form>
 </div>
 
+{% if q %}
 <div id='results'>
     <div id='summon-all'>
         <h2>summon (all)</h2>
@@ -30,5 +31,6 @@
         {% endwith %}
     </div>
 </div>
+{% endif %}
 
 {% endblock content %}

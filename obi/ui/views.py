@@ -22,16 +22,16 @@ RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 def home(request):
     q = request.GET.get('q', '')
-    aquabrowser_response = _aquabrowser_query(request)
-    databases_response = _databases_query(request)
-    summon_response = _summon_query(request)
-    return render(request, 'home.html', {
-        'title': 'home',
-        'q': q,
-        'aquabrowser_response': aquabrowser_response,
-        'databases_response': databases_response,
-        'summon_response': summon_response,
-    })
+    if q:
+        aquabrowser_response = _aquabrowser_query(request)
+        databases_response = _databases_query(request)
+        summon_response = _summon_query(request)
+    params = {'title': 'home', 'q': q}
+    if q:
+        params['aquabrowser_response'] = aquabrowser_response
+        params['databases_response'] = databases_response
+        params['summon_response'] = summon_response
+    return render(request, 'home.html', params)
 
 
 def _aquabrowser_query(request):
