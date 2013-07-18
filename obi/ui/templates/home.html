@@ -11,6 +11,12 @@
 </div>
 
 <div id='results'>
+    <div id='summon-all'>
+        <h2>summon (all)</h2>
+        {% with summon_response as response %}
+            {% include "summon.html" %}
+        {% endwith %}
+    </div>
     <div id='aquabrowser'>
         <h2>aquabrowser</h2>
         {% with aquabrowser_response as response %}

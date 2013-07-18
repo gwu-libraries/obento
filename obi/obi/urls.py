@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     url(r'^databases_html', 'ui.views.databases_html', name='databases_html'),
     url(r'^databases_json', 'ui.views.databases_json', name='databases_json'),
 
+    url(r'^summon_html', 'ui.views.summon_html', name='summon_html'),
+    url(r'^summon_json', 'ui.views.summon_json', name='summon_json'),
+
     url(r'^admin/', include(admin.site.urls)),
 
 )
