@@ -5,14 +5,23 @@
 
 <div id='form'>
     <form action='{% url "home" %}' method='GET'>
-        <input type='text' name='q' value='{{ q }}' />
-        <input type='submit' name='go' value='go'/>
+        <input type='text' size='40' name='q' value='{{ q }}' />
+        <input type='submit' value='go'/>
     </form>
 </div>
 
 <div id='results'>
     <div id='aquabrowser'>
-        <h2>aquabrowser/xml</h2>
+        <h2>aquabrowser</h2>
+        {% with aquabrowser_response as response %}
+            {% include "aquabrowser.html" %}
+        {% endwith %}
+    </div>
+    <div id='databases'>
+        <h2>databases</h2>
+        {% with databases_response as response %}
+            {% include "databases.html" %}
+        {% endwith %}
     </div>
 </div>
 
