@@ -12,6 +12,6 @@
     {% endfor %}
 </ul>
 <p>
-    <a href='{{ response.more_url }}'>See all {{ response.count_total }} matchE{{ response.count_total|pluralize }}</a>
+    <a href='{{ response.more_url }}'>See all {{ response.count_total }} match{{ response.count_total|pluralize:"es" }}</a>
 </p>
 {% endif %}
