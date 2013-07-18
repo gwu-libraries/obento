@@ -16,10 +16,14 @@ DEFAULT_HIT_COUNT = 3
 
 
 def home(request):
-    q = request.GET.get('q', None)
+    q = request.GET.get('q', '')
+    aquabrowser_response = _aquabrowser_query(request)
+    databases_response = _databases_query(request)
     return render(request, 'home.html', {
         'title': 'home',
         'q': q,
+        'aquabrowser_response': aquabrowser_response,
+        'databases_response': databases_response,
     })
 
 
@@ -30,33 +34,30 @@ def _aquabrowser_query(request):
     except:
         count = DEFAULT_HIT_COUNT
     params = {'output': 'xml', 'q': q}
-    # FIXME: move url to settings
+    # TODO: move url to settings
     r = requests.get('http://surveyor.gelman.gwu.edu/result.ashx',
                      params=params)
     root = etree.fromstring(r.text)
     matches = []
-    for record in root.findall('./results/record')[:count]:
+    records = root.findall('./results/record')
+    for record in records[:count]:
         match = {}
         d = record.find('d')
         df245 = d.find('df245')
-        title = ''
+        title_subs = {'a': '', 'b': '', 'c': ''}
         for df245row in df245.findall("df245"):
-            if df245row.attrib['key'] != "i1" \
-                    and df245row.attrib['key'] != "i2":
-                exact = df245row.find("exact")
-                if exact:
-                    df245rowtext = exact.text
-                else:
-                    df245rowtext = df245row.text
-                title += df245rowtext + '\n'
-        match['name'] = title.strip()
+            key = df245row.attrib['key']
+            if key in ['a', 'b', 'c']:
+                title_subs[key] = ' '.join(df245row.xpath('.//text()'))
+        match['name'] = ' '.join([title_subs['a'], title_subs['b'],
+                                  title_subs['c']])
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
-        # TODO: what should go here?
+        # TODO: what should go here, if anything?
         match['description'] = ''
         matches.append(match)
     more_url = 'http://surveyor.gelman.gwu.edu/?q=%s' % q
-    response = {'matches': matches, 'q': q, 'count_total': len(matches),
+    response = {'matches': matches, 'q': q, 'count_total': len(records),
                 'more_url': more_url}
     return response
 
