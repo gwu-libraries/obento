@@ -130,6 +130,8 @@ def _summon_query(request):
     params = settings.SUMMON_SCOPES['all']['params']
     q = request.GET.get('q', '')
     params['s.q'] = q
+    # disable highlighting tags
+    params['s.hl'] = 'false'
     id_str = _summon_id_string(headers, params)
     digest = base64.encodestring(hmac.new(settings.SUMMON_API_KEY,
                                           unicode(id_str),
