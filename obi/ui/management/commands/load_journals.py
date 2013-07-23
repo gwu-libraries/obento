@@ -1,7 +1,6 @@
 import time
 import codecs
 
-from bs4 import BeautifulSoup
 import requests
 
 from django.core.management.base import BaseCommand
@@ -54,29 +53,3 @@ class Command(BaseCommand):
 
             journal = Journal(title=title, ssid=ssid, issn=issn, eissn=eissn)
             journal.save()
-            
-
-        """
-        for page_sid in PAGE_SIDS:
-            params = {'pid': PID, 'sid': page_sid}
-            print 'SID:', page_sid
-            try:
-                r = requests.get(BASE_URL, params=params)
-                print r.encoding, r.status_code, r.url
-                soup = BeautifulSoup(r.text)
-                itemlists = soup.find_all('div', class_='itemlist')
-                for itemlist in itemlists:
-                    items = itemlist.find_all('li')
-                    for item in items:
-                        name = item.a.string
-                        url = item.a.get('href')
-                        description = item.div.get_text()
-                        database = Database(name=name, url=url,
-                                            description=description)
-                        database.save()
-            except:
-                import traceback
-                print traceback.print_exc()
-                print 'ERROR'
-            time.sleep(SLEEP_SECONDS)
-        """
