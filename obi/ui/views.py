@@ -3,6 +3,7 @@ from datetime import datetime
 import hashlib
 import hmac
 import json
+import urllib
 
 from lxml import etree
 import requests
@@ -12,7 +13,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from ui.models import Database
+from ui.models import Database, Journal
 
 
 # FIXME: make a local_setting
@@ -26,11 +27,13 @@ def home(request):
         aquabrowser_response = _aquabrowser_query(request)
         databases_response = _databases_query(request)
         summon_response = _summon_query(request)
+        journals_response = _journals_query(request)
     params = {'title': 'home', 'q': q}
     if q:
         params['aquabrowser_response'] = aquabrowser_response
         params['databases_response'] = databases_response
         params['summon_response'] = summon_response
+        params['journals_response'] = journals_response
     return render(request, 'home.html', params)
 
 
@@ -109,6 +112,37 @@ def databases_html(request):
 
 def databases_json(request):
     response = _databases_query(request)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def _journals_query(request):
+    q = request.GET.get('q', '')
+    try:
+        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+    except:
+        count = DEFAULT_HIT_COUNT
+    response = {'q': q}
+    if q:
+        matches = []
+        qs_journals = Journal.objects.filter(Q(title__icontains=q))
+        response['count_total'] = qs_journals.count()
+        response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
+        for journal in qs_journals[:count]:
+            url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=" + urllib.quote_plus(journal.title)
+            match = {'title': journal.title, 'ssid': journal.ssid,
+                    'issn': journal.issn, 'eissn': journal.eissn, 'url': url}
+            matches.append(match)
+        response['matches'] = matches
+    return response
+
+
+def journals_html(request):
+    response = _journals_query(request)
+    return render(request, 'journals.html', {'response': response})
+
+
+def journals_json(request):
+    response = _journals_query(request)
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 

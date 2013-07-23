@@ -30,6 +30,12 @@
             {% include "databases.html" %}
         {% endwith %}
     </div>
+    <div id='journals'>
+        <h2>journals</h2>
+        {% with journals_response as response %}
+            {% include "journals.html" %}
+        {% endwith %}
+    </div>
 </div>
 {% endif %}
 
