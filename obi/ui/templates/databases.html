@@ -1,7 +1,7 @@
 {% load humanize %}
 
 {% if response.matches %}
-<ul id='databases'>
+<ul id='databases' class='unstyled'>
     {% for match in response.matches %}
     <li class='database'>
         <a href='{{ match.url }}' title='{{ match.name }}'>
@@ -13,7 +13,10 @@
     </li>
     {% endfor %}
 </ul>
+    {% if response.count_total != 1 %}
 <p>
+    <i class='icon-arrow-right'></i>
     <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} database{{ response.count_total|pluralize }}</a>
 </p>
+    {% endif %}
 {% endif %}

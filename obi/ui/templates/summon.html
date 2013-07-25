@@ -1,7 +1,7 @@
 {% load humanize %}
 
 {% if response.matches %}
-<ul id='summon'>
+<ul id='summon' class='unstyled'>
     {% for match in response.matches %}
     <li class='item'>
         <a href='{{ match.url }}' title='{{ match.name }}'>
@@ -14,6 +14,7 @@
     {% endfor %}
 </ul>
 <p>
+    <i class='icon-arrow-right'></i>
     <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
 </p>
 {% endif %}
