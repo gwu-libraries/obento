@@ -30,3 +30,15 @@ SUMMON_SCOPES = {
     'all': {'params': {'s.ff': 'ContentType,or,1,15'},                          
             'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},   
 }       
+
+# libguides database config with page ids
+# e.g.: http://libguides.gwu.edu/content.php?pid=98717&sid=1719900
+LIBGUIDES_DB_BASE_URL = 'http://libguides.gwu.edu/content.php'
+LIBGUIDES_DB_PID = 98717
+LIBGUIDES_DB_PAGE_SIDS = [
+    '1943946', '1719891', '1719892', '1719893', '1719894', '1719895', 
+    '1719896', '1719897', '1719898', '1719899', '1719900', '1719901', 
+    '1719902', '1719903', '1719904', '1719905', '1719906', '1719908',
+    '1719909', '1719910', '1719911', '1719913', '1719914', '1719916', 
+    '1719917',
+]
