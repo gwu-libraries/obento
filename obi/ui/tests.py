@@ -1,16 +1,19 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
+# -*- coding: utf-8 -*-
 
 from django.test import TestCase
+from django.test.client import Client
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class UnicodeHMACTest(TestCase):
+    QUERY_PAIRS = [
+        ('prisoner of azkaban', 'Rowling'),
+        ('the bluest eye', 'Morrison'),
+        (u'piÃ±ata', 'Christopher'),
+    ]
+
+    def test_unicode_hmac(self):
+        """Ensure HMAC signing properly handles unicode."""
+        c = Client()
+        for query, match_str in self.QUERY_PAIRS:
+            response = c.get('/', {'q': query})
+            self.assertTrue(match_str in response.content)
