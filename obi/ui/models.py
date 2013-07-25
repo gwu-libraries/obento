@@ -9,6 +9,7 @@ class Database(models.Model):
     def __unicode__(self):
         return '<Database %s "%s">' % (self.id, self.name)
 
+
 class Journal(models.Model):
     title = models.TextField(blank=False, db_index=True)
     ssid = models.TextField(blank=False, db_index=True, max_length=13)
