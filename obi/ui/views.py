@@ -113,8 +113,8 @@ def databases_json(request):
 
 
 def _summon_id_string(headers, params):
-    params_sorted = '&'.join(['%s=%s' % (k, v) for k, v
-                             in sorted(params.items())])
+    params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
+                              for k, v in sorted(params.items())])
     s = '\n'.join([headers['Accept'], headers['x-summon-date'],
                    settings.SUMMON_HOST, settings.SUMMON_PATH, params_sorted])
     # Don't forget the trailing '\n'!
@@ -133,9 +133,8 @@ def _summon_query(request):
     # disable highlighting tags
     params['s.hl'] = 'false'
     id_str = _summon_id_string(headers, params)
-    digest = base64.encodestring(hmac.new(settings.SUMMON_API_KEY,
-                                          unicode(id_str),
-                                          hashlib.sha1).digest())
+    hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
+    digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
