@@ -1,8 +1,6 @@
 import time
-import codecs
-import xlrd
 
-import requests
+import xlrd
 
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
