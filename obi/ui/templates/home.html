@@ -1,34 +1,61 @@
 {% extends "base.html" %}
 
+{% block styles_extra %}
+<style type='text/css'>
+    div .left-border {
+        padding-left: 1em;
+        border-left: 1px #ddd solid;
+        }
+</style>
+{% endblock %}
+
 {% block content %}
 <h1>GW Bento Search</h1>
 
 <div id='form'>
-    <form action='{% url "home" %}' method='GET'>
-        <input type='text' size='40' name='q' value='{{ q }}' />
-        <input type='submit' value='go'/>
+    <form action='{% url "home" %}' method='GET' class='form-search'>
+        <fieldset>
+            <input type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
+            <input type='submit' class='btn' value='go'/>
+        </fieldset>
     </form>
 </div>
 
 {% if q %}
-<div id='results'>
-    <div id='summon-all'>
-        <h2>summon (all)</h2>
+<div id='results' class='row-fluid'>
+    <div id='articles-databases' class='span4'>
+        <h4>Articles</h4>
         {% with summon_response as response %}
             {% include "summon.html" %}
         {% endwith %}
-    </div>
-    <div id='aquabrowser'>
-        <h2>aquabrowser</h2>
-        {% with aquabrowser_response as response %}
-            {% include "aquabrowser.html" %}
-        {% endwith %}
-    </div>
-    <div id='databases'>
-        <h2>databases</h2>
+        <hr />
+        <h4>Databases</h4>
         {% with databases_response as response %}
             {% include "databases.html" %}
         {% endwith %}
+    </div>
+    <div id='books-journals' class='span4 left-border'>
+        <h4>Books &amp; Media</h4>
+        {% with aquabrowser_response as response %}
+            {% include "aquabrowser.html" %}
+        {% endwith %}
+        <hr />
+        <h4 class='separate-top'>Journals</h4>
+        <ul class='unstyled'>
+            <li>journal 1</li>
+            <li>journal 2</li>
+        </ul>
+    </div>
+    <div id='website-other' class='span4 left-border'>
+        <h4>Library Website</h4>
+        <p>
+        Not yet enabled.
+        </p>
+        <hr />
+        <h4>More Search Options</h4>
+        <p>
+        Not yet enabled.
+        </p>
     </div>
 </div>
 {% endif %}
