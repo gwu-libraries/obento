@@ -125,12 +125,15 @@ def _journals_query(request):
     if q:
         matches = []
         qs_journals = Journal.objects.filter(Q(title__icontains=q))
+        qs_journals = qs_journals.distinct('ssid')
         response['count_total'] = qs_journals.count()
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
         for journal in qs_journals[:count]:
-            url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=" + urllib.quote_plus(unicode(journal.title).encode('utf-8'))
+            url = settings.JOURNALS_TITLE_EXACT_URL + \
+                urllib.quote_plus(unicode(journal.title).encode('utf-8'))
             match = {'title': journal.title, 'ssid': journal.ssid,
-                    'issn': journal.issn, 'eissn': journal.eissn, 'url': url}
+                     'issn': journal.issn, 'eissn': journal.eissn,
+                     'url': url}
             matches.append(match)
         response['matches'] = matches
     return response
@@ -147,7 +150,7 @@ def journals_json(request):
 
 
 def _summon_id_string(headers, params):
-    params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8')) 
+    params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
                              for k, v in sorted(params.items())])
     s = '\n'.join([headers['Accept'], headers['x-summon-date'],
                    settings.SUMMON_HOST, settings.SUMMON_PATH, params_sorted])
@@ -167,8 +170,8 @@ def _summon_query(request):
     # disable highlighting tags
     params['s.hl'] = 'false'
     id_str = _summon_id_string(headers, params)
-    hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1) 
-    digest = base64.encodestring(hash_code.digest()) 
+    hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
+    digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)

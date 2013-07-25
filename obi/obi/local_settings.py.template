@@ -20,7 +20,10 @@ DATABASES = {
 ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
 
 DATABASES_MORE_URL = 'http://libguides.gwu.edu/search.php?iid=131&c=0&gid=0&pid=98717&search='
-JOURNALS_MORE_URL = 'http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_W_A&C='
+JOURNALS_MORE_URL = \
+    'http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_W_A&C='
+JOURNALS_TITLE_EXACT_URL = \
+    'http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C='
 
 SUMMON_API_ID = 'gw'                                                            
 SUMMON_API_KEY = 'XXXXXXXXXXXXX'
