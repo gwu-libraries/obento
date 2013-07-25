@@ -1,5 +1,6 @@
 import time
 import codecs
+import xlrd
 
 import requests
 
@@ -10,12 +11,12 @@ from ui.models import Journal
 
 
 class Command(BaseCommand):
-    help = 'ingest a comma-delimited table of journal titles where each line \
+    help = 'ingest an .xlsx (Excel) file of journal titles where each line \
             contains:  journal title, SSID, ISSN, eISSN'
 
     def handle(self, *args, **options):
         try:
-            filename = args[0] 
+            filename = args[0]
         except:
             print 'load_journals <inputfile>'
 
@@ -26,30 +27,15 @@ class Command(BaseCommand):
         transaction.commit_unless_managed()
         time.sleep(1)
 
-        journalfp = codecs.open(filename, 'rb', encoding='utf-16')
+        book = xlrd.open_workbook(filename, encoding_override='utf-8')
+        sh = book.sheet_by_index(0)
 
-        titleline = journalfp.readline()
-        print(titleline)
-        
-        for line in iter(journalfp):
-            print(line)
-            if line[0] == "\"":
-                lineaux = line.split("\"")
-                print("lineaux = ")
-                print(lineaux)
-                title = lineaux[1]
-                valuesaux = lineaux[2].split('\t')
-                ssid = valuesaux[1]
-                issn = valuesaux[2]
-                eissn = valuesaux[3]
-            else:
-                values = line.split('\t')
-                title = values[0]
-                ssid = values[1]
-                issn = values[2]
-                eissn = values[3]
-
-            print(values)
-
+        # row 0 contains column headers so skip it
+        for rx in range(1, sh.nrows):
+            r = sh.row(rx)
+            title = r[0].value.encode('utf-8')
+            ssid = r[1].value.encode('utf-8')
+            issn = r[2].value.encode('utf-8')
+            eissn = r[3].value.encode('utf-8')
             journal = Journal(title=title, ssid=ssid, issn=issn, eissn=eissn)
             journal.save()

@@ -128,7 +128,8 @@ def _journals_query(request):
         response['count_total'] = qs_journals.count()
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
         for journal in qs_journals[:count]:
-            url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=" + urllib.quote_plus(journal.title)
+            url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=" + urllib.quote_plus(unicode(journal.title).encode('utf-8'))
+            # url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=business"
             match = {'title': journal.title, 'ssid': journal.ssid,
                     'issn': journal.issn, 'eissn': journal.eissn, 'url': url}
             matches.append(match)
@@ -147,8 +148,8 @@ def journals_json(request):
 
 
 def _summon_id_string(headers, params):
-    params_sorted = '&'.join(['%s=%s' % (k, v) for k, v
-                             in sorted(params.items())])
+    params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8')) 
+                             for k, v in sorted(params.items())])
     s = '\n'.join([headers['Accept'], headers['x-summon-date'],
                    settings.SUMMON_HOST, settings.SUMMON_PATH, params_sorted])
     # Don't forget the trailing '\n'!
@@ -167,9 +168,8 @@ def _summon_query(request):
     # disable highlighting tags
     params['s.hl'] = 'false'
     id_str = _summon_id_string(headers, params)
-    digest = base64.encodestring(hmac.new(settings.SUMMON_API_KEY,
-                                          unicode(id_str),
-                                          hashlib.sha1).digest())
+    hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1) 
+    digest = base64.encodestring(hash_code.digest()) 
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
