@@ -41,10 +41,9 @@
         {% endwith %}
         <hr />
         <h4 class='separate-top'>Journals</h4>
-        <ul class='unstyled'>
-            <li>journal 1</li>
-            <li>journal 2</li>
-        </ul>
+        {% with journals_response as response %}
+            {% include "journals.html" %}
+        {% endwith %}
     </div>
     <div id='website-other' class='span4 left-border'>
         <h4>Library Website</h4>
@@ -56,12 +55,6 @@
         <p>
         Not yet enabled.
         </p>
-    </div>
-    <div id='journals'>
-        <h2>journals</h2>
-        {% with journals_response as response %}
-            {% include "journals.html" %}
-        {% endwith %}
     </div>
 </div>
 {% endif %}

@@ -1,16 +1,20 @@
 {% load humanize %}
 
 {% if response.matches %}
-<ul id='journals'>
+<ul id='journals' class='unstyled'>
     {% for match in response.matches %}
-    <li class='journal'>
-    <a href='{{ match.url }}' title='{{ match.title }}'>
+    <li>
+        <a href='{{ match.url }}' title='{{ match.title }}'>
             {{ match.title }}
         </a>
+        <p>
+            {{ match.description }}
+        </p>
     </li>
     {% endfor %}
 </ul>
 <p>
+    <i class='icon-arrow-right'></i>
     <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} journal{{ response.count_total|pluralize }}</a>
 </p>
 {% endif %}
