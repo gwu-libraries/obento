@@ -129,7 +129,6 @@ def _journals_query(request):
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
         for journal in qs_journals[:count]:
             url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=" + urllib.quote_plus(unicode(journal.title).encode('utf-8'))
-            # url = "http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C=business"
             match = {'title': journal.title, 'ssid': journal.ssid,
                     'issn': journal.issn, 'eissn': journal.eissn, 'url': url}
             matches.append(match)
