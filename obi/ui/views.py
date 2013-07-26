@@ -66,8 +66,14 @@ def _aquabrowser_query(request):
         # TODO: what should go here, if anything?
         match['description'] = ''
         matches.append(match)
+    count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
+    if count_total_nodes:
+        # there should be exactly one
+        count_total = count_total_nodes[0].text
+    else:
+        count_total = len(records)
     more_url = 'http://surveyor.gelman.gwu.edu/?q=%s' % q
-    response = {'matches': matches, 'q': q, 'count_total': len(records),
+    response = {'matches': matches, 'q': q, 'count_total': count_total,
                 'more_url': more_url}
     return response
 
