@@ -24,16 +24,18 @@ RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 def home(request):
     q = request.GET.get('q', '')
     if q:
-        aquabrowser_response = _aquabrowser_query(request)
+        articles_response = _summon_query(request, scope='articles')
+        books_media_response = _summon_query(request, scope='books_media')
         databases_response = _databases_query(request)
-        summon_response = _summon_query(request)
         journals_response = _journals_query(request)
+        aquabrowser_response = _aquabrowser_query(request)
     params = {'title': 'home', 'q': q}
     if q:
-        params['aquabrowser_response'] = aquabrowser_response
+        params['articles_response'] = articles_response
+        params['books_media_response'] = books_media_response
         params['databases_response'] = databases_response
-        params['summon_response'] = summon_response
         params['journals_response'] = journals_response
+        params['aquabrowser_response'] = aquabrowser_response
     return render(request, 'home.html', params)
 
 
@@ -53,6 +55,8 @@ def _aquabrowser_query(request):
     for record in records[:count]:
         match = {}
         d = record.find('d')
+        if not d:
+            break
         df245 = d.find('df245')
         title_subs = {'a': '', 'b': '', 'c': ''}
         for df245row in df245.findall("df245"):
@@ -158,13 +162,13 @@ def _summon_id_string(headers, params):
     return s + '\n'
 
 
-def _summon_query(request):
+def _summon_query(request, scope='all'):
     headers = {'Accept': 'application/json'}
     headers['Host'] = settings.SUMMON_HOST
     headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
     # TODO: API docs say to reuse this once it's set for a user, punt for now
     headers['x-summon-session-id'] = ''
-    params = settings.SUMMON_SCOPES['all']['params']
+    params = settings.SUMMON_SCOPES[scope]['params']
     q = request.GET.get('q', '')
     params['s.q'] = q
     # disable highlighting tags
@@ -193,18 +197,19 @@ def _summon_query(request):
         matches.append(match)
     if settings.DEBUG:
         response['source'] = d
+        response['query_url'] = r.url
     response['matches'] = matches
     response['q'] = q
     response['more_url'] = '%s%s' %  \
-        (settings.SUMMON_SCOPES['all']['more_url'], q)
+        (settings.SUMMON_SCOPES[scope]['more_url'], q)
     return response
 
 
-def summon_html(request):
-    response = _summon_query(request)
+def summon_html(request, scope='all'):
+    response = _summon_query(request, scope)
     return render(request, 'summon.html', {'response': response})
 
 
-def summon_json(request):
-    response = _summon_query(request)
+def summon_json(request, scope='all'):
+    response = _summon_query(request, scope)
     return HttpResponse(json.dumps(response), content_type='application/json')

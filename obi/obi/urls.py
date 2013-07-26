@@ -15,8 +15,20 @@ urlpatterns = patterns('',
     url(r'^databases_html', 'ui.views.databases_html', name='databases_html'),
     url(r'^databases_json', 'ui.views.databases_json', name='databases_json'),
 
-    url(r'^summon_html', 'ui.views.summon_html', name='summon_html'),
-    url(r'^summon_json', 'ui.views.summon_json', name='summon_json'),
+    url(r'^summon_html', 'ui.views.summon_html', name='summon_html',
+        kwargs={'scope': 'all'}),
+    url(r'^summon_json', 'ui.views.summon_json', name='summon_json',
+        kwargs={'scope': 'all'}),
+
+    url(r'^articles_html', 'ui.views.summon_html', name='articles_html',
+        kwargs={'scope': 'articles'}),
+    url(r'^articles_json', 'ui.views.summon_json', name='articles_json',
+        kwargs={'scope': 'articles'}),
+
+    url(r'^books_media_html', 'ui.views.summon_html',
+        name='books_media_html', kwargs={'scope': 'books_media'}),
+    url(r'^books_media_json', 'ui.views.summon_json', 
+        name='books_media_json', kwargs={'scope': 'books_media'}),
 
     url(r'^admin/', include(admin.site.urls)),
 
