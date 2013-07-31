@@ -36,7 +36,7 @@ def home(request):
         params['databases_response'] = databases_response
         params['journals_response'] = journals_response
         params['aquabrowser_response'] = aquabrowser_response
-    return render(request, 'home.html', params)
+    return _render_with_context(request, 'home.html', params)
 
 
 def _aquabrowser_query(request):
@@ -55,20 +55,12 @@ def _aquabrowser_query(request):
     for record in records[:count]:
         match = {}
         d = record.find('d')
-        if not d:
+        if d is None:
             break
-        df245 = d.find('df245')
-        title_subs = {'a': '', 'b': '', 'c': ''}
-        for df245row in df245.findall("df245"):
-            key = df245row.attrib['key']
-            if key in ['a', 'b', 'c']:
-                title_subs[key] = ' '.join(df245row.xpath('.//text()'))
-        match['name'] = ' '.join([title_subs['a'], title_subs['b'],
-                                  title_subs['c']])
+        match['name'] = _ab_marc_field_str(d, 'df245', ['a', 'h', 'b', 'c'])
+        match['description'] = _ab_marc_field_str(d, 'df100', ['a'])
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
-        # TODO: what should go here, if anything?
-        match['description'] = ''
         matches.append(match)
     count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
     if count_total_nodes:
@@ -82,6 +74,21 @@ def _aquabrowser_query(request):
     return response
 
 
+# Returns a concatenation of the values of the specified subfield codes
+# Warning: this is specific to Aquabrowser result formatting
+def _ab_marc_field_str(marcdict, fieldname, codes):
+    fields = marcdict.find(fieldname)
+    if fields is None:
+        return ''
+    resultsubs = {}
+    for fieldrow in fields.findall(fieldname):
+        key = fieldrow.attrib['key']
+        if key in codes:
+            resultsubs[key] = ' '.join(fieldrow.xpath('.//text()'))
+    result = ' '.join(resultsubs.values())
+    return result
+
+
 def aquabrowser_json(request):
     response = _aquabrowser_query(request)
     return HttpResponse(json.dumps(response, encoding='utf-8'),
@@ -90,7 +97,8 @@ def aquabrowser_json(request):
 
 def aquabrowser_html(request):
     response = _aquabrowser_query(request)
-    return render(request, 'aquabrowser.html', {'response': response})
+    return _render_with_context(request, 'aquabrowser.html',
+                                {'response': response})
 
 
 def _databases_query(request):
@@ -117,7 +125,8 @@ def _databases_query(request):
 
 def databases_html(request):
     response = _databases_query(request)
-    return render(request, 'databases.html', {'response': response})
+    return _render_with_context(request, 'databases.html',
+                                {'response': response})
 
 
 def databases_json(request):
@@ -151,7 +160,8 @@ def _journals_query(request):
 
 def journals_html(request):
     response = _journals_query(request)
-    return render(request, 'journals.html', {'response': response})
+    return _render_with_context(request, 'journals.html',
+                                {'response': response})
 
 
 def journals_json(request):
@@ -193,6 +203,9 @@ def _summon_query(request, scope='all'):
         match = {'url': document['link']}
         if document.get('Author', []):
             match['description'] = document['Author'][0]
+        else:
+            if document.get('CorporateAuthor', []):
+                match['description'] = document['CorporateAuthor'][0]
         if document.get('DocumentTitleAlternate', []):
             match['name'] = document['DocumentTitleAlternate'][0]
         else:
@@ -200,6 +213,10 @@ def _summon_query(request, scope='all'):
                 match['name'] = document['Title'][0]
             else:
                 match['name'] = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
+        if document.get('PublicationTitle', []):
+            match['publicationtitle'] = document['PublicationTitle'][0]
+        if document.get('PublicationYear', []):
+            match['publicationyear'] = document['PublicationYear'][0]
         matches.append(match)
     if settings.DEBUG:
         response['source'] = d
@@ -213,9 +230,18 @@ def _summon_query(request, scope='all'):
 
 def summon_html(request, scope='all'):
     response = _summon_query(request, scope)
-    return render(request, 'summon.html', {'response': response})
+    print "PASSING THROUGH"
+    print response
+    return _render_with_context(request, 'summon.html', {'response': response})
 
 
 def summon_json(request, scope='all'):
     response = _summon_query(request, scope)
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def _render_with_context(request, page, params):
+    params['context'] = {'TITLE_DISPLAY_LENGTH': settings.TITLE_DISPLAY_LENGTH,
+                         'DESCRIPTION_DISPLAY_LENGTH':
+                         settings.DESCRIPTION_DISPLAY_LENGTH}
+    return render(request, page, params)
