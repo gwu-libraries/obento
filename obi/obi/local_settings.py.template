@@ -31,6 +31,7 @@ JOURNALS_TITLE_EXACT_URL = \
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
 
+SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
 SUMMON_API_KEY = 'XXXXXXXXXXXXX'
 SUMMON_HOST = 'api.summon.serialssolutions.com'                                 
