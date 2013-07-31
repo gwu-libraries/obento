@@ -5,10 +5,16 @@
     {% for match in response.matches %}
     <li class='item'>
         <a href='{{ match.url }}' title='{{ match.name }}'>
-            {{ match.name }}
+            {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
+            {% if match.description %}
             {{ match.description }}
+            <br>
+            {% endif %}
+            {% if match.publicationtitle %}
+            <i>{{ match.publicationtitle }}</i>, {{ match.publicationyear }}
+            {% endif %}
         </p>
     </li>
     {% endfor %}
