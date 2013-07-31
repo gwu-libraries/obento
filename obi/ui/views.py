@@ -237,8 +237,6 @@ def _summon_query(request, scope='all'):
 
 def summon_html(request, scope='all'):
     response = _summon_query(request, scope)
-    print "PASSING THROUGH"
-    print response
     return _render_with_context(request, 'summon.html', {'response': response})
 
 
