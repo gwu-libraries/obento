@@ -51,3 +51,7 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719909', '1719910', '1719911', '1719913', '1719914', '1719916', 
     '1719917',
 ]
+
+# number of characters to display before truncating with ellipsis
+TITLE_DISPLAY_LENGTH = 50
+DESCRIPTION_DISPLAY_LENGTH = 100
