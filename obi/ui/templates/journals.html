@@ -17,4 +17,9 @@
     <i class='icon-arrow-right'></i>
     <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} journal{{ response.count_total|pluralize }}</a>
 </p>
+{% else %}
+<p>
+    <i>No journal titles found.  Please try another search in <a href='{{ response.more_url_plain }}'>Journal Titles.</a>
+    </i>
+</p>
 {% endif %}

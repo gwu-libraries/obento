@@ -68,9 +68,13 @@ def _aquabrowser_query(request):
         count_total = count_total_nodes[0].text
     else:
         count_total = len(records)
-    more_url = 'http://surveyor.gelman.gwu.edu/?q=%s' % q
-    response = {'matches': matches, 'q': q, 'count_total': count_total,
-                'more_url': more_url}
+    #    more_url = 'http://surveyor.gelman.gwu.edu/?q=%s' % q
+    response = {}
+    response['more_url'] = '%s%s' % (settings.AQUABROWSER_MORE_URL, q)
+    response['more_url_plain'] = settings.AQUABROWSER_URL
+    response['matches'] = matches
+    response['q'] = q
+    response['count_total'] = count_total
     return response
 
 
@@ -115,6 +119,7 @@ def _databases_query(request):
                                                Q(description__icontains=q))
         response['count_total'] = qs_databases.count()
         response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
+        response['more_url_plain'] = settings.DATABASES_URL
         for db in qs_databases[:count]:
             match = {'name': db.name, 'url': db.url,
                      'description': db.description}
@@ -146,6 +151,7 @@ def _journals_query(request):
         qs_journals = Journal.objects.filter(Q(title__icontains=q))
         qs_journals = qs_journals.distinct('ssid')
         response['count_total'] = qs_journals.count()
+        response['more_url_plain'] = settings.JOURNALS_URL
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
         for journal in qs_journals[:count]:
             url = settings.JOURNALS_TITLE_EXACT_URL + \
@@ -223,6 +229,7 @@ def _summon_query(request, scope='all'):
         response['query_url'] = r.url
     response['matches'] = matches
     response['q'] = q
+    response['more_url_plain'] = settings.SUMMON_URL
     response['more_url'] = '%s%s' %  \
         (settings.SUMMON_SCOPES[scope]['more_url'], q)
     return response

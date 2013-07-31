@@ -19,4 +19,10 @@
     <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} database{{ response.count_total|pluralize }}</a>
 </p>
     {% endif %}
+{% else %}
+<p>
+    <i>No databases found.  Please browse <a href='{{ response.more_url_plain }}'>Database Titles.</a>
+    </i>
+</p>
 {% endif %}
+
