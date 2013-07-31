@@ -8,7 +8,7 @@
             {{ match.name }}
         </a>
         <p>
-            {{ match.description }}
+            {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
         </p>
     </li>
     {% endfor %}
