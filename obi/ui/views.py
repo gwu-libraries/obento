@@ -59,6 +59,8 @@ def _aquabrowser_query(request):
             break
         match['name'] = _ab_marc_field_str(d, 'df245', ['a', 'h', 'b', 'c'])
         match['description'] = _ab_marc_field_str(d, 'df100', ['a'])
+        match['publisher'] = _ab_marc_field_str(d, 'df260', ['a', 'b', 'c'])
+        match['edition'] = _ab_marc_field_str(d, 'df250', ['a'])
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
         matches.append(match)
@@ -68,13 +70,16 @@ def _aquabrowser_query(request):
         count_total = count_total_nodes[0].text
     else:
         count_total = len(records)
-    #    more_url = 'http://surveyor.gelman.gwu.edu/?q=%s' % q
     response = {}
     response['more_url'] = '%s%s' % (settings.AQUABROWSER_MORE_URL, q)
     response['more_url_plain'] = settings.AQUABROWSER_URL
     response['matches'] = matches
     response['q'] = q
     response['count_total'] = count_total
+    if settings.DEBUG:
+        # TODO: NOT WORKING YET:
+        #response['source'] = records.json()
+        response['query_url'] = r.url
     return response
 
 
@@ -84,12 +89,11 @@ def _ab_marc_field_str(marcdict, fieldname, codes):
     fields = marcdict.find(fieldname)
     if fields is None:
         return ''
-    resultsubs = {}
+    result = ''
     for fieldrow in fields.findall(fieldname):
         key = fieldrow.attrib['key']
         if key in codes:
-            resultsubs[key] = ' '.join(fieldrow.xpath('.//text()'))
-    result = ' '.join(resultsubs.values())
+            result = result + ' ' + ''.join(fieldrow.xpath('.//text()'))
     return result
 
 
@@ -208,10 +212,10 @@ def _summon_query(request, scope='all'):
     for document in d['documents'][:DEFAULT_HIT_COUNT]:
         match = {'url': document['link']}
         if document.get('Author', []):
-            match['description'] = document['Author'][0]
-        else:
-            if document.get('CorporateAuthor', []):
-                match['description'] = document['CorporateAuthor'][0]
+            match['author'] = document['Author'][0]
+ #       else:
+ #           if document.get('CorporateAuthor', []):
+ #               match['author'] = document['CorporateAuthor'][0]
         if document.get('DocumentTitleAlternate', []):
             match['name'] = document['DocumentTitleAlternate'][0]
         else:
@@ -219,10 +223,14 @@ def _summon_query(request, scope='all'):
                 match['name'] = document['Title'][0]
             else:
                 match['name'] = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
+        if document.get('Publisher', []):
+            match['publisher'] = document['Publisher'][0]
         if document.get('PublicationTitle', []):
             match['publicationtitle'] = document['PublicationTitle'][0]
         if document.get('PublicationYear', []):
             match['publicationyear'] = document['PublicationYear'][0]
+        if document.get('PublicationPlace', []):
+            match['publicationplace'] = document['PublicationPlace'][0]
         matches.append(match)
     if settings.DEBUG:
         response['source'] = d

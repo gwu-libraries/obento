@@ -8,7 +8,18 @@
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
-            {{ match.description }}
+        {% if match.description %}
+            {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
+            <br>
+        {% endif %}
+        {% if match.publisher %}
+            {{ match.publisher }}
+            <br>
+        {% endif %}
+        {% if match.edition %}
+            {{ match.edition }}
+            <br>
+        {% endif %}
         </p>
     </li>
     {% endfor %}

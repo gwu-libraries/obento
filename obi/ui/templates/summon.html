@@ -8,12 +8,23 @@
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
-            {% if match.description %}
-            {{ match.description }}
+            {% if match.author %}
+            {{ match.author }}
             <br>
             {% endif %}
             {% if match.publicationtitle %}
             <i>{{ match.publicationtitle }}</i>, {{ match.publicationyear }}
+            <br>
+            {% else %}
+            {% if match.publicationplace %}
+            {{ match.publicationplace }} :
+            {% endif %}
+            {% if match.publicationyear %}
+            {{ match.publicationyear }}.
+            {% endif %}
+            {% if match.publisher %}
+            {{ match.publisher }}
+            {% endif %}
             {% endif %}
         </p>
     </li>
