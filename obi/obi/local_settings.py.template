@@ -60,5 +60,5 @@ LIBGUIDES_DB_PAGE_SIDS = [
 ]
 
 # number of characters to display before truncating with ellipsis
-TITLE_DISPLAY_LENGTH = 50
+TITLE_DISPLAY_LENGTH = 60
 DESCRIPTION_DISPLAY_LENGTH = 100
