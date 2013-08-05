@@ -5,7 +5,7 @@
     {% for match in response.matches %}
     <li class='database'>
         <a href='{{ match.url }}' title='{{ match.name }}'>
-            {{ match.name }}
+            {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
             {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
