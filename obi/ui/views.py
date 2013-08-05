@@ -114,7 +114,7 @@ def aquabrowser_html(request):
 def _databases_query(request):
     q = request.GET.get('q', '')
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count'), DEFAULT_HIT_COUNT)
     except:
         count = DEFAULT_HIT_COUNT
     response = {'q': q}
@@ -123,9 +123,15 @@ def _databases_query(request):
         qs_databases = Database.objects.filter(Q(name__icontains=q) |
                                                Q(url__icontains=q) |
                                                Q(description__icontains=q))
-        response['count_total'] = qs_databases.count()
+        # for some reason, this is always returning 10 - TODO: need to research
+        #        response['count_total'] = qs_databases.count()
+        # temporarily using len() to work around this
+        response['count_total'] = len(qs_databases)
         response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
         response['more_url_plain'] = settings.DATABASES_URL
+        # count=0 is passed to request all records
+        if count == 0:
+            count = len(qs_databases)
         for db in qs_databases[:count]:
             match = {'name': db.name, 'url': db.url,
                      'description': db.description}
