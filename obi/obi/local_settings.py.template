@@ -39,9 +39,10 @@ SUMMON_PATH = '/2.0.0/search'
 SUMMON_SCOPES = {                                                               
     'all': {'params': {'s.ff': 'ContentType,or,1,15'},
             'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
-    'articles': {'params': {'s.fvf': 'IsScholarly,true'},
-           'more_url':
-    'http://gw.summon.serialssolutions.com/search?s.fvf=IsScholarly,true&keep_r=true&s.q='},
+    'articles': {'params': {'s.fvf': 'IsScholarly,true',
+        's.cmd': 'addFacetValueFilters(ContentType,Journal Article)'},
+        'more_url':
+        'http://gw.summon.serialssolutions.com/search?s.cmd=addFacetValueFilters(ContentType,Journal+Article)&s.fvf=IsScholarly,true&keep_r=true&s.q='},
     'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")'},
              'more_url':
     'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&keep_r=true&s.q='},
