@@ -36,7 +36,8 @@ def home(request):
         params['databases_response'] = databases_response
         params['journals_response'] = journals_response
         params['aquabrowser_response'] = aquabrowser_response
-    return _render_with_context(request, 'home.html', params)
+    params['context'] = default_context_params()
+    return render(request, 'home.html', params)
 
 
 def _aquabrowser_query(request):
@@ -105,8 +106,9 @@ def aquabrowser_json(request):
 
 def aquabrowser_html(request):
     response = _aquabrowser_query(request)
-    return _render_with_context(request, 'aquabrowser.html',
-                                {'response': response})
+    default_context_params()
+    return render(request, 'aquabrowser.html',
+                  {'response': response, 'context': default_context_params()})
 
 
 def _databases_query(request):
@@ -134,8 +136,8 @@ def _databases_query(request):
 
 def databases_html(request):
     response = _databases_query(request)
-    return _render_with_context(request, 'databases.html',
-                                {'response': response})
+    return render(request, 'databases.html',
+                  {'response': response, 'context': default_context_params()})
 
 
 def databases_json(request):
@@ -170,8 +172,9 @@ def _journals_query(request):
 
 def journals_html(request):
     response = _journals_query(request)
-    return _render_with_context(request, 'journals.html',
-                                {'response': response})
+    response['context'] = default_context_params()
+    return render(request, 'journals.html',
+                  {'response': response, 'context': default_context_params()})
 
 
 def journals_json(request):
@@ -245,7 +248,8 @@ def _summon_query(request, scope='all'):
 
 def summon_html(request, scope='all'):
     response = _summon_query(request, scope)
-    return _render_with_context(request, 'summon.html', {'response': response})
+    return render(request, 'summon.html',
+                  {'response': response, 'context': default_context_params()})
 
 
 def summon_json(request, scope='all'):
@@ -253,8 +257,7 @@ def summon_json(request, scope='all'):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-def _render_with_context(request, page, params):
-    params['context'] = {'TITLE_DISPLAY_LENGTH': settings.TITLE_DISPLAY_LENGTH,
-                         'DESCRIPTION_DISPLAY_LENGTH':
-                         settings.DESCRIPTION_DISPLAY_LENGTH}
-    return render(request, page, params)
+def default_context_params():
+    return {'TITLE_DISPLAY_LENGTH': settings.TITLE_DISPLAY_LENGTH,
+            'DESCRIPTION_DISPLAY_LENGTH':
+            settings.DESCRIPTION_DISPLAY_LENGTH}
