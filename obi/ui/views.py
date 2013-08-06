@@ -114,7 +114,7 @@ def aquabrowser_html(request):
 def _databases_query(request):
     q = request.GET.get('q', '')
     try:
-        count = int(request.GET.get('count'), DEFAULT_HIT_COUNT)
+        count = int(request.GET.get('count', None))
     except:
         count = DEFAULT_HIT_COUNT
     response = {'q': q}
