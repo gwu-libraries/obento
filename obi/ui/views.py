@@ -26,7 +26,8 @@ def home(request):
     if q:
         articles_response = _summon_query(request, scope='articles')
         books_media_response = _summon_query(request, scope='books_media')
-        research_guides_response = _summon_query(request, scope='research_guides')
+        research_guides_response = _summon_query(request,
+                                                 scope='research_guides')
         databases_response = _databases_query(request)
         journals_response = _journals_query(request)
         aquabrowser_response = _aquabrowser_query(request)
@@ -226,14 +227,20 @@ def _summon_query(request, scope='all'):
         match = {'url': document['link']}
         if document.get('Author', []):
             match['author'] = document['Author'][0]
- #       else:
- #           if document.get('CorporateAuthor', []):
- #               match['author'] = document['CorporateAuthor'][0]
+        #  else:
+        #      if document.get('CorporateAuthor', []):
+        #          match['author'] = document['CorporateAuthor'][0]
         if document.get('DocumentTitleAlternate', []):
             match['name'] = document['DocumentTitleAlternate'][0]
         else:
             if document.get('Title', []):
-                match['name'] = document['Title'][0]
+                title_str = document['Title'][0]
+                # Remove "Research Guides. " from start of string
+                MATCH_TO_REMOVE = 'Research Guides. '
+                if scope == 'research_guides' \
+                        and title_str.startswith(MATCH_TO_REMOVE):
+                            title_str = title_str[len(MATCH_TO_REMOVE):]
+                match['name'] = title_str
             else:
                 match['name'] = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
         if document.get('Publisher', []):
