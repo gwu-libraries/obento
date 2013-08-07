@@ -19,7 +19,7 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev solr-jetty
 
 2. Set up Postgresql
 
@@ -31,6 +31,10 @@ PART I - Basic server requirements
 
         $ sudo -u postgres createdb -O MYDBUSER MYDBNAME
 
+3. Set up Solr
+
+    Edit /etc/inid.d/jetty to set NO_START=0
+    
 
 PART II - Set up project environment
 ------------------------------------
@@ -69,10 +73,6 @@ PART II - Set up project environment
 
 PART III - Configure your installation
 --------------------------------------
-
-0. Create a logs directory
-
-        $ mkdir logs
 
 1. Copy the local settings template to an active file
 
