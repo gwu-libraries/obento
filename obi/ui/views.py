@@ -26,6 +26,7 @@ def home(request):
     if q:
         articles_response = _summon_query(request, scope='articles')
         books_media_response = _summon_query(request, scope='books_media')
+        research_guides_response = _summon_query(request, scope='research_guides')
         databases_response = _databases_query(request)
         journals_response = _journals_query(request)
         aquabrowser_response = _aquabrowser_query(request)
@@ -33,6 +34,7 @@ def home(request):
     if q:
         params['articles_response'] = articles_response
         params['books_media_response'] = books_media_response
+        params['research_guides_response'] = research_guides_response
         params['databases_response'] = databases_response
         params['journals_response'] = journals_response
         params['aquabrowser_response'] = aquabrowser_response
@@ -205,6 +207,8 @@ def _summon_query(request, scope='all'):
     headers['x-summon-session-id'] = ''
     params = settings.SUMMON_SCOPES[scope]['params']
     q = request.GET.get('q', '')
+    if scope == 'research_guides':
+        q = q + " NOT \"Research Guides. Databases\""
     params['s.q'] = q
     # disable highlighting tags
     params['s.hl'] = 'false'
@@ -246,6 +250,7 @@ def _summon_query(request, scope='all'):
         response['query_url'] = r.url
     response['matches'] = matches
     response['q'] = q
+    response['scope'] = scope
     response['more_url_plain'] = settings.SUMMON_URL
     response['more_url'] = '%s%s' %  \
         (settings.SUMMON_SCOPES[scope]['more_url'], q)
