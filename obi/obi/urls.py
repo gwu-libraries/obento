@@ -15,6 +15,11 @@ urlpatterns = patterns('',
     url(r'^databases_html', 'ui.views.databases_html', name='databases_html'),
     url(r'^databases_json', 'ui.views.databases_json', name='databases_json'),
 
+    url(r'^databases_solr_html', 'ui.views.databases_solr_html',
+        name='databases_solr_html'),
+    url(r'^databases_solr_json', 'ui.views.databases_solr_json',
+        name='databases_solr_json'),
+
     url(r'^summon_html', 'ui.views.summon_html', name='summon_html',
         kwargs={'scope': 'all'}),
     url(r'^summon_json', 'ui.views.summon_json', name='summon_json',
@@ -27,12 +32,12 @@ urlpatterns = patterns('',
 
     url(r'^books_media_html', 'ui.views.summon_html',
         name='books_media_html', kwargs={'scope': 'books_media'}),
-    url(r'^books_media_json', 'ui.views.summon_json', 
+    url(r'^books_media_json', 'ui.views.summon_json',
         name='books_media_json', kwargs={'scope': 'books_media'}),
 
     url(r'^research_guides_html', 'ui.views.summon_html',
         name='research_guides_html', kwargs={'scope': 'research_guides'}),
-    url(r'^research_guides_json', 'ui.views.summon_json', 
+    url(r'^research_guides_json', 'ui.views.summon_json',
         name='research_guides_json', kwargs={'scope': 'research_guides'}),
 
     url(r'^admin/', include(admin.site.urls)),

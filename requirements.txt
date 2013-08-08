@@ -4,5 +4,6 @@ lxml
 psycopg2
 pytz
 requests>=1.2
+solrpy
 south
 xlrd

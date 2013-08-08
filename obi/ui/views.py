@@ -7,6 +7,7 @@ import urllib
 
 from lxml import etree
 import requests
+import solr
 
 from django.conf import settings
 from django.db.models import Q
@@ -29,6 +30,7 @@ def home(request):
         research_guides_response = _summon_query(request,
                                                  scope='research_guides')
         databases_response = _databases_query(request)
+        databases_solr_response = _databases_solr_query(request)
         journals_response = _journals_query(request)
         aquabrowser_response = _aquabrowser_query(request)
     params = {'title': 'home', 'q': q}
@@ -37,6 +39,7 @@ def home(request):
         params['books_media_response'] = books_media_response
         params['research_guides_response'] = research_guides_response
         params['databases_response'] = databases_response
+        params['databases_solr_response'] = databases_solr_response
         params['journals_response'] = journals_response
         params['aquabrowser_response'] = aquabrowser_response
     params['context'] = default_context_params()
@@ -143,14 +146,51 @@ def _databases_query(request):
     return response
 
 
+def _databases_solr_query(request):
+    q = request.GET.get('q', '')
+    try:
+        count = int(request.GET.get('count', None))
+    except:
+        count = DEFAULT_HIT_COUNT
+    response = {'q': q}
+    if q:
+        matches = []
+        s = solr.SolrConnection(settings.SOLR_URL)
+        solr_response = s.query('+text:%s +name:%s' % (q, q))
+        response['count_total'] = solr_response.numFound
+        response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
+        response['more_url_plain'] = settings.DATABASES_URL
+        for db in solr_response.results[:count]:
+            match = {'name': db['name'], 'url': db['url'],
+                     'description': db['description']}
+            matches.append(match)
+        response['matches'] = matches
+        if settings.DEBUG:
+            source = {'header': solr_response.header,
+                      'results': solr_response.results}
+            response['source'] = source
+    return response
+
+
 def databases_html(request):
     response = _databases_query(request)
     return render(request, 'databases.html',
                   {'response': response, 'context': default_context_params()})
 
 
+def databases_solr_html(request):
+    response = _databases_solr_query(request)
+    return render(request, 'databases.html',
+                  {'response': response, 'context': default_context_params()})
+
+
 def databases_json(request):
     response = _databases_query(request)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def databases_solr_json(request):
+    response = _databases_solr_query(request)
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 

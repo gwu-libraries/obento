@@ -33,6 +33,11 @@
         {% with databases_response as response %}
             {% include "databases.html" %}
         {% endwith %}
+        <hr />
+        <h4>Databases - solr</h4>
+        {% with databases_solr_response as response %}
+            {% include "databases.html" %}
+        {% endwith %}
     </div>
     <div id='books-journals' class='span4 left-border'>
         <h4>Books &amp; Media</h4>

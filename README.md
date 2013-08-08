@@ -19,7 +19,7 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev solr-jetty
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev solr-jetty openjdk-6-jdk
 
 2. Set up Postgresql
 
@@ -31,10 +31,6 @@ PART I - Basic server requirements
 
         $ sudo -u postgres createdb -O MYDBUSER MYDBNAME
 
-3. Set up Solr
-
-    Edit /etc/inid.d/jetty to set NO_START=0
-    
 
 PART II - Set up project environment
 ------------------------------------
@@ -44,7 +40,9 @@ PART II - Set up project environment
         $ sudo apt-get install python-setuptools
         $ sudo easy_install virtualenv
 
-2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with your desired directory path and name: for instance /obento or /home/&lt;username&gt;/obento)
+2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with 
+your desired directory path and name: for instance ```/obento``` or 
+```/home/&lt;username&gt;/obento```)
 
         $ mkdir <OBENTO_HOME>
         $ cd <OBENTO_HOME>
@@ -66,10 +64,28 @@ PART II - Set up project environment
 
         $ source ENV/bin/activate
 
-6. install django, tastypie, and other python dependencies
+6. Install django, tastypie, and other python dependencies
 
         (ENV)$ pip install -r requirements.txt
 
+7. Set up Solr via jetty
+
+    Edit ```/etc/init.d/jetty``` to set ```NO_START=0```, set
+    ```JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64```, and consider
+    changing ```JETTY_PORT``` to a port that won't be publicly exposed.
+    In development and testing, exposing Solr might be helpful; never 
+    expose it in production.
+
+    Copy the solr ```schema.xml``` for obento into system-wide solr config
+    (making a backup of the original if you like):
+
+        $ sudo cp /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig
+        $ sudo cp obi/obi/schema.xml /etc/solr/conf/schema.xml
+
+    Start jetty:
+
+        sudo service jetty start
+    
 
 PART III - Configure your installation
 --------------------------------------
@@ -140,3 +156,7 @@ in your server domain of course):
         http://example.com/databases_html?q=proquest
         http://example.com/databases_json?q=proquest
 
+
+To index the list of databases:
+
+        $ ./manage.py index_all
