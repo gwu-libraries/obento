@@ -46,6 +46,10 @@ SUMMON_SCOPES = {
     'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")'},
              'more_url':
     'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&keep_r=true&s.q='},
+    'research_guides': {'params': {'s.cmd': 'setHoldingsOnly(true)',
+            's.fvf': 'ContentType,Research Guide,f'},
+             'more_url':
+    'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
 }       
 
 # libguides database config with page ids

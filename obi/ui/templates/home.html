@@ -51,10 +51,10 @@
         Not yet enabled.
         </p>
         <hr />
-        <h4>More Search Options</h4>
-        <p>
-        Not yet enabled.
-        </p>
+        <h4>Research Guides</h4>
+        {% with research_guides_response as response %}
+            {% include "summon.html" %}
+        {% endwith %}
         <hr />
         <h4>Aquabrowser</h4>
         {% with aquabrowser_response as response %}

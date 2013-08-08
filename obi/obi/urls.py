@@ -30,6 +30,11 @@ urlpatterns = patterns('',
     url(r'^books_media_json', 'ui.views.summon_json', 
         name='books_media_json', kwargs={'scope': 'books_media'}),
 
+    url(r'^research_guides_html', 'ui.views.summon_html',
+        name='research_guides_html', kwargs={'scope': 'research_guides'}),
+    url(r'^research_guides_json', 'ui.views.summon_json', 
+        name='research_guides_json', kwargs={'scope': 'research_guides'}),
+
     url(r'^admin/', include(admin.site.urls)),
 
 )

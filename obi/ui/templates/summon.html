@@ -15,7 +15,7 @@
             {% if match.publicationtitle %}
             <i>{{ match.publicationtitle }}</i>, {{ match.publicationyear }}
             <br>
-            {% else %}
+            {% elif response.scope != 'research_guides' %}
             {% if match.publicationplace %}
             {{ match.publicationplace }} :
             {% endif %}
