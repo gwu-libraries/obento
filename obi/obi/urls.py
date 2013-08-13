@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     url(r'^databases_html', 'ui.views.databases_html', name='databases_html'),
     url(r'^databases_json', 'ui.views.databases_json', name='databases_json'),
 
+    url(r'^journals_html', 'ui.views.journals_html', name='journals_html'),
+    url(r'^journals_json', 'ui.views.journals_json', name='journals_json'),
+
     url(r'^summon_html', 'ui.views.summon_html', name='summon_html',
         kwargs={'scope': 'all'}),
     url(r'^summon_json', 'ui.views.summon_json', name='summon_json',
