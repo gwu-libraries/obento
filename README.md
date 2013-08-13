@@ -65,6 +65,10 @@ PART II - Set up project environment
 6. install django, tastypie, and other python dependencies
 
         (ENV)$ pip install -r requirements.txt
+        
+   If the previous step encounters problems installing pytz, then it can be installed as follows
+
+        easy_install --upgrade pytz
 
 
 PART III - Configure your installation
