@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import json
 import urllib
+import re
 
 from lxml import etree
 import requests
@@ -31,6 +32,7 @@ def home(request):
         databases_response = _databases_query(request)
         journals_response = _journals_query(request)
         aquabrowser_response = _aquabrowser_query(request)
+        libsite_response = _libsite_query(request)
     params = {'title': 'home', 'q': q}
     if q:
         params['articles_response'] = articles_response
@@ -39,6 +41,7 @@ def home(request):
         params['databases_response'] = databases_response
         params['journals_response'] = journals_response
         params['aquabrowser_response'] = aquabrowser_response
+        params['libsite_response'] = libsite_response
     params['context'] = default_context_params()
     return render(request, 'home.html', params)
 
@@ -51,8 +54,8 @@ def _aquabrowser_query(request):
         count = DEFAULT_HIT_COUNT
     params = {'output': 'xml', 'q': q}
     # TODO: move url to settings
-    r = requests.get('http://surveyor.gelman.gwu.edu/result.ashx',
-                     params=params)
+    url = settings.AQUABROWSER_URL + settings.AQUABROWSER_API_PATH
+    r = requests.get(url, params=params)
     root = etree.fromstring(r.text)
     matches = []
     records = root.findall('./results/record')
@@ -251,6 +254,12 @@ def _summon_query(request, scope='all'):
             match['publicationyear'] = document['PublicationYear'][0]
         if document.get('PublicationPlace', []):
             match['publicationplace'] = document['PublicationPlace'][0]
+        """
+        if document['inHoldings']:
+            match['inHoldings'] = 'true'
+            if document.get('Library', []):
+                match['library'] = ", ".join(document['Library'])
+        """
         matches.append(match)
     if settings.DEBUG:
         response['source'] = d
@@ -275,7 +284,58 @@ def summon_json(request, scope='all'):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
+def _libsite_query(request):
+    q = request.GET.get('q', '')
+    try:
+        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+    except:
+        count = DEFAULT_HIT_COUNT
+    params = {'keys': q}
+    # TODO: move url to settings
+    url = settings.LIBSITE_SEARCH_URL
+    r = requests.get(url, params=params)
+
+    #jstr = "{\"nodes\":[{\"node\":{\"title\":\"Staff\'s Directory\",\"view_node\":\"36\"}},{\"node\":{\"title\":\"Library Departments and Contact Persons\",\"view_node\":\"38\"}},{\"node\":{\"title\":\"Organization\",\"view_node\":\"466\"}}]}"
+    #j = json.loads(jstr)
+
+    #TODO: VERY FRAGILE!!!!  Breaks when results contain \'ed characters
+    j = json.loads(r.text[1:])
+    response = {}
+    matches = []
+    nodesarray = j['nodes']
+    for node in nodesarray[:DEFAULT_HIT_COUNT]:
+        nodeinfo = node['node']
+        match = {}
+        match['view_node'] = nodeinfo['view_node']
+        match['title'] = nodeinfo['title']
+        matches.append(match)
+    response['count_total'] = len(nodesarray)
+    response['more_url'] = '%s%s' % (settings.LIBSITE_MORE_URL, q)
+    response['more_url_plain'] = settings.LIBSITE_URL
+    response['matches'] = matches
+    response['q'] = q
+    #response['count_total'] = count_total
+    if settings.DEBUG:
+        # TODO: NOT WORKING YET:
+        #response['source'] = records.json()
+        response['query_url'] = r.url
+    return response
+
+
+def libsite_html(request):
+    response = _libsite_query(request)
+    response['context'] = default_context_params()
+    return render(request, 'libsite.html',
+                  {'response': response, 'context': default_context_params()})
+
+
+def libsite_json(request):
+    response = _libsite_query(request)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
 def default_context_params():
     return {'TITLE_DISPLAY_LENGTH': settings.TITLE_DISPLAY_LENGTH,
             'DESCRIPTION_DISPLAY_LENGTH':
             settings.DESCRIPTION_DISPLAY_LENGTH}
+
