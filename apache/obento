@@ -1,0 +1,40 @@
+<VirtualHost *:80>
+    # Change the line above to serve whichever port you wish to run this app on
+
+    ServerAdmin <Your Email>
+    # Example:
+    # ServerAdmin kerchner@email.gwu.edu
+    ServerName <your server url>
+    # Example:
+    # ServerName gwbento-test.wrlc.org
+    DocumentRoot <PATH_TO_OBENTO_HOME>/obi/obi
+    # Example:
+    # DocumentRoot /obento/release_m3_001/obento/obi/obi
+
+    Alias /static/admin/ <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
+    # Example: Alias /static/admin/ /obento/release_m3_001/obento/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
+    <Directory <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
+    # Example: <Directory /obento/release_m3_001/obento/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    WSGIDaemonProcess obento processes=2 threads=15 python-path=<PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages:<PATH_TO_OBENTO_HOME>/obi
+     # Example: WSGIDaemonProcess obento processes=2 threads=15 python-path=/obento/release_m3_001/obento/ENV/lib/python2.7/site-packages:/obento/release_m3_001/obento/obi
+
+    WSGIProcessGroup obento
+
+    WSGIScriptAlias / <PATH_TO_OBENTO_HOME>/obi/obi/wsgi.py
+    # Example: WSGIScriptAlias / /obento/release_m3_001/obento/obi/obi/wsgi.py
+
+    WSGIPassAuthorization On
+
+    <Directory <PATH_TO_OBENTO_HOME>/obi/obi>
+    # Example: <Directory /obento/release_m3_001/obento/obi/obi>
+        <Files wsgi.py>
+            Order deny,allow
+            Allow from all
+        </Files>
+    </Directory>
+
+</VirtualHost>
