@@ -38,6 +38,11 @@ urlpatterns = patterns('',
     url(r'^research_guides_json', 'ui.views.summon_json', 
         name='research_guides_json', kwargs={'scope': 'research_guides'}),
 
+    url(r'^best_bets_html', 'ui.views.summon_html',
+        name='best_bets_html', kwargs={'scope': 'best_bets'}),
+    url(r'^best_bets_json', 'ui.views.summon_json', 
+        name='best_bets_json', kwargs={'scope': 'best_bets'}),
+
     url(r'^admin/', include(admin.site.urls)),
 
 )

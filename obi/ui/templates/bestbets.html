@@ -1,0 +1,26 @@
+{% load humanize %}
+
+{% if response.matches %}
+<ul id='summon' class='unstyled'>
+    {% for match in response.bbmatches %}
+    <li class='item'>
+        <a href='{{ match.url }}'>
+            {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
+        </a>
+        {% if match.description %}
+            <br>
+            {{ match.description }}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<p>
+    <i class='icon-arrow-right'></i>
+    <a href='{{ response.more_url }}'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
+</p>
+{% else %}
+<p>
+    <i>No articles found.  Please try another search in <a href='{{ response.more_url_plain }}'>ArticlesPlus.</a>
+    </i>
+</p>
+{% endif %}
