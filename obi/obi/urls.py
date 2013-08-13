@@ -35,6 +35,9 @@ urlpatterns = patterns('',
     url(r'^research_guides_json', 'ui.views.summon_json', 
         name='research_guides_json', kwargs={'scope': 'research_guides'}),
 
+    url(r'^libsite_html', 'ui.views.libsite_html', name='libsite_html'),
+    url(r'^libsite_json', 'ui.views.libsite_json', name='libsite_json'),
+
     url(r'^admin/', include(admin.site.urls)),
 
 )
