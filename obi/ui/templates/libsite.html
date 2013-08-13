@@ -1,0 +1,25 @@
+{% load humanize %}
+
+{% if response.matches %}
+<ul id='libsite' class='unstyled'>
+    {% for match in response.matches %}
+    <li>
+        <a href='http://library.gwu.edu/node/{{ match.view_node }}/'>
+            {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
+        </a>
+        <p>
+            {{ match.description }}
+        </p>
+    </li>
+    {% endfor %}
+</ul>
+<p>
+    <i class='icon-arrow-right'></i>
+    <a href='{{ response.more_url }}'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
+</p>
+{% else %}
+<p>
+    <i>No library website results found.  Please try another search at <a href='{{ response.more_url_plain }}'>Library Website Search.</a>
+    </i>
+</p>
+{% endif %}
