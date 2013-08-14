@@ -30,6 +30,7 @@ JOURNALS_TITLE_EXACT_URL = \
 
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
+AQUABROWSER_API_PATH = 'result.ashx'
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
@@ -63,6 +64,10 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719909', '1719910', '1719911', '1719913', '1719914', '1719916', 
     '1719917',
 ]
+
+LIBSITE_SEARCH_URL = 'http://gwlibrary-staging.wrlc.org/search-page'
+LIBSITE_URL = 'http://library.gwu.edu/search/'
+LIBSITE_MORE_URL = 'http://library.gwu.edu/search/node/'
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 60
