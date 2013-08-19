@@ -67,6 +67,10 @@ your desired directory path and name: for instance ```/obento``` or
 6. Install django, tastypie, and other python dependencies
 
         (ENV)$ pip install -r requirements.txt
+        
+   If the previous step encounters problems installing pytz, then it can be installed as follows
+
+        easy_install --upgrade pytz
 
 7. Set up Solr via jetty
 
@@ -142,21 +146,33 @@ PART III - Configure your installation
 Part IV - Load some data
 ------------------------
 
-To load GW's list of databases from libguides:
+To load GW's list of databases from libguides, first configure 
+```local_settings.py``` with a list of libguides page sids.
 
-        #FIXME [configure local_settings with a list of page sids]
-
-Then run the management command '''load_databases''':
+Then, to load/parse/add databases from these pages to the database:
 
         $ ./manage.py load_databases
 
-To test that that worked, try querying the html or json view (substitute
-in your server domain of course):
+To test that that worked, try querying the html or json view:
 
         http://example.com/databases_html?q=proquest
         http://example.com/databases_json?q=proquest
 
-
-To index the list of databases:
+To index the list of databases in Solr:
 
         $ ./manage.py index_all
+
+Test that that worked with this path:
+
+        http://example.com/databases_solr_html?q=proquest
+        http://example.com/databases_solr_json?q=proquest
+
+To load the Excel-formatted extract of journal titles:
+
+        $ ./manage.py load_journals <JOURNALS_EXCEL_FILE>
+
+To test that that worked, try querying the html or json view:
+
+        http://example.com/journals_html?q=american
+        http://example.com/journals_json?q=american
+

@@ -6,6 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     url(r'^$', 'ui.views.home', name='home'),
+    url(r'^ajax$', 'ui.views.ajax', name='ajax'),
 
     url(r'^aquabrowser_html', 'ui.views.aquabrowser_html',
         name='aquabrowser_html'),
@@ -19,6 +20,9 @@ urlpatterns = patterns('',
         name='databases_solr_html'),
     url(r'^databases_solr_json', 'ui.views.databases_solr_json',
         name='databases_solr_json'),
+
+    url(r'^journals_html', 'ui.views.journals_html', name='journals_html'),
+    url(r'^journals_json', 'ui.views.journals_json', name='journals_json'),
 
     url(r'^summon_html', 'ui.views.summon_html', name='summon_html',
         kwargs={'scope': 'all'}),
@@ -39,6 +43,9 @@ urlpatterns = patterns('',
         name='research_guides_html', kwargs={'scope': 'research_guides'}),
     url(r'^research_guides_json', 'ui.views.summon_json',
         name='research_guides_json', kwargs={'scope': 'research_guides'}),
+
+    url(r'^libsite_html', 'ui.views.libsite_html', name='libsite_html'),
+    url(r'^libsite_json', 'ui.views.libsite_json', name='libsite_json'),
 
     url(r'^admin/', include(admin.site.urls)),
 

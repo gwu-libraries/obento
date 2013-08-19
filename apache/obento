@@ -1,0 +1,28 @@
+<VirtualHost *:80>
+
+    ServerAdmin <Your Email>
+    ServerName <your server url>
+    DocumentRoot <PATH_TO_OBENTO_HOME>/obi/obi
+
+    Alias /static/admin/ <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
+    <Directory <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    WSGIDaemonProcess obento processes=2 threads=15 python-path=<PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages:<PATH_TO_OBENTO_HOME>/obi
+
+    WSGIProcessGroup obento
+
+    WSGIScriptAlias / <PATH_TO_OBENTO_HOME>/obi/obi/wsgi.py
+
+    WSGIPassAuthorization On
+
+    <Directory <PATH_TO_OBENTO_HOME>/obi/obi>
+        <Files wsgi.py>
+            Order deny,allow
+            Allow from all
+        </Files>
+    </Directory>
+
+</VirtualHost>

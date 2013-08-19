@@ -26,7 +26,7 @@
 </ul>
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
+    <a href='{{ response.more_url }}'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
 </p>
 {% else %}
 <p>

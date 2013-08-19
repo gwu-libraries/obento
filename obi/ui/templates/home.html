@@ -50,11 +50,11 @@
             {% include "journals.html" %}
         {% endwith %}
     </div>
-    <div id='website-other' class='span4 left-border'>
+    <div id='libsite' class='span4 left-border'>
         <h4>Library Website</h4>
-        <p>
-        Not yet enabled.
-        </p>
+        {% with libsite_response as response %}
+            {% include "libsite.html" %}
+        {% endwith %}
         <hr />
         <h4>Research Guides</h4>
         {% with research_guides_response as response %}

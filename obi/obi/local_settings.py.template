@@ -22,7 +22,7 @@ ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
 DATABASES_URL = 'http://libguides.gwu.edu/databases/'
 DATABASES_MORE_URL = 'http://libguides.gwu.edu/search.php?iid=131&c=0&gid=0&pid=98717&search='
 
-JOURNALS_URL = 'http://library.gwu.edu/search-1/fulltext-finder'
+JOURNALS_URL = 'http://findit.library.gwu.edu/'
 JOURNALS_MORE_URL = \
     'http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_W_A&C='
 JOURNALS_TITLE_EXACT_URL = \
@@ -30,6 +30,7 @@ JOURNALS_TITLE_EXACT_URL = \
 
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
+AQUABROWSER_API_PATH = 'result.ashx'
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
@@ -63,6 +64,10 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719909', '1719910', '1719911', '1719913', '1719914', '1719916', 
     '1719917',
 ]
+
+LIBSITE_SEARCH_URL = 'http://gwlibrary-staging.wrlc.org/search-page'
+LIBSITE_URL = 'http://library.gwu.edu/search/'
+LIBSITE_MORE_URL = 'http://library.gwu.edu/search/node/'
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 60
