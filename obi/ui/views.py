@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import json
 import urllib
-import re
 
 from lxml import etree
 import requests
@@ -261,6 +260,7 @@ def _summon_query(request, scope='all'):
             match['publicationyear'] = document['PublicationYear'][0]
         if document.get('PublicationPlace', []):
             match['publicationplace'] = document['PublicationPlace'][0]
+        # FIXME: what's this?
         """
         if document['inHoldings']:
             match['inHoldings'] = 'true'
@@ -298,19 +298,16 @@ def _libsite_query(request):
     except:
         count = DEFAULT_HIT_COUNT
     params = {'keys': q}
-    # TODO: move url to settings
-    url = settings.LIBSITE_SEARCH_URL
-    r = requests.get(url, params=params)
+    r = requests.get(settings.LIBSITE_SEARCH_URL, params=params)
 
-    #jstr = "{\"nodes\":[{\"node\":{\"title\":\"Staff\'s Directory\",\"view_node\":\"36\"}},{\"node\":{\"title\":\"Library Departments and Contact Persons\",\"view_node\":\"38\"}},{\"node\":{\"title\":\"Organization\",\"view_node\":\"466\"}}]}"
-    #j = json.loads(jstr)
-
-    #TODO: VERY FRAGILE!!!!  Breaks when results contain \'ed characters
-    j = json.loads(r.text[1:])
+    # FIXME: VERY FRAGILE!!!!  Breaks when results contain \'ed characters
+    # Should be:
+    # j = json.loads(jstr)
+    j = json.loads(r.text[1:])  # FIXME: remove leading \ufeff at source
     response = {}
     matches = []
     nodesarray = j['nodes']
-    for node in nodesarray[:DEFAULT_HIT_COUNT]:
+    for node in nodesarray[:count]:
         nodeinfo = node['node']
         match = {}
         match['view_node'] = nodeinfo['view_node']
@@ -345,4 +342,3 @@ def default_context_params():
     return {'TITLE_DISPLAY_LENGTH': settings.TITLE_DISPLAY_LENGTH,
             'DESCRIPTION_DISPLAY_LENGTH':
             settings.DESCRIPTION_DISPLAY_LENGTH}
-
