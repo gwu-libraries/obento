@@ -14,48 +14,29 @@
 $(document).ready(function () {
     var q = $('input[name=q]');
     var data = {q: q.val()};
-    $.ajax({
-        type: "GET",
-        url: "{% url 'articles_html' %}",
-        data: data
-    }).done(function(resp) {
-        $('#articles-response').html(resp);
-    });
-    $.ajax({
-        type: "GET",
-        url: "{% url 'databases_html' %}",
-        data: data
-    }).done(function(resp) {
-        $('#databases-response').html(resp);
-    });
-    $.ajax({
-        type: "GET",
-        url: "{% url 'books_media_html' %}",
-        data: data
-    }).done(function(resp) {
-        $('#books-response').html(resp);
-    });
-    $.ajax({
-        type: "GET",
-        url: "{% url 'journals_html' %}",
-        data: data
-    }).done(function(resp) {
-        $('#journals-response').html(resp);
-    });
-    $.ajax({
-        type: "GET",
-        url: "{% url 'research_guides_html' %}",
-        data: data
-    }).done(function(resp) {
-        $('#guides-response').html(resp);
-    });
-    $.ajax({
-        type: "GET",
-        url: "{% url 'aquabrowser_html' %}",
-        data: data
-    }).done(function(resp) {
-        $('#aqua-response').html(resp);
-    });
+
+    function fetch(vals) {
+        $.ajax({
+            type: "GET",
+            url: vals[0],
+            data: data
+        }).done(function(resp) {
+            $(vals[1]).html(resp);
+        });
+    };
+
+    var blocks = [
+        ["{% url 'articles_html' %}", '#articles-response'],
+        ["{% url 'databases_html' %}", '#databases-response'],
+        ["{% url 'databases_solr_html' %}", '#databases-solr-response'],
+        ["{% url 'books_media_html' %}", '#books-response'],
+        ["{% url 'journals_html' %}", '#journals-response'],
+        ["{% url 'journals_solr_html' %}", '#journals-solr-response'],
+        ["{% url 'libsite_html' %}", '#libsite-response'],
+        ["{% url 'research_guides_html' %}", '#guides-response'],
+        ["{% url 'aquabrowser_html' %}", '#aqua-response'],
+    ];
+    blocks.forEach(fetch);
 });
 </script>
 {% endblock javascript_extra %}
@@ -88,6 +69,13 @@ $(document).ready(function () {
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
+        <hr />
+        <h4>Databases - solr</h4>
+        <div id='databases-solr-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
     </div>
     <div id='books-journals' class='span4 left-border'>
         <h4>Books &amp; Media</h4>
@@ -103,12 +91,21 @@ $(document).ready(function () {
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
+        <hr />
+        <h4 class='separate-top'>Journals - solr</h4>
+        <div id='journals-solr-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
     </div>
     <div id='website-other' class='span4 left-border'>
         <h4>Library Website</h4>
-        <p>
-        Not yet enabled.
-        </p>
+        <div id='libsite-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
         <hr />
         <h4>Research Guides</h4>
         <div id='guides-response' class='row-fluid'>

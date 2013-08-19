@@ -49,6 +49,11 @@
         {% with journals_response as response %}
             {% include "journals.html" %}
         {% endwith %}
+        <hr />
+        <h4 class='separate-top'>Journals - solr</h4>
+        {% with journals_solr_response as response %}
+            {% include "journals.html" %}
+        {% endwith %}
     </div>
     <div id='libsite' class='span4 left-border'>
         <h4>Library Website</h4>
