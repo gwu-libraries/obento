@@ -65,6 +65,10 @@ PART II - Set up project environment
 6. install django, tastypie, and other python dependencies
 
         (ENV)$ pip install -r requirements.txt
+        
+   If the previous step encounters problems installing pytz, then it can be installed as follows
+
+        easy_install --upgrade pytz
 
 
 PART III - Configure your installation
@@ -139,4 +143,15 @@ in your server domain of course):
 
         http://example.com/databases_html?q=proquest
         http://example.com/databases_json?q=proquest
+
+Now run the management command '''load_journals''' where <JOURNALSTABLE> is the file name of the Excel-formatted extract of journal titles.
+
+        $ ./manage.py load_journals <JOURNALSTABLE>
+
+To test that that worked, try querying the html or json view (substitute
+in your server domain of course):
+
+        http://example.com/journals_html?q=american
+        http://example.com/journals_json?q=american
+
 

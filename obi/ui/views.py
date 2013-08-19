@@ -46,6 +46,13 @@ def home(request):
     return render(request, 'home.html', params)
 
 
+def ajax(request):
+    q = request.GET.get('q', '')
+    params = {'title': 'home', 'q': q}
+    params['context'] = default_context_params()
+    return render(request, 'ajax.html', params)
+
+
 def _aquabrowser_query(request):
     q = request.GET.get('q', '')
     try:

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block styles_extra %}
+<style type='text/css'>
+    div .left-border {
+        padding-left: 1em;
+        border-left: 1px #ddd solid;
+        }
+</style>
+{% endblock %}
+
+{% block javascript_extra %}
+<script type='text/javascript'>
+$(document).ready(function () {
+    var q = $('input[name=q]');
+    var data = {q: q.val()};
+    $.ajax({
+        type: "GET",
+        url: "{% url 'articles_html' %}",
+        data: data
+    }).done(function(resp) {
+        $('#articles-response').html(resp);
+    });
+    $.ajax({
+        type: "GET",
+        url: "{% url 'databases_html' %}",
+        data: data
+    }).done(function(resp) {
+        $('#databases-response').html(resp);
+    });
+    $.ajax({
+        type: "GET",
+        url: "{% url 'books_media_html' %}",
+        data: data
+    }).done(function(resp) {
+        $('#books-response').html(resp);
+    });
+    $.ajax({
+        type: "GET",
+        url: "{% url 'journals_html' %}",
+        data: data
+    }).done(function(resp) {
+        $('#journals-response').html(resp);
+    });
+    $.ajax({
+        type: "GET",
+        url: "{% url 'research_guides_html' %}",
+        data: data
+    }).done(function(resp) {
+        $('#guides-response').html(resp);
+    });
+    $.ajax({
+        type: "GET",
+        url: "{% url 'aquabrowser_html' %}",
+        data: data
+    }).done(function(resp) {
+        $('#aqua-response').html(resp);
+    });
+});
+</script>
+{% endblock javascript_extra %}
+
+{% block content %}
+<h3>GW Bento Search - ajax-style</h3>
+
+<div id='form'>
+    <form action='{% url "ajax" %}' method='GET' class='form-search'>
+        <fieldset>
+            <input id='q' type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
+            <input type='submit' class='btn' value='go'/>
+        </fieldset>
+    </form>
+</div>
+
+{% if q %}
+<div id='results' class='row-fluid'>
+    <div id='articles-databases' class='span4'>
+        <h4>Articles</h4>
+        <div id='articles-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
+        <hr />
+        <h4>Databases</h4>
+        <div id='databases-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
+    </div>
+    <div id='books-journals' class='span4 left-border'>
+        <h4>Books &amp; Media</h4>
+        <div id='books-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
+        <hr />
+        <h4 class='separate-top'>Journals</h4>
+        <div id='journals-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
+    </div>
+    <div id='website-other' class='span4 left-border'>
+        <h4>Library Website</h4>
+        <p>
+        Not yet enabled.
+        </p>
+        <hr />
+        <h4>Research Guides</h4>
+        <div id='guides-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
+        <hr />
+        <h4>Aquabrowser</h4>
+        <div id='aqua-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}

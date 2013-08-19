@@ -6,6 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     url(r'^$', 'ui.views.home', name='home'),
+    url(r'^ajax$', 'ui.views.ajax', name='ajax'),
 
     url(r'^aquabrowser_html', 'ui.views.aquabrowser_html',
         name='aquabrowser_html'),
@@ -14,6 +15,9 @@ urlpatterns = patterns('',
 
     url(r'^databases_html', 'ui.views.databases_html', name='databases_html'),
     url(r'^databases_json', 'ui.views.databases_json', name='databases_json'),
+
+    url(r'^journals_html', 'ui.views.journals_html', name='journals_html'),
+    url(r'^journals_json', 'ui.views.journals_json', name='journals_json'),
 
     url(r'^summon_html', 'ui.views.summon_html', name='summon_html',
         kwargs={'scope': 'all'}),
@@ -27,12 +31,12 @@ urlpatterns = patterns('',
 
     url(r'^books_media_html', 'ui.views.summon_html',
         name='books_media_html', kwargs={'scope': 'books_media'}),
-    url(r'^books_media_json', 'ui.views.summon_json', 
+    url(r'^books_media_json', 'ui.views.summon_json',
         name='books_media_json', kwargs={'scope': 'books_media'}),
 
     url(r'^research_guides_html', 'ui.views.summon_html',
         name='research_guides_html', kwargs={'scope': 'research_guides'}),
-    url(r'^research_guides_json', 'ui.views.summon_json', 
+    url(r'^research_guides_json', 'ui.views.summon_json',
         name='research_guides_json', kwargs={'scope': 'research_guides'}),
 
     url(r'^libsite_html', 'ui.views.libsite_html', name='libsite_html'),
