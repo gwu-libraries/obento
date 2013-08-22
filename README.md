@@ -74,7 +74,7 @@ your desired directory path and name: for instance ```/obento``` or
 
 7. Set up Solr via jetty
 
-    Edit ```/etc/init.d/jetty``` to set ```NO_START=0```, set
+    Edit ```/etc/default/jetty``` to set ```NO_START=0```, set
     ```JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64```, and consider
     changing ```JETTY_PORT``` to a port that won't be publicly exposed.
     In development and testing, exposing Solr might be helpful; never 
@@ -99,7 +99,7 @@ PART III - Configure your installation
         $ cd obento/obi/obi
         $ cp local_settings.py.template local_settings.py
 
-2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY.
+2. Update the values in the ```local_settings.py``` file:  for the database, ```NAME```, ```USER```, and ```PASSWORD``` to the database you created above, and set ```ENGINE``` to 'postgresql_psycopg2'; also, set a ```SECRET_KEY```.  Ensure that the port number in ```SOLR_URL``` matches ```JETTY_PORT``` configured earlier in ```/etc/default/jetty```.
 
         $ vim local_settings.py
 
