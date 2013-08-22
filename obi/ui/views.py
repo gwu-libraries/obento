@@ -221,6 +221,8 @@ def _journals_query(request):
         response['count_total'] = qs_journals.count()
         response['more_url_plain'] = settings.JOURNALS_URL
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
+        if count == 0:
+            count = len(qs_journals)
         for journal in qs_journals[:count]:
             url = settings.JOURNALS_TITLE_EXACT_URL + \
                 urllib.quote_plus(unicode(journal.title).encode('utf-8'))
@@ -246,6 +248,8 @@ def _journals_solr_query(request):
         response['count_total'] = solr_response.numFound
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
         response['more_url_plain'] = settings.JOURNALS_URL
+        if count == 0:
+            count = len(solr_response.results)
         for j in solr_response.results[:count]:
             url = settings.JOURNALS_TITLE_EXACT_URL + \
                 urllib.quote_plus(unicode(j['name']).encode('utf-8'))
