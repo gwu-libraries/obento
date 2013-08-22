@@ -9,13 +9,42 @@
 </style>
 {% endblock %}
 
+{% block javascript_extra %}
+<script type='text/javascript'>
+$(document).ready(function () {
+    var q = $('input[name=q]');
+    var data = {q: q.val()};
+
+    function fetch(vals) {
+        $.ajax({
+            type: "GET",
+            url: vals[0],
+            data: data
+        }).done(function(resp) {
+            $(vals[1]).html(resp);
+        });
+    };
+
+    var blocks = [
+        ["{% url 'articles_html' %}", '#articles-response'],
+        ["{% url 'databases_solr_html' %}", '#databases-solr-response'],
+        ["{% url 'aquabrowser_html' %}", '#books-response'],
+        ["{% url 'journals_solr_html' %}", '#journals-solr-response'],
+        ["{% url 'libsite_html' %}", '#libsite-response'],
+        ["{% url 'research_guides_html' %}", '#guides-response'],
+    ];
+    blocks.forEach(fetch);
+});
+</script>
+{% endblock javascript_extra %}
+
 {% block content %}
-<h3>GW Bento Search</h3>
+<h3>GW Libraries Search</h3>
 
 <div id='form'>
     <form action='{% url "home" %}' method='GET' class='form-search'>
         <fieldset>
-            <input type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
+            <input id='q' type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
             <input type='submit' class='btn' value='go'/>
         </fieldset>
     </form>
@@ -25,51 +54,48 @@
 <div id='results' class='row-fluid'>
     <div id='articles-databases' class='span4'>
         <h4>Articles</h4>
-        {% with articles_response as response %}
-            {% include "summon.html" %}
-        {% endwith %}
+        <div id='articles-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
         <hr />
         <h4>Databases</h4>
-        {% with databases_response as response %}
-            {% include "databases.html" %}
-        {% endwith %}
-        <hr />
-        <h4>Databases - solr</h4>
-        {% with databases_solr_response as response %}
-            {% include "databases.html" %}
-        {% endwith %}
+        <div id='databases-solr-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
     </div>
     <div id='books-journals' class='span4 left-border'>
         <h4>Books &amp; Media</h4>
-        {% with books_media_response as response %}
-            {% include "summon.html" %}
-        {% endwith %}
+        <div id='books-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
         <hr />
         <h4 class='separate-top'>Journals</h4>
-        {% with journals_response as response %}
-            {% include "journals.html" %}
-        {% endwith %}
-        <hr />
-        <h4 class='separate-top'>Journals - solr</h4>
-        {% with journals_solr_response as response %}
-            {% include "journals.html" %}
-        {% endwith %}
+        <div id='journals-solr-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
     </div>
-    <div id='libsite' class='span4 left-border'>
+    <div id='website-other' class='span4 left-border'>
         <h4>Library Website</h4>
-        {% with libsite_response as response %}
-            {% include "libsite.html" %}
-        {% endwith %}
+        <div id='libsite-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
         <hr />
         <h4>Research Guides</h4>
-        {% with research_guides_response as response %}
-            {% include "summon.html" %}
-        {% endwith %}
-        <hr />
-        <h4>Aquabrowser</h4>
-        {% with aquabrowser_response as response %}
-            {% include "aquabrowser.html" %}
-        {% endwith %}
+        <div id='guides-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
     </div>
 </div>
 {% endif %}

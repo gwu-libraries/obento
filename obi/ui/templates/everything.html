@@ -42,10 +42,10 @@ $(document).ready(function () {
 {% endblock javascript_extra %}
 
 {% block content %}
-<h3>GW Bento Search - ajax-style</h3>
+<h3>GW Libraries Search - everything / testing</h3>
 
 <div id='form'>
-    <form action='{% url "ajax" %}' method='GET' class='form-search'>
+    <form action='{% url "everything" %}' method='GET' class='form-search'>
         <fieldset>
             <input id='q' type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
             <input type='submit' class='btn' value='go'/>
