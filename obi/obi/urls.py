@@ -6,7 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('ui.views',
 
     url(r'^$', 'home', name='home'),
-    url(r'^ajax$', 'ajax', name='ajax'),
+    url(r'^everything$', 'everything', name='everything'),
 
     url(r'^aquabrowser_html', 'aquabrowser_html',
         name='aquabrowser_html'),

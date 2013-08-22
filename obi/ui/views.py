@@ -26,35 +26,29 @@ def home(request):
     q = request.GET.get('q', '')
     if q:
         articles_response = _summon_query(request, scope='articles')
-        books_media_response = _summon_query(request, scope='books_media')
+        books_media_response = _aquabrowser_query(request)
+        libsite_response = _libsite_query(request)
+        databases_solr_response = _databases_solr_query(request)
+        journals_solr_response = _journals_solr_query(request)
         research_guides_response = _summon_query(request,
                                                  scope='research_guides')
-        databases_response = _databases_query(request)
-        databases_solr_response = _databases_solr_query(request)
-        journals_response = _journals_query(request)
-        journals_solr_response = _journals_solr_query(request)
-        aquabrowser_response = _aquabrowser_query(request)
-        libsite_response = _libsite_query(request)
     params = {'title': 'home', 'q': q}
+    params['context'] = default_context_params()
     if q:
         params['articles_response'] = articles_response
         params['books_media_response'] = books_media_response
         params['research_guides_response'] = research_guides_response
-        params['databases_response'] = databases_response
         params['databases_solr_response'] = databases_solr_response
-        params['journals_response'] = journals_response
         params['journals_solr_response'] = journals_solr_response
-        params['aquabrowser_response'] = aquabrowser_response
         params['libsite_response'] = libsite_response
-    params['context'] = default_context_params()
     return render(request, 'home.html', params)
 
 
-def ajax(request):
+def everything(request):
     q = request.GET.get('q', '')
     params = {'title': 'home', 'q': q}
     params['context'] = default_context_params()
-    return render(request, 'ajax.html', params)
+    return render(request, 'everything.html', params)
 
 
 def _aquabrowser_query(request):
@@ -123,7 +117,6 @@ def aquabrowser_json(request):
 
 def aquabrowser_html(request):
     response = _aquabrowser_query(request)
-    default_context_params()
     return render(request, 'aquabrowser.html',
                   {'response': response, 'context': default_context_params()})
 
@@ -269,14 +262,12 @@ def _journals_solr_query(request):
 
 def journals_html(request):
     response = _journals_query(request)
-    response['context'] = default_context_params()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
 
 def journals_solr_html(request):
     response = _journals_solr_query(request)
-    response['context'] = default_context_params()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
@@ -419,7 +410,6 @@ def _libsite_query(request):
 
 def libsite_html(request):
     response = _libsite_query(request)
-    response['context'] = default_context_params()
     return render(request, 'libsite.html',
                   {'response': response, 'context': default_context_params()})
 
