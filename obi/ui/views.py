@@ -7,6 +7,7 @@ import urllib
 
 from lxml import etree
 import requests
+import solr
 
 from django.conf import settings
 from django.db.models import Q
@@ -29,7 +30,9 @@ def home(request):
         research_guides_response = _summon_query(request,
                                                  scope='research_guides')
         databases_response = _databases_query(request)
+        databases_solr_response = _databases_solr_query(request)
         journals_response = _journals_query(request)
+        journals_solr_response = _journals_solr_query(request)
         aquabrowser_response = _aquabrowser_query(request)
         libsite_response = _libsite_query(request)
     params = {'title': 'home', 'q': q}
@@ -38,7 +41,9 @@ def home(request):
         params['books_media_response'] = books_media_response
         params['research_guides_response'] = research_guides_response
         params['databases_response'] = databases_response
+        params['databases_solr_response'] = databases_solr_response
         params['journals_response'] = journals_response
+        params['journals_solr_response'] = journals_solr_response
         params['aquabrowser_response'] = aquabrowser_response
         params['libsite_response'] = libsite_response
     params['context'] = default_context_params()
@@ -152,14 +157,53 @@ def _databases_query(request):
     return response
 
 
+def _databases_solr_query(request):
+    q = request.GET.get('q', '')
+    try:
+        count = int(request.GET.get('count', None))
+    except:
+        count = DEFAULT_HIT_COUNT
+    response = {'q': q}
+    if q:
+        matches = []
+        s = solr.SolrConnection(settings.SOLR_URL)
+        solr_response = s.query('+text:%s +name:%s +id:db-*' % (q, q))
+        response['count_total'] = solr_response.numFound
+        response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
+        response['more_url_plain'] = settings.DATABASES_URL
+        if count == 0:
+            count = len(solr_response.results)
+        for db in solr_response.results[:count]:
+            match = {'name': db['name'], 'url': db.get('url', ''),
+                     'description': db.get('description', '')}
+            matches.append(match)
+        response['matches'] = matches
+        if settings.DEBUG:
+            source = {'header': solr_response.header,
+                      'results': solr_response.results}
+            response['source'] = source
+    return response
+
+
 def databases_html(request):
     response = _databases_query(request)
     return render(request, 'databases.html',
                   {'response': response, 'context': default_context_params()})
 
 
+def databases_solr_html(request):
+    response = _databases_solr_query(request)
+    return render(request, 'databases.html',
+                  {'response': response, 'context': default_context_params()})
+
+
 def databases_json(request):
     response = _databases_query(request)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def databases_solr_json(request):
+    response = _databases_solr_query(request)
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
@@ -177,6 +221,8 @@ def _journals_query(request):
         response['count_total'] = qs_journals.count()
         response['more_url_plain'] = settings.JOURNALS_URL
         response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
+        if count == 0:
+            count = len(qs_journals)
         for journal in qs_journals[:count]:
             url = settings.JOURNALS_TITLE_EXACT_URL + \
                 urllib.quote_plus(unicode(journal.title).encode('utf-8'))
@@ -188,6 +234,39 @@ def _journals_query(request):
     return response
 
 
+def _journals_solr_query(request):
+    q = request.GET.get('q', '')
+    try:
+        count = int(request.GET.get('count', None))
+    except:
+        count = DEFAULT_HIT_COUNT
+    response = {'q': q}
+    if q:
+        matches = []
+        s = solr.SolrConnection(settings.SOLR_URL)
+        solr_response = s.query('+text:%s +name:%s +id:j-*' % (q, q))
+        response['count_total'] = solr_response.numFound
+        response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
+        response['more_url_plain'] = settings.JOURNALS_URL
+        if count == 0:
+            count = len(solr_response.results)
+        for j in solr_response.results[:count]:
+            url = settings.JOURNALS_TITLE_EXACT_URL + \
+                urllib.quote_plus(unicode(j['name']).encode('utf-8'))
+            match = {'title': j['name'], 'url': url}
+            if j.get('issn', ''):
+                match['issn'] = j['issn']
+            elif j.get('eissn', ''):
+                match['issn'] = j['eissn']
+            matches.append(match)
+        response['matches'] = matches
+        if settings.DEBUG:
+            source = {'header': solr_response.header,
+                      'results': solr_response.results}
+            response['source'] = source
+    return response
+
+
 def journals_html(request):
     response = _journals_query(request)
     response['context'] = default_context_params()
@@ -195,8 +274,20 @@ def journals_html(request):
                   {'response': response, 'context': default_context_params()})
 
 
+def journals_solr_html(request):
+    response = _journals_solr_query(request)
+    response['context'] = default_context_params()
+    return render(request, 'journals.html',
+                  {'response': response, 'context': default_context_params()})
+
+
 def journals_json(request):
     response = _journals_query(request)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def journals_solr_json(request):
+    response = _journals_solr_query(request)
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
