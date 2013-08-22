@@ -171,6 +171,8 @@ def _databases_solr_query(request):
         response['count_total'] = solr_response.numFound
         response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
         response['more_url_plain'] = settings.DATABASES_URL
+        if count == 0:
+            count = len(solr_response.results)
         for db in solr_response.results[:count]:
             match = {'name': db['name'], 'url': db.get('url', ''),
                      'description': db.get('description', '')}
