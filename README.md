@@ -143,7 +143,37 @@ PART III - Configure your installation
 
 
 
-Part IV - Load some data
+Part IV - Start the server
+--------------------------
+
+If you choose to run obento in apache (versus django runserver):
+
+1. Copy the Apache virtual host file to the Apache2 directory
+
+        $ cd /<OBENTO_HOME>/obento
+        $ sudo cp apache/obento /etc/apache2/sites-available/obento
+
+2. Update the values in the Apache virtual host file.
+
+    Edit the host port number
+    Edit your server name (base url)
+    Edit the many instances of &lt;path to OBENTO_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
+
+        $ sudo vim /etc/apache2/sites-available/obento
+
+    To change all of the path values at once use the global replace command in vim
+
+        :%s/old_value/new_value/g
+
+3. Enable the new virtualhost. If you are using port 80 also disable the default host
+
+        $ sudo a2ensite obento
+        $ sudo a2dissite default
+        $ sudo /etc/init.d/apache2 restart
+
+
+
+Part V - Load some data
 ------------------------
 
 To load GW's list of databases from libguides, first configure 
@@ -153,26 +183,38 @@ Then, to load/parse/add databases from these pages to the database:
 
         $ ./manage.py load_databases
 
-To test that that worked, try querying the html or json view:
+To verify that the databases loaded, try querying the html or json view:
 
-        http://example.com/databases_html?q=proquest
-        http://example.com/databases_json?q=proquest
+        http://<OBENTO_URL>/databases_html?q=proquest
+        http://<OBENTO_URL>/databases_json?q=proquest
 
 To index the list of databases in Solr:
 
         $ ./manage.py index_all
 
-Test that that worked with this path:
+Test that indexing worked with this path:
 
-        http://example.com/databases_solr_html?q=proquest
-        http://example.com/databases_solr_json?q=proquest
+        http://<OBENTO_URL>/databases_solr_html?q=proquest
+        http://<OBENTO_URL>/databases_solr_json?q=proquest
+
+The results should look different from the test above.
 
 To load the Excel-formatted extract of journal titles:
 
         $ ./manage.py load_journals <JOURNALS_EXCEL_FILE>
 
-To test that that worked, try querying the html or json view:
+To verify that the journal titles loaded, try querying the html or json view:
 
-        http://example.com/journals_html?q=american
-        http://example.com/journals_json?q=american
+        http://<OBENTO_URL>/journals_html?q=science
+        http://<OBENTO_URL>/journals_json?q=science
 
+To index the list of journals in Solr:
+
+        $ ./manage.py index_all
+
+Test that indexing worked with this path:
+
+        http://<OBENTO_URL>/journals_solr_html?q=science
+        http://<OBENTO_URL>/journals_solr_json?q=science
+
+The results should look different from the test above.
