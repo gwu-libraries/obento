@@ -76,4 +76,4 @@ TITLE_DISPLAY_LENGTH = 60
 DESCRIPTION_DISPLAY_LENGTH = 100
 
 # URL of local Solr instance
-SOLR_URL = 'http://localhost:8983/solr'
+SOLR_URL = 'http://localhost:<JETTY_PORT>/solr'
