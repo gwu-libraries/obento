@@ -27,7 +27,7 @@ urlpatterns = patterns('ui.views',
     url(r'^journals_solr_html', 'journals_solr_html',
         name='journals_solr_html'),
     url(r'^journals_solr_json', 'journals_solr_json',
-        name='journals_json'),
+        name='journals_solr_json'),
 
     url(r'^summon_html', 'summon_html', name='summon_html',
         kwargs={'scope': 'all'}),
