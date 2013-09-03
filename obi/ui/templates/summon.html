@@ -1,9 +1,13 @@
 {% load humanize %}
+{% load staticfiles %}
 
 {% if response.matches %}
 <ul id='summon' class='unstyled'>
     {% for match in response.matches %}
     <li class='item'>
+        {% if match.hasFullText %}
+        <img src="{% static "img/FTOnline.png" %}" alt="Full Text Available Online" title="Full Text Available Online"/>
+        {% endif %}
         <a href='{{ match.url }}' title='{{ match.name }}'>
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
@@ -13,7 +17,7 @@
             <br>
             {% endif %}
             {% if match.publicationtitle %}
-            <i>{{ match.publicationtitle }}</i>, {{ match.publicationyear }}
+            {{ match.publicationtitle }}</i>, {{ match.publicationyear }}
             <br>
             {% elif response.scope != 'research_guides' %}
             {% if match.publicationplace %}
@@ -32,7 +36,7 @@
 </ul>
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See all {{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
+    <a href='{{ response.more_url }}'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
 </p>
 {% else %}
 <p>
