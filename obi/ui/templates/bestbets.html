@@ -1,6 +1,7 @@
 {% load humanize %}
 
-{% if response.matches %}
+{% if response.bbmatches %}
+<h4>Best Bets</h4>
 <ul id='summon' class='unstyled'>
     {% for match in response.bbmatches %}
     <li class='item'>
@@ -18,9 +19,5 @@
     <i class='icon-arrow-right'></i>
     <a href='{{ response.more_url }}'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
 </p>
-{% else %}
-<p>
-    <i>No articles found.  Please try another search in <a href='{{ response.more_url_plain }}'>ArticlesPlus.</a>
-    </i>
-</p>
+</hr>
 {% endif %}
