@@ -30,6 +30,7 @@ JOURNALS_TITLE_EXACT_URL = \
 
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
+AQUABROWSER_API_PATH = 'result.ashx'
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
@@ -38,20 +39,22 @@ SUMMON_HOST = 'api.summon.serialssolutions.com'
 SUMMON_PATH = '/2.0.0/search'                                                   
 SUMMON_SCOPES = {                                                               
     'all': {'params': {'s.ff': 'ContentType,or,1,15'},
-            'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
+        'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
     'articles': {'params': {'s.fvf': 'IsScholarly,true',
-        's.cmd': 'addFacetValueFilters(ContentType,Journal Article)'},
+        's.role': 'authenticated',
+        's.cmd': 'addFacetValueFilters(ContentType,Journal Article)',
+        's.ho': 'f'},
         'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.cmd=addFacetValueFilters(ContentType,Journal+Article)&s.fvf=IsScholarly,true&keep_r=true&s.q='},
-    'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")'},
-             'more_url':
-    'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&keep_r=true&s.q='},
+        'http://gw.summon.serialssolutions.com/search?s.cmd=addFacetValueFilters(ContentType,Journal+Article)&s.fvf=IsScholarly,true&s.ho=f&keep_r=true&s.role=authenticated&s.q='},
+    'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")', 's.ho': 't'},
+        'more_url':
+        'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&s.ho=t&keep_r=true&s.q='},
     'research_guides': {'params': {'s.cmd': 'setHoldingsOnly(true)',
-            's.fvf': 'ContentType,Research Guide,f'},
-             'more_url':
-    'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
+        's.fvf': 'ContentType,Research Guide,f'},
+        'more_url':
+        'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
     'best_bets': {'params': {}, 'more_url':
-    'http://gw.summon.serialssolutions.com/search?s.q='},
+        'http://gw.summon.serialssolutions.com/search?s.q='},
 }       
 
 # libguides database config with page ids
@@ -66,6 +69,13 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719917',
 ]
 
+LIBSITE_SEARCH_URL = 'http://gwlibrary-staging.wrlc.org/search-page'
+LIBSITE_URL = 'http://library.gwu.edu/search/'
+LIBSITE_MORE_URL = 'http://library.gwu.edu/search/node/'
+
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 60
 DESCRIPTION_DISPLAY_LENGTH = 100
+
+# URL of local Solr instance
+SOLR_URL = 'http://localhost:<JETTY_PORT>/solr'

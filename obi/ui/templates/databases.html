@@ -16,7 +16,7 @@
     {% if response.count_total != 1 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{% url 'databases_html' %}?q={{q}}&count=0'>See all {{ response.count_total|intcomma }} database{{ response.count_total|pluralize }}</a>
+    <a href='{% url 'databases_html' %}?q={{response.q}}&count=0'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} database{{ response.count_total|pluralize:"es" }}</a>
 </p>
     {% endif %}
 {% else %}

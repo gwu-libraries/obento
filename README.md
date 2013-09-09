@@ -19,7 +19,7 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev solr-jetty openjdk-6-jdk
 
 2. Set up Postgresql
 
@@ -40,7 +40,9 @@ PART II - Set up project environment
         $ sudo apt-get install python-setuptools
         $ sudo easy_install virtualenv
 
-2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with your desired directory path and name: for instance /obento or /home/&lt;username&gt;/obento)
+2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with 
+your desired directory path and name: for instance ```/obento``` or 
+```/home/&lt;username&gt;/obento```)
 
         $ mkdir <OBENTO_HOME>
         $ cd <OBENTO_HOME>
@@ -62,7 +64,7 @@ PART II - Set up project environment
 
         $ source ENV/bin/activate
 
-6. install django, tastypie, and other python dependencies
+6. Install django, tastypie, and other python dependencies
 
         (ENV)$ pip install -r requirements.txt
         
@@ -70,20 +72,34 @@ PART II - Set up project environment
 
         easy_install --upgrade pytz
 
+7. Set up Solr via jetty
+
+    Edit ```/etc/default/jetty``` to set ```NO_START=0```, set
+    ```JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64```, and consider
+    changing ```JETTY_PORT``` to a port that won't be publicly exposed.
+    In development and testing, exposing Solr might be helpful; never 
+    expose it in production.
+
+    Copy the solr ```schema.xml``` for obento into system-wide solr config
+    (making a backup of the original if you like):
+
+        $ sudo cp /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig
+        $ sudo cp obi/obi/schema.xml /etc/solr/conf/schema.xml
+
+    Start jetty:
+
+        sudo service jetty start
+    
 
 PART III - Configure your installation
 --------------------------------------
-
-0. Create a logs directory
-
-        $ mkdir logs
 
 1. Copy the local settings template to an active file
 
         $ cd obento/obi/obi
         $ cp local_settings.py.template local_settings.py
 
-2. Update the values in the local_setting.py file:  for the database, NAME, USER, and PASSWORD to the database you created above, and set ENGINE to 'postgresql_psycopg2'; also, set a SECRET_KEY.
+2. Update the values in the ```local_settings.py``` file:  for the database, ```NAME```, ```USER```, and ```PASSWORD``` to the database you created above, and set ```ENGINE``` to 'postgresql_psycopg2'; also, set a ```SECRET_KEY```.  Ensure that the port number in ```SOLR_URL``` matches ```JETTY_PORT``` configured earlier in ```/etc/default/jetty```.
 
         $ vim local_settings.py
 
@@ -127,31 +143,78 @@ PART III - Configure your installation
 
 
 
-Part IV - Load some data
+Part IV - Start the server
+--------------------------
+
+If you choose to run obento in apache (versus django runserver):
+
+1. Copy the Apache virtual host file to the Apache2 directory
+
+        $ cd /<OBENTO_HOME>/obento
+        $ sudo cp apache/obento /etc/apache2/sites-available/obento
+
+2. Update the values in the Apache virtual host file.
+
+    Edit the host port number
+    Edit your server name (base url)
+    Edit the many instances of &lt;path to OBENTO_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
+
+        $ sudo vim /etc/apache2/sites-available/obento
+
+    To change all of the path values at once use the global replace command in vim
+
+        :%s/old_value/new_value/g
+
+3. Enable the new virtualhost. If you are using port 80 also disable the default host
+
+        $ sudo a2ensite obento
+        $ sudo a2dissite default
+        $ sudo /etc/init.d/apache2 restart
+
+
+
+Part V - Load some data
 ------------------------
 
-To load GW's list of databases from libguides:
+To load GW's list of databases from libguides, first configure 
+```local_settings.py``` with a list of libguides page sids.
 
-        #FIXME [configure local_settings with a list of page sids]
-
-Then run the management command '''load_databases''':
+Then, to load/parse/add databases from these pages to the database:
 
         $ ./manage.py load_databases
 
-To test that that worked, try querying the html or json view (substitute
-in your server domain of course):
+To verify that the databases loaded, try querying the html or json view:
 
-        http://example.com/databases_html?q=proquest
-        http://example.com/databases_json?q=proquest
+        http://<OBENTO_URL>/databases_html?q=proquest
+        http://<OBENTO_URL>/databases_json?q=proquest
 
-Now run the management command '''load_journals''' where <JOURNALSTABLE> is the file name of the Excel-formatted extract of journal titles.
+To index the list of databases in Solr:
 
-        $ ./manage.py load_journals <JOURNALSTABLE>
+        $ ./manage.py index_all
 
-To test that that worked, try querying the html or json view (substitute
-in your server domain of course):
+Test that indexing worked with this path:
 
-        http://example.com/journals_html?q=american
-        http://example.com/journals_json?q=american
+        http://<OBENTO_URL>/databases_solr_html?q=proquest
+        http://<OBENTO_URL>/databases_solr_json?q=proquest
 
+The results should look different from the test above.
 
+To load the Excel-formatted extract of journal titles:
+
+        $ ./manage.py load_journals <JOURNALS_EXCEL_FILE>
+
+To verify that the journal titles loaded, try querying the html or json view:
+
+        http://<OBENTO_URL>/journals_html?q=science
+        http://<OBENTO_URL>/journals_json?q=science
+
+To index the list of journals in Solr:
+
+        $ ./manage.py index_all
+
+Test that indexing worked with this path:
+
+        http://<OBENTO_URL>/journals_solr_html?q=science
+        http://<OBENTO_URL>/journals_solr_json?q=science
+
+The results should look different from the test above.
