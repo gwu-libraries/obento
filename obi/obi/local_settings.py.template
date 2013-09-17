@@ -53,6 +53,8 @@ SUMMON_SCOPES = {
         's.fvf': 'ContentType,Research Guide,f'},
         'more_url':
         'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
+    'best_bets': {'params': {}, 'more_url':
+        'http://gw.summon.serialssolutions.com/search?s.q='},
 }       
 
 # libguides database config with page ids

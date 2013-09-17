@@ -49,6 +49,11 @@ urlpatterns = patterns('ui.views',
     url(r'^research_guides_json', 'summon_json',
         name='research_guides_json', kwargs={'scope': 'research_guides'}),
 
+    url(r'^best_bets_html', 'summon_html',
+        name='best_bets_html', kwargs={'scope': 'best_bets'}),
+    url(r'^best_bets_json', 'summon_json', 
+        name='best_bets_json', kwargs={'scope': 'best_bets'}),
+
     url(r'^libsite_html', 'libsite_html', name='libsite_html'),
     url(r'^libsite_json', 'libsite_json', name='libsite_json'),
 

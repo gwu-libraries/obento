@@ -26,6 +26,7 @@ $(document).ready(function () {
     };
 
     var blocks = [
+        ["{% url 'best_bets_html' %}", '#bestbets-response'],
         ["{% url 'articles_html' %}", '#articles-response'],
         ["{% url 'databases_solr_html' %}", '#databases-solr-response'],
         ["{% url 'aquabrowser_html' %}", '#books-response'],
@@ -52,7 +53,12 @@ $(document).ready(function () {
 
 {% if q %}
 <div id='results' class='row-fluid'>
-    <div id='articles-databases' class='span4'>
+    <div id='bestbets-articles-databases' class='span4'>
+        <div id='bestbets-response' class='row-fluid'>
+            <div class='span2 progress progress-striped active'>
+                <div class='bar' style='width: 100%;'></div>
+            </div>
+        </div>
         <h4>Articles</h4>
         <div id='articles-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>

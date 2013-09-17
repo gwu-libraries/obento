@@ -1,0 +1,19 @@
+{% load humanize %}
+
+{% if response.bbmatches %}
+<h4>Best Bets</h4>
+<ul id='summon' class='unstyled'>
+    {% for match in response.bbmatches %}
+    <li class='item'>
+        <a href='{{ match.url }}'>
+            {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
+        </a>
+        {% if match.description %}
+            <br>
+            {{ match.description }}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+</hr>
+{% endif %}
