@@ -32,12 +32,15 @@ def home(request):
         journals_solr_response = _journals_solr_query(request)
         research_guides_response = _summon_query(request,
                                                  scope='research_guides')
+        best_bets_response = _summon_query(request, scope='best_bets')
+
     params = {'title': 'home', 'q': q}
     params['context'] = default_context_params()
     if q:
         params['articles_response'] = articles_response
         params['books_media_response'] = books_media_response
         params['research_guides_response'] = research_guides_response
+        params['best_bets_response'] = best_bets_response
         params['databases_solr_response'] = databases_solr_response
         params['journals_solr_response'] = journals_solr_response
         params['libsite_response'] = libsite_response
@@ -345,10 +348,26 @@ def _summon_query(request, scope='all'):
         if document.get('hasFullText', []):
             match['hasFullText'] = document['hasFullText']
         matches.append(match)
+
+    bbmatches = []
+    if d.get('recommendationLists', []):
+        print "YES there is a recommendationLists"
+        rl = d['recommendationLists']
+        if rl.get('bestBet', []):
+            bblist = rl['bestBet']
+            for bestbet in bblist[:DEFAULT_HIT_COUNT]:
+                match = {'url': bestbet['link']}
+                if bestbet.get('title', []):
+                    match['title'] = bestbet['title']
+                if bestbet.get('description', []):
+                    match['description'] = bestbet['description']
+                bbmatches.append(match)
+
     if settings.DEBUG:
         response['source'] = d
         response['query_url'] = r.url
     response['matches'] = matches
+    response['bbmatches'] = bbmatches
     response['q'] = q
     response['scope'] = scope
     response['more_url_plain'] = settings.SUMMON_URL
@@ -359,12 +378,27 @@ def _summon_query(request, scope='all'):
 
 def summon_html(request, scope='all'):
     response = _summon_query(request, scope)
-    return render(request, 'summon.html',
+    if scope == 'best_bets':
+        responsepage = 'bestbets.html'
+    else:
+        responsepage = 'summon.html'
+    return render(request, responsepage,
                   {'response': response, 'context': default_context_params()})
 
 
 def summon_json(request, scope='all'):
     response = _summon_query(request, scope)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def best_bets_html(request):
+    response = _summon_query(request, scope='best_bets')
+    return render(request, 'best_bets.html',
+                  {'response': response, 'context': default_context_params()})
+
+
+def best_bets_json(request, scope='all'):
+    response = _summon_query(request, scope='best_bets')
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
