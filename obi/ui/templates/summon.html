@@ -5,12 +5,12 @@
 <ul id='summon' class='unstyled'>
     {% for match in response.matches %}
     <li class='item'>
-        {% if match.hasFullText %}
-        <img src="{% static "img/FTOnline.png" %}" alt="Full Text Available Online" title="Full Text Available Online"/>
-        {% endif %}
         <a href='{{ match.url }}' title='{{ match.name }}'>
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
+        {% if match.hasFullText %}
+        <img src="{% static "img/FTOnline.png" %}" alt="Full Text Available Online" title="Full Text Available Online"/>
+        {% endif %}
         <p>
             {% if match.author %}
             {{ match.author }}
