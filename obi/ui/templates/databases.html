@@ -16,7 +16,7 @@
     {% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{% url 'databases_html' %}?q={{response.q}}&count=0'>See all databases</a>
+    <a href='{{ response.more_url }}'>See all databases</a>
 </p>
     {% endif %}
 {% else %}
