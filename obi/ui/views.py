@@ -345,13 +345,8 @@ def _summon_query(request, scope='all'):
             match['publicationyear'] = document['PublicationYear'][0]
         if document.get('PublicationPlace', []):
             match['publicationplace'] = document['PublicationPlace'][0]
-        # FIXME: what's this?
-        """
-        if document['inHoldings']:
-            match['inHoldings'] = 'true'
-            if document.get('Library', []):
-                match['library'] = ", ".join(document['Library'])
-        """
+        if document.get('hasFullText', []):
+            match['hasFullText'] = document['hasFullText']
         matches.append(match)
 
     bbmatches = []
