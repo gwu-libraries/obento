@@ -10,7 +10,9 @@
         </a>
         {% if match.description %}
             <br>
-            {{ match.description }}
+            {% autoescape off %}
+            {{ match.description|striptags }}
+            {% endautoescape %}
         {% endif %}
     </li>
     {% endfor %}
