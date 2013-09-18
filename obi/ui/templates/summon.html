@@ -8,33 +8,33 @@
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
-            {% if match.author %}
+        {% if match.author %}
             {{ match.author }}
             <br>
-            {% endif %}
-            {% if match.publicationtitle %}
+        {% endif %}
+        {% if match.publicationtitle %}
             <i>{{ match.publicationtitle }}</i>, {{ match.publicationyear }}
             <br>
-            {% elif response.scope != 'research_guides' %}
+        {% elif response.scope != 'research_guides' %}
             {% if match.publicationplace %}
-            {{ match.publicationplace }} :
+                {{ match.publicationplace }} :
             {% endif %}
             {% if match.publicationyear %}
-            {{ match.publicationyear }}.
+                {{ match.publicationyear }}.
             {% endif %}
             {% if match.publisher %}
-            {{ match.publisher }}
+                {{ match.publisher }}
             {% endif %}
-            {% endif %}
+        {% endif %}
         </p>
     </li>
     {% endfor %}
 </ul>
     {% if response.count_total > 3 %}
-<p>
-    <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See all matches</a>
-</p>
+    <p>
+        <i class='icon-arrow-right'></i>
+        <a href='{{ response.more_url }}'>See all matches</a>
+    </p>
     {% endif %}
 {% else %}
 <p>
