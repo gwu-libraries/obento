@@ -13,12 +13,12 @@
     </li>
     {% endfor %}
 </ul>
-    {% if response.count_total != 1 %}
+{% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{% url 'databases_html' %}?q={{response.q}}&count=0'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} database{{ response.count_total|pluralize:"es" }}</a>
+    <a href='{% url 'databases_html' %}?q={{response.q}}&count=0'>See all databases</a>
 </p>
-    {% endif %}
+{% endif %}
 {% else %}
 <p>
     <i>No databases found.  Please browse <a href='{{ response.more_url_plain }}'>Database Titles.</a>

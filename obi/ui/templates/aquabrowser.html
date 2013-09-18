@@ -24,10 +24,12 @@
     </li>
     {% endfor %}
 </ul>
+{% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See {% if response.count_total > 1 %} all {% endif %}{{ response.count_total|intcomma }} match{{ response.count_total|pluralize:"es" }}</a>
+    <a href='{{ response.more_url }}'>See all matches</a>
 </p>
+{% endif %}
 {% else %}
 <p>
     <i>No books or media results found.  Please try another search in the <a href='{{ response.more_url_plain }}'>catalog.</a>
