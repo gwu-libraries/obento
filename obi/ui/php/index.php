@@ -22,8 +22,6 @@
             return results[1] || 0;
         }
 	$(document).ready(function() {
-	    var q = $('input[name=query]');
-	    //var data = {q: q.val()};
             var data = $.urlParam('query');
 	    var bento_url = "http://gwdev-kerchner-12.wrlc.org:8080/";
 
