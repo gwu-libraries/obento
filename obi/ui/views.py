@@ -351,7 +351,6 @@ def _summon_query(request, scope='all'):
 
     bbmatches = []
     if d.get('recommendationLists', []):
-        print "YES there is a recommendationLists"
         rl = d['recommendationLists']
         if rl.get('bestBet', []):
             bblist = rl['bestBet']
