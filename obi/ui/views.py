@@ -95,6 +95,15 @@ def _aquabrowser_query(request):
                        record.attrib['extID']
         #TODO: concatenate all branches_t results? Not so simple,
         # some are just "Stacks" - what does this mean?
+        holding_institutions = _ab_field_list(fields, 'bsall')
+        if len(holding_institutions) > 0:
+            if 'library\m\gw' in holding_institutions:
+                holding_institutions_display = 'GW'
+                if len(holding_institutions) > 1:
+                    holding_institutions_display += ' and other WRLC Libraries'
+            else:
+                holding_institutions_display = 'Other WRLC Libraries'
+        match['institutions'] = holding_institutions_display
         matches.append(match)
     count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
     if count_total_nodes:
@@ -126,6 +135,18 @@ def _ab_marc_field_str(marcdict, fieldname, codes):
         key = fieldrow.attrib['key']
         if key in codes:
             result = result + ' ' + ''.join(fieldrow.xpath('.//text()'))
+    return result
+
+
+# Returns a list of the values of the specified field
+# Warning: this is specific to Aquabrowser result formatting
+def _ab_field_list(abfields, fieldname):
+    fields = abfields.findall(fieldname)
+    if fields is None:
+        return []
+    result = []
+    for fieldrow in fields:
+        result.append(fieldrow.text)
     return result
 
 
