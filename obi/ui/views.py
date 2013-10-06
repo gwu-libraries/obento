@@ -93,8 +93,6 @@ def _aquabrowser_query(request):
             match['lccallnum'] = df852
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
-        #TODO: concatenate all branches_t results? Not so simple,
-        # some are just "Stacks" - what does this mean?
         holding_institutions = _ab_field_list(fields, 'bsall')
         if len(holding_institutions) > 0:
             if 'library\m\gw' in holding_institutions:
