@@ -76,6 +76,18 @@ def _aquabrowser_query(request):
         match['description'] = _ab_marc_field_str(d, 'df100', ['a'])
         match['publisher'] = _ab_marc_field_str(d, 'df260', ['a', 'b', 'c'])
         match['edition'] = _ab_marc_field_str(d, 'df250', ['a'])
+        df050 = _ab_marc_field_str(d, 'df050', ['a', 'b'])
+        df090 = _ab_marc_field_str(d, 'df090', ['a'])
+        df096 = _ab_marc_field_str(d, 'df096', ['a'])
+        df852 = _ab_marc_field_str(d, 'df852', ['h', 'i'])
+        if df050 != '':
+            match['lccallnum'] = df050
+        elif df090 != '':
+            match['lccallnum'] = df090
+        elif df096 != '':
+            match['lccallnum'] = df096
+        elif df852 != '':
+            match['lccallnum'] = df852
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
         matches.append(match)
@@ -347,6 +359,8 @@ def _summon_query(request, scope='all'):
             match['publicationplace'] = document['PublicationPlace'][0]
         if document.get('hasFullText', []):
             match['hasFullText'] = document['hasFullText']
+        if document.get('LCCallNum', []):
+            match['LCCallNum'] = document['LCCallNum'][0]
         matches.append(match)
 
     bbmatches = []
