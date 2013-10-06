@@ -390,6 +390,26 @@ def summon_json(request, scope='all'):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
+def books_media_html(request, scope='all'):
+    if _isNonRoman(request):
+        return summon_html(request)
+    else:
+        return aquabrowser_html(request)
+
+
+def books_media_json(request, scope='all'):
+    if _isNonRoman(request):
+        return summon_json(request)
+    else:
+        return aquabrowser_json(request)
+    return aquabrowser_json(request)
+
+
+def _isNonRoman(request):
+    #TODO: This logic, issue #59
+    return False
+
+
 def best_bets_html(request):
     response = _summon_query(request, scope='best_bets')
     return render(request, 'best_bets.html',
