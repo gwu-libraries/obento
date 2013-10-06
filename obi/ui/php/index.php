@@ -50,8 +50,6 @@
     </head>
     <body>
 
-<h3>GW Libraries Search</h3>
-
 <?php if ($_GET["query"])
 {
 ?>
