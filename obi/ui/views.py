@@ -72,6 +72,9 @@ def _aquabrowser_query(request):
         d = record.find('d')
         if d is None:
             break
+        fields = record.find('fields')
+        if fields is None:
+            break
         match['name'] = _ab_marc_field_str(d, 'df245', ['a', 'h', 'b', 'c'])
         match['description'] = _ab_marc_field_str(d, 'df100', ['a'])
         match['publisher'] = _ab_marc_field_str(d, 'df260', ['a', 'b', 'c'])
@@ -90,6 +93,8 @@ def _aquabrowser_query(request):
             match['lccallnum'] = df852
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
+        #TODO: concatenate all branches_t results? Not so simple,
+        # some are just "Stacks" - what does this mean?
         matches.append(match)
     count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
     if count_total_nodes:
@@ -361,6 +366,8 @@ def _summon_query(request, scope='all'):
             match['hasFullText'] = document['hasFullText']
         if document.get('LCCallNum', []):
             match['LCCallNum'] = document['LCCallNum'][0]
+        if document.get('Institution', []):
+            match['institution'] = document['Institution'][0]
         matches.append(match)
 
     bbmatches = []
