@@ -406,14 +406,13 @@ def books_media_json(request, scope='all'):
 
 
 def _isNonRoman(request):
-    #TODO: This logic, issue #59
     q = request.GET.get('q', '')
+    #TODO: Maybe there's a better way to do this. For now, it seems to work.
     try:
         q.encode("iso-8859-1")
         return False
     except:
         return True
-    return False
 
 
 def best_bets_html(request):
