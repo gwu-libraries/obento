@@ -392,17 +392,16 @@ def summon_json(request, scope='all'):
 
 def books_media_html(request, scope='all'):
     if _isNonRoman(request):
-        return summon_html(request)
+        return summon_html(request, scope)
     else:
         return aquabrowser_html(request)
 
 
 def books_media_json(request, scope='all'):
     if _isNonRoman(request):
-        return summon_json(request)
+        return summon_json(request, scope)
     else:
         return aquabrowser_json(request)
-    return aquabrowser_json(request)
 
 
 def _isNonRoman(request):
