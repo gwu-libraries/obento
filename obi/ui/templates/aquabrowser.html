@@ -20,6 +20,14 @@
             {{ match.edition }}
             <br>
         {% endif %}
+        {% if match.institutions %}
+            {{ match.institutions }}
+            <br>
+        {% endif %}
+        {% if match.lccallnum %}
+            {{ match.lccallnum }}
+            <br>
+        {% endif %}
         </p>
     </li>
     {% endfor %}
