@@ -431,20 +431,20 @@ def summon_json(request, scope='all'):
 
 
 def books_media_html(request, scope='all'):
-    if _isNonRoman(request):
+    if _is_non_roman(request):
         return summon_html(request, scope)
     else:
         return aquabrowser_html(request)
 
 
 def books_media_json(request, scope='all'):
-    if _isNonRoman(request):
+    if _is_non_roman(request):
         return summon_json(request, scope)
     else:
         return aquabrowser_json(request)
 
 
-def _isNonRoman(request):
+def _is_non_roman(request):
     q = request.GET.get('q', '')
     #TODO: Maybe there's a better way to do this. For now, it seems to work.
     try:
