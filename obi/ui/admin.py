@@ -13,3 +13,10 @@ class JournalAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'issn', 'eissn']
     search_fields = ['title', 'issn', 'eissn']
 admin.site.register(m.Journal, JournalAdmin)
+
+
+class SearchAdmin(admin.ModelAdmin):
+    list_display = ['id', 'q', 'date_searched']
+    list_filter = ['date_searched']
+    search_fields = ['q']
+admin.site.register(m.Search, SearchAdmin)
