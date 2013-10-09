@@ -38,7 +38,7 @@
         	["best_bets_html", '#bestbets-response'],
 		["articles_html", '#articles-response'],
 		["databases_solr_html", '#databases-solr-response'],
-		["aquabrowser_html", '#books-response'],
+		["books_media_html", '#books-response'],
 		["journals_solr_html", '#journals-solr-response'],
 		["libsite_html", '#libsite-response'],
 		["research_guides_html", '#guides-response'],

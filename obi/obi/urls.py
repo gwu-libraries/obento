@@ -39,9 +39,9 @@ urlpatterns = patterns('ui.views',
     url(r'^articles_json', 'summon_json', name='articles_json',
         kwargs={'scope': 'articles'}),
 
-    url(r'^books_media_html', 'summon_html',
+    url(r'^books_media_html', 'books_media_html',
         name='books_media_html', kwargs={'scope': 'books_media'}),
-    url(r'^books_media_json', 'summon_json',
+    url(r'^books_media_json', 'books_media_json',
         name='books_media_json', kwargs={'scope': 'books_media'}),
 
     url(r'^research_guides_html', 'summon_html',
