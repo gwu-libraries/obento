@@ -23,7 +23,7 @@
         }
 	$(document).ready(function() {
             var data = $.urlParam('query');
-	    var bento_url = "http://gwdev-kerchner-12.wrlc.org:8080/";
+	    var bento_url = "http://gwdev-kerchner.wrlc.org:8080/";
 
 	    function fetch(vals) {
 		$.post('obento/proxyscript.php',
