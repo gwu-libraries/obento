@@ -30,10 +30,6 @@
             <br>
                 {{ match.institution }}
             {% endif %}
-            {% if match.LCCallNum %}
-            <br>
-                {{ match.LCCallNum }}
-            {% endif %}
         {% endif %}
         {% if match.hasFullText and response.scope != 'research_guides' %}
             <img src="{% static "img/pdf.gif" %}" alt="Full Text Available Online" title="Full Text Available Online"/> Full Text Online
