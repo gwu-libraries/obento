@@ -10,7 +10,7 @@
         </a>
         <p>
         {% if match.author %}
-            {{ match.author }}
+            {{ match.author|truncatechars:context.AUTHOR_DISPLAY_LENGTH }}
             <br>
         {% endif %}
         {% if match.publicationtitle %}
