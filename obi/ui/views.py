@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from ui.models import Database, Journal
+from ui.models import Database, Journal, Search
 
 
 # FIXME: make a local_setting
@@ -307,12 +307,22 @@ def journals_html(request):
 
 def journals_solr_html(request):
     response = _journals_solr_query(request)
+    # Save search terms only here, and in journals_json, to limit copies
+    # of search terms from proliferating
+    querystring = request.GET.get('q', '')
+    if querystring:
+        s = Search(q=querystring)
+        s.save()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
 
 def journals_json(request):
     response = _journals_query(request)
+    # Save search terms only here, and in journals_json, to limit copies
+    # of search terms from proliferating
+    s = Search(q=request.GET.get('q', ''))
+    s.save()
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
