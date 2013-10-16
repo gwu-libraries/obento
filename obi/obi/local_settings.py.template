@@ -76,9 +76,9 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719917',
 ]
 
-LIBSITE_SEARCH_URL = 'http://gwlibrary-staging.wrlc.org/search-page'
-LIBSITE_URL = 'http://library.gwu.edu/search/'
-LIBSITE_MORE_URL = 'http://library.gwu.edu/search/node/'
+LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
+LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
+LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 60

@@ -18,3 +18,14 @@ class Journal(models.Model):
 
     def __unicode__(self):
         return '<Journal %s "%s">' % (self.id, self.title)
+
+
+class Search(models.Model):
+    q = models.TextField(blank=True, db_index=True)
+    date_searched = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        verbose_name_plural = 'searches'
+
+    def __unicode__(self):
+        return '<Search %s "%s">' % (self.id, self.q)
