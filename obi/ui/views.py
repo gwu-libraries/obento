@@ -187,7 +187,8 @@ def _databases_solr_query(request):
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
-        solr_response = s.query('+text:%s +name:%s +id:db-*' % (q, q))
+        query = u'+text:%s +id:db-* (name:%s OR description:%s)' % (q, q, q)
+        solr_response = s.query(query)
         response['count_total'] = solr_response.numFound
         response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
         response['more_url_plain'] = settings.DATABASES_URL
