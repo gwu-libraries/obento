@@ -83,6 +83,7 @@ LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 60
 DESCRIPTION_DISPLAY_LENGTH = 100
+AUTHOR_DISPLAY_LENGTH = 45
 
 # URL of local Solr instance
 SOLR_URL = 'http://localhost:<JETTY_PORT>/solr'

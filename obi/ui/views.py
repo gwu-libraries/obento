@@ -354,23 +354,24 @@ def _summon_query(request, scope='all'):
     for document in d['documents'][:DEFAULT_HIT_COUNT]:
         match = {'url': document['link']}
         if document.get('Author', []):
-            match['author'] = document['Author'][0]
+            match['author'] = ", ".join(document['Author'])
         #  else:
         #      if document.get('CorporateAuthor', []):
         #          match['author'] = document['CorporateAuthor'][0]
-        if document.get('DocumentTitleAlternate', []):
-            match['name'] = document['DocumentTitleAlternate'][0]
+        if document.get('Title', []):
+            title_str = document['Title'][0]
+        elif document.get('DocumentTitleAlternate', []):
+            title_str = document['DocumentTitleAlternate'][0]
         else:
-            if document.get('Title', []):
-                title_str = document['Title'][0]
-                # Remove "Research Guides. " from start of string
-                MATCH_TO_REMOVE = 'Research Guides. '
-                if scope == 'research_guides' \
-                        and title_str.startswith(MATCH_TO_REMOVE):
-                            title_str = title_str[len(MATCH_TO_REMOVE):]
-                match['name'] = title_str
-            else:
-                match['name'] = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
+            title_str = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
+
+        # Remove "Research Guides. " from start of string
+        MATCH_TO_REMOVE = 'Research Guides. '
+        if scope == 'research_guides' \
+                and title_str.startswith(MATCH_TO_REMOVE):
+            title_str = title_str[len(MATCH_TO_REMOVE):]
+        match['name'] = title_str
+
         if document.get('Publisher', []):
             match['publisher'] = document['Publisher'][0]
         if document.get('PublicationTitle', []):
@@ -510,4 +511,5 @@ def libsite_json(request):
 def default_context_params():
     return {'TITLE_DISPLAY_LENGTH': settings.TITLE_DISPLAY_LENGTH,
             'DESCRIPTION_DISPLAY_LENGTH':
-            settings.DESCRIPTION_DISPLAY_LENGTH}
+            settings.DESCRIPTION_DISPLAY_LENGTH,
+            'AUTHOR_DISPLAY_LENGTH': settings.AUTHOR_DISPLAY_LENGTH}
