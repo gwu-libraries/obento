@@ -26,6 +26,8 @@ STATICFILES_DIRS = (
 
 ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
 
+LOCAL_IPS = ['YOUR.LOCAL1.*.*', 'YOUR.LOCAL.NETWORK2.*', 'YOUR.LOCAL.NET.WORK']
+
 DATABASES_URL = 'http://libguides.gwu.edu/databases/'
 DATABASES_MORE_URL = 'http://libguides.gwu.edu/search.php?iid=131&c=0&gid=0&pid=98717&search='
 
@@ -48,7 +50,6 @@ SUMMON_SCOPES = {
     'all': {'params': {'s.ff': 'ContentType,or,1,15'},
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
     'articles': {'params': {'s.fvf': 'IsScholarly,true',
-        's.role': 'authenticated',
         's.cmd': 'addFacetValueFilters(ContentType,Journal Article)',
         's.ho': 'f'},
         'more_url':
