@@ -7,3 +7,4 @@ requests>=1.2
 solrpy
 south
 xlrd
+netaddr
