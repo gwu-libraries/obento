@@ -345,11 +345,7 @@ def _summon_query(request, scope='all'):
     # disable highlighting tags
     params['s.hl'] = 'false'
     if _is_request_local(request):
-        print "scope = %s, Request is Local" % scope
         params['s.role'] = 'authenticated'
-    else:
-        print "scope = %s, Request is NOT Local" % scope
-    print "s.role = %s" % params['s.role']
     id_str = _summon_id_string(headers, params)
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
@@ -418,6 +414,10 @@ def _summon_query(request, scope='all'):
     response['more_url_plain'] = settings.SUMMON_URL
     response['more_url'] = '%s%s' %  \
         (settings.SUMMON_SCOPES[scope]['more_url'], q)
+    if _is_request_local(request):
+        response['more_url'] += '&s.role=authenticated'
+    else:
+        response['more_url'] += '&s.role=none'
     return response
 
 

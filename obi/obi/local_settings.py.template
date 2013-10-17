@@ -46,24 +46,25 @@ SUMMON_API_ID = 'gw'
 SUMMON_API_KEY = 'XXXXXXXXXXXXX'
 SUMMON_HOST = 'api.summon.serialssolutions.com'                                 
 SUMMON_PATH = '/2.0.0/search'                                                   
-SUMMON_SCOPES = {                                                               
-    'all': {'params': {'s.ff': 'ContentType,or,1,15'},
+SUMMON_SCOPES = {
+        'all': {'params': {'s.ff': 'ContentType,or,1,15', 's.role': 'none'},
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
     'articles': {'params': {'s.fvf': 'IsScholarly,true',
         's.cmd': 'addFacetValueFilters(ContentType,Journal Article)',
-        's.ho': 'f'},
+        's.ho': 'f',
+        's.role': 'none'},
         'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.cmd=addFacetValueFilters(ContentType,Journal+Article)&s.fvf=IsScholarly,true&s.ho=f&keep_r=true&s.role=authenticated&s.q='},
-    'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")', 's.ho': 't'},
+        'http://gw.summon.serialssolutions.com/search?s.cmd=addFacetValueFilters(ContentType,Journal+Article)&s.fvf=IsScholarly,true&s.ho=f&keep_r=true&s.q='},
+    'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")', 's.ho': 't', 's.role': 'none'},
         'more_url':
         'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&s.ho=t&keep_r=true&s.q='},
     'research_guides': {'params': {'s.cmd': 'setHoldingsOnly(true)',
-        's.fvf': 'ContentType,Research Guide,f'},
+        's.fvf': 'ContentType,Research Guide,f', 's.role': 'none'},
         'more_url':
         'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
-    'best_bets': {'params': {}, 'more_url':
+    'best_bets': {'params': {'s.role': 'none'}, 'more_url':
         'http://gw.summon.serialssolutions.com/search?s.q='},
-}       
+}
 
 # libguides database config with page ids
 # e.g.: http://libguides.gwu.edu/content.php?pid=98717&sid=1719900
