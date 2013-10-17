@@ -47,7 +47,7 @@ SUMMON_API_KEY = 'XXXXXXXXXXXXX'
 SUMMON_HOST = 'api.summon.serialssolutions.com'                                 
 SUMMON_PATH = '/2.0.0/search'                                                   
 SUMMON_SCOPES = {
-        'all': {'params': {'s.ff': 'ContentType,or,1,15', 's.role': 'none'},
+    'all': {'params': {'s.ff': 'ContentType,or,1,15', 's.role': 'none'},
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
     'articles': {'params': {'s.fvf': 'IsScholarly,true',
         's.cmd': 'addFacetValueFilters(ContentType,Journal Article)',
