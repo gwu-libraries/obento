@@ -3,7 +3,8 @@
 {% if response.matches %}
 <ul id='databases' class='unstyled'>
     {% for match in response.matches %}
-    <li class='database'>
+    <li class='database {% if forloop.counter > 3 %}remainder{% endif %}'
+        {% if forloop.counter > 3 %}style='display:none;'{% endif %}>
         <a href='{{ match.url }}' title='{{ match.name }}'>
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
@@ -14,9 +15,9 @@
     {% endfor %}
 </ul>
     {% if response.count_total > 3 %}
-<p>
+<p id='show-remainder'>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See all databases</a>
+    <a onclick="$('#show-remainder').hide(200);$('.remainder').delay(250).show(500);">More databases</a>
 </p>
     {% endif %}
 {% else %}

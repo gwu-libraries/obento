@@ -179,16 +179,18 @@ def _databases_query(request):
 
 def _databases_solr_query(request):
     q = request.GET.get('q', '')
+    # Don't use DEFAULT_HIT_COUNT, instead grab 25 so we can expand
+    DATABASE_HIT_COUNT = 25
     try:
-        count = int(request.GET.get('count', None))
+        count = int(request.GET.get('count', DATABASE_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = DATABASE_HIT_COUNT
     response = {'q': q}
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         query = u'+text:%s +id:db-* (name:%s OR description:%s)' % (q, q, q)
-        solr_response = s.query(query)
+        solr_response = s.query(query, rows=DATABASE_HIT_COUNT)
         response['count_total'] = solr_response.numFound
         response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
         response['more_url_plain'] = settings.DATABASES_URL
