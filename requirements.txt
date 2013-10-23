@@ -1,10 +1,10 @@
 beautifulsoup4
 django>=1.5
 lxml
+netaddr
 psycopg2
 pytz
 requests>=1.2
 solrpy
 south
 xlrd
-netaddr
