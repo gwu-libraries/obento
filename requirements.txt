@@ -1,5 +1,6 @@
 beautifulsoup4
-django>=1.5
+django>=1.5,<1.6
+django-nose
 lxml
 netaddr
 psycopg2

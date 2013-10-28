@@ -528,7 +528,7 @@ def default_context_params():
 
 def _is_request_local(request):
     remote_addr = request.GET.get('remote_addr', '')
-    if remote_addr=='':
+    if remote_addr == '':
         remote_addr = request.META['REMOTE_ADDR']
     found_ip = False
     for ipg in settings.LOCAL_IPS:
