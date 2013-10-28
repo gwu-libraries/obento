@@ -16,6 +16,8 @@ from django.shortcuts import render
 
 from ui.models import Database, Journal, Search
 
+from netaddr import IPAddress, IPGlob
+
 
 # FIXME: make a local_setting
 DEFAULT_HIT_COUNT = 3
@@ -344,6 +346,8 @@ def _summon_query(request, scope='all'):
     params['s.q'] = q
     # disable highlighting tags
     params['s.hl'] = 'false'
+    if _is_request_local(request):
+        params['s.role'] = 'authenticated'
     id_str = _summon_id_string(headers, params)
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
@@ -412,6 +416,10 @@ def _summon_query(request, scope='all'):
     response['more_url_plain'] = settings.SUMMON_URL
     response['more_url'] = '%s%s' %  \
         (settings.SUMMON_SCOPES[scope]['more_url'], q)
+    if _is_request_local(request):
+        response['more_url'] += '&s.role=authenticated'
+    else:
+        response['more_url'] += '&s.role=none'
     return response
 
 
@@ -516,3 +524,14 @@ def default_context_params():
             'DESCRIPTION_DISPLAY_LENGTH':
             settings.DESCRIPTION_DISPLAY_LENGTH,
             'AUTHOR_DISPLAY_LENGTH': settings.AUTHOR_DISPLAY_LENGTH}
+
+
+def _is_request_local(request):
+    remote_addr = request.GET.get('remote_addr', '')
+    if remote_addr == '':
+        remote_addr = request.META['REMOTE_ADDR']
+    found_ip = False
+    for ipg in settings.LOCAL_IPS:
+        if IPAddress(remote_addr) in IPGlob(ipg):
+            found_ip = True
+    return found_ip

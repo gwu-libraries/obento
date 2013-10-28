@@ -27,7 +27,7 @@
 
 	    function fetch(vals) {
 		$.post('obento/proxyscript.php',
-			{"url": bento_url+vals[0]+"?q="+data},
+            {"url": bento_url+vals[0]+"?q="+data+"&remote_addr="+"<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
 			function(response){
        	           		$(vals[1]).html(response);
 			}
