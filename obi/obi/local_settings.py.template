@@ -4,6 +4,31 @@ ADMINS = (
     ('Your Name', 'your.address@example.com'),
 )
 
+# This value should be something like [obento-test] (with a trailing space)
+EMAIL_SUBJECT_PREFIX = ' '
+# Set SERVER_EMIL to root@myserver, e.g. 'root@gwbento-test.wrlc.org'
+SERVER_EMAIL = ''
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'loggins',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+SNMP_COMMUNITY_STRING = ''
+ALLOWED_HOSTS = ['']
+TASTYPIE_DEFAULT_FORMATS = ['json']
+
+# If this value is present (not empty), GA bug will be added to html
+GOOGLE_ANALYTICS_UA = ''
+
 MANAGERS = ADMINS
 
 DATABASES = {
