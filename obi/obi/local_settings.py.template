@@ -22,26 +22,6 @@ DATABASES = {
     }
 }
 
-SNMP_COMMUNITY_STRING = ''
-ALLOWED_HOSTS = ['']
-TASTYPIE_DEFAULT_FORMATS = ['json']
-
-# If this value is present (not empty), GA bug will be added to html
-GOOGLE_ANALYTICS_UA = ''
-
-MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'obi',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
