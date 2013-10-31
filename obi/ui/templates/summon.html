@@ -46,7 +46,12 @@
     {% endif %}
 {% else %}
 <p>
+    {% if response.scope != 'research_guides' %}
     <i>No articles found.  Please try another search in <a href='{{ response.more_url_plain }}'>ArticlesPlus.</a>
     </i>
+    {% else %}
+    <i>No research guides found.  Please try another search in <a href='{{ response.more_url_plain }}'>ArticlesPlus.</a>
+    </i>
+    {% endif %}
 </p>
 {% endif %}
