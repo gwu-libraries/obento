@@ -29,7 +29,7 @@ $(document).ready(function () {
         ["{% url 'articles_html' %}", '#articles-response'],
         ["{% url 'databases_html' %}", '#databases-response'],
         ["{% url 'databases_solr_html' %}", '#databases-solr-response'],
-        ["{% url 'books_media_html' %}", '#books-response'],
+        ["{% url 'summon_books_media_html' %}", '#summon-books-response'],
         ["{% url 'journals_html' %}", '#journals-response'],
         ["{% url 'journals_solr_html' %}", '#journals-solr-response'],
         ["{% url 'libsite_html' %}", '#libsite-response'],
@@ -78,8 +78,8 @@ $(document).ready(function () {
         </div>
     </div>
     <div id='books-journals' class='span4 left-border'>
-        <h4>Books &amp; Media</h4>
-        <div id='books-response' class='row-fluid'>
+        <h4>Books &amp; Media (Summon)</h4>
+        <div id='summon-books-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
