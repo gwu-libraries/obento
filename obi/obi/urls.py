@@ -44,6 +44,11 @@ urlpatterns = patterns('ui.views',
     url(r'^books_media_json', 'books_media_json',
         name='books_media_json', kwargs={'scope': 'books_media'}),
 
+    url(r'^summon_books_media_html', 'summon_html',
+        name='summon_books_media_html', kwargs={'scope': 'books_media'}),
+    url(r'^summon_books_media_json', 'summon_json',
+        name='summon_books_media_json', kwargs={'scope': 'books_media'}),
+
     url(r'^research_guides_html', 'summon_html',
         name='research_guides_html', kwargs={'scope': 'research_guides'}),
     url(r'^research_guides_json', 'summon_json',

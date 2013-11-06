@@ -1,13 +1,3 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset='utf-8' />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GW Libraries Search: PUT TITLE HERE</title>
-
-        <script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.min.js' />
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-
         <!-- feedback form -->
         <script type='text/javascript'>
         function formFeedback() {
@@ -23,11 +13,11 @@
         }
 	$(document).ready(function() {
             var data = $.urlParam('query');
-	    var bento_url = "http://gwdev-kerchner.wrlc.org:8080/";
+	    var bento_url = "http://gwbento-test.wrlc.org/";
 
 	    function fetch(vals) {
 		$.post('obento/proxyscript.php',
-            {"url": bento_url+vals[0]+"?q="+data+"&remote_addr="+"<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
+                        {"url": bento_url+vals[0]+"?q="+data+"&remote_addr="+"<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
 			function(response){
        	           		$(vals[1]).html(response);
 			}
@@ -46,9 +36,6 @@
 	    blocks.forEach(fetch);
 	});
 	</script>
-
-    </head>
-    <body>
 
 <?php if ($_GET["query"])
 {
@@ -115,6 +102,4 @@
                 <h4>Got <a href="javascript:void(0);" onclick="formFeedback();">feedback</a>?</h4>
             </div>
         </div>
-    </body>
-</html>
 
