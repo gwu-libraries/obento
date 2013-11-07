@@ -71,6 +71,9 @@ SUMMON_SCOPES = {
         'http://gw.summon.serialssolutions.com/search?s.q='},
 }
 
+# Research Guides
+LIBGUIDES_URL = 'http://libguides.gwu.edu/'
+
 # libguides database config with page ids
 # e.g.: http://libguides.gwu.edu/content.php?pid=98717&sid=1719900
 LIBGUIDES_DB_BASE_URL = 'http://libguides.gwu.edu/content.php'

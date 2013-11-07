@@ -413,7 +413,10 @@ def _summon_query(request, scope='all'):
     response['bbmatches'] = bbmatches
     response['q'] = q
     response['scope'] = scope
-    response['more_url_plain'] = settings.SUMMON_URL
+    if scope == 'research_guides':
+        response['more_url_plain'] = settings.LIBGUIDES_URL
+    else:
+        response['more_url_plain'] = settings.SUMMON_URL
     response['more_url'] = '%s%s' %  \
         (settings.SUMMON_SCOPES[scope]['more_url'], q)
     if _is_request_local(request):
