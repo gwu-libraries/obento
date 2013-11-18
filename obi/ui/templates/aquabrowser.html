@@ -4,7 +4,7 @@
 <ul id='books-media' class='unstyled'>
     {% for match in response.matches %}
     <li class='item'>
-        <a href='{{ match.url }}' title='{{ match.name }}'>
+        <a href='{{ match.url }}' title='{{ match.name }}' onclick="window.open(this.href); return false;">
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
@@ -31,12 +31,12 @@
 {% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See all matches</a>
+    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all matches</a>
 </p>
 {% endif %}
 {% else %}
 <p>
-    <i>No books or media results found.  Please try another search in the <a href='{{ response.more_url_plain }}'>catalog.</a>
+    <i>No books or media results found.  Please try another search in the <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">catalog.</a>
     </i>
 </p>
 {% endif %}

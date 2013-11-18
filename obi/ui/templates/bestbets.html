@@ -5,7 +5,7 @@
 <ul id='summon' class='unstyled'>
     {% for match in response.bbmatches %}
     <li class='item'>
-        <a href='{{ match.url }}'>
+        <a href='{{ match.url }}' onclick="window.open(this.href); return false;">
             {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         {% if match.description %}

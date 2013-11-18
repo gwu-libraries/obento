@@ -4,7 +4,7 @@
 <ul id='journals' class='unstyled'>
     {% for match in response.matches %}
     <li>
-        <a href='{{ match.url }}' title='{{ match.title }}'>
+        <a href='{{ match.url }}' title='{{ match.title }}' onclick="window.open(this.href); return false;">
             {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
@@ -16,12 +16,12 @@
 {% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}'>See all journals</a>
+    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all journals</a>
 </p>
 {% endif %}
 {% else %}
 <p>
-    <i>No journal titles found.  Please try another search in <a href='{{ response.more_url_plain }}'>Journal Titles.</a>
+    <i>No journal titles found.  Please try another search in <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">Journal Titles.</a>
     </i>
 </p>
 {% endif %}
