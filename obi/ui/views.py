@@ -58,6 +58,10 @@ def everything(request):
 
 def _aquabrowser_query(request):
     q = request.GET.get('q', '')
+    # if the query is not already quoted, enclose in quotes
+    if not(q.startswith('\"') and q.endswith('\"')):
+        q = '\"'+q+'\"'
+
     try:
         count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
     except:
