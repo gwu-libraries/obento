@@ -42,19 +42,20 @@
 ?>
 <div id='results' class='row-fluid'>
     <div id='bestbets-articles-databases' class='span4'>
+        <h2 id='bestbets-title' style='display:none;'>Best Bets</h2>
         <div id='bestbets-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <h3>Articles</h3>
+        <h2>Articles</h2>
         <div id='articles-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
         <hr />
-        <h3>Databases</h3>
+        <h2>Databases</h2>
         <div id='databases-solr-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
@@ -62,14 +63,14 @@
         </div>
     </div>
     <div id='books-journals' class='span4 left-border'>
-        <h3>Books &amp; Media</h3>
+        <h2>Books &amp; Media</h2>
         <div id='books-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
         <hr />
-        <h3 class='separate-top'>Journals</h3>
+        <h2 class='separate-top'>Journals</h2>
         <div id='journals-solr-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
@@ -77,14 +78,14 @@
         </div>
     </div>
     <div id='website-other' class='span4 left-border'>
-        <h3>Library Website</h3>
+        <h2>Library Website</h2>
         <div id='libsite-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
         <hr />
-        <h3>Research Guides</h3>
+        <h2>Research Guides</h2>
         <div id='guides-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
