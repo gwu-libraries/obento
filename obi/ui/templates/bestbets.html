@@ -1,7 +1,9 @@
 {% load humanize %}
 
 {% if response.bbmatches %}
-<h4>Best Bets</h4>
+<script type='text/javascript'>
+$('#bestbets-title').show(0)
+</script>
 <ul id='summon' class='unstyled'>
     {% for match in response.bbmatches %}
     <li class='item'>
