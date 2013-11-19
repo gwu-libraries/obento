@@ -47,14 +47,14 @@
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <h4>Articles</h4>
+        <h3>Articles</h3>
         <div id='articles-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
         <hr />
-        <h4>Databases</h4>
+        <h3>Databases</h3>
         <div id='databases-solr-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
@@ -62,14 +62,14 @@
         </div>
     </div>
     <div id='books-journals' class='span4 left-border'>
-        <h4>Books &amp; Media</h4>
+        <h3>Books &amp; Media</h3>
         <div id='books-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
         <hr />
-        <h4 class='separate-top'>Journals</h4>
+        <h3 class='separate-top'>Journals</h3>
         <div id='journals-solr-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
@@ -77,14 +77,14 @@
         </div>
     </div>
     <div id='website-other' class='span4 left-border'>
-        <h4>Library Website</h4>
+        <h3>Library Website</h3>
         <div id='libsite-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
         <hr />
-        <h4>Research Guides</h4>
+        <h3>Research Guides</h3>
         <div id='guides-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
