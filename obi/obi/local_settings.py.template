@@ -55,11 +55,14 @@ SUMMON_SCOPES = {
     'all': {'params': {'s.ff': 'ContentType,or,1,15', 's.role': 'none'},
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
     'articles': {'params': {'s.fvf': 'IsScholarly,true',
-        's.cmd': 'addFacetValueFilters(ContentType,Journal Article)',
+        's.cmd': 'setHoldingsOnly(true)',
+        's.fvf[]': 'IsScholarly,true,f',
+        's.fvf[]': 'ContentType,Journal+Article,f',
+        's.fvf[]': 'ContentType,Newspaper+Article,t',
         's.ho': 'f',
         's.role': 'none'},
         'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.cmd=addFacetValueFilters(ContentType,Journal+Article)&s.fvf=IsScholarly,true&s.ho=f&keep_r=true&s.q='},
+        'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf[]=ContentType,Journal+Article,f&s.fvf[]=IsScholarly,true,f&s.fvf[]=ContentType,Newspaper+Article,t&s.ho=f&s.role=none&s.q='},
     'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")', 's.ho': 't', 's.role': 'none'},
         'more_url':
         'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&s.ho=t&keep_r=true&s.q='},
