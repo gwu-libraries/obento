@@ -371,12 +371,22 @@ def _summon_query(request, scope='all'):
         #  else:
         #      if document.get('CorporateAuthor', []):
         #          match['author'] = document['CorporateAuthor'][0]
-        if document.get('Title', []):
-            title_str = document['Title'][0]
-        elif document.get('DocumentTitleAlternate', []):
-            title_str = document['DocumentTitleAlternate'][0]
+        if _is_non_roman(request):
+            if document.get('DocumentTitle_FL', []):
+                title_str = document['DocumentTitle_FL'][0]
+            elif document.get('Title', []):
+                title_str = document['Title'][0]
+            elif document.get('DocumentTitleAlternate', []):
+                title_str = document['DocumentTitleAlternate'][0]
+            else:
+                title_str = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
         else:
-            title_str = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
+            if document.get('Title', []):
+                title_str = document['Title'][0]
+            elif document.get('DocumentTitleAlternate', []):
+                title_str = document['DocumentTitleAlternate'][0]
+            else:
+                title_str = 'NO TITLE FOUND - SHOW A NICER MESSAGE PLEASE'
 
         # Remove "Research Guides. " from start of string
         MATCH_TO_REMOVE = 'Research Guides. '
