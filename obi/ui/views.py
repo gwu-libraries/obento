@@ -195,10 +195,12 @@ def _databases_solr_query(request):
         count = DATABASE_HIT_COUNT
     response = {'q': q}
     if q:
+        if not '"' in q:
+            q = '"%s"' % q
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         query = u'+text:%s +id:db-* (name:%s OR description:%s)' % (q, q, q)
-        try: 
+        try:
             solr_response = s.query(query, rows=DATABASE_HIT_COUNT)
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
@@ -279,6 +281,8 @@ def _journals_solr_query(request):
         count = DEFAULT_HIT_COUNT
     response = {'q': q}
     if q:
+        if not '"' in q:
+            q = '"%s"' % q
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         try:
