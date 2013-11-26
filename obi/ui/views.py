@@ -198,21 +198,27 @@ def _databases_solr_query(request):
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         query = u'+text:%s +id:db-* (name:%s OR description:%s)' % (q, q, q)
-        solr_response = s.query(query, rows=DATABASE_HIT_COUNT)
-        response['count_total'] = solr_response.numFound
-        response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
-        response['more_url_plain'] = settings.DATABASES_URL
-        if count == 0:
-            count = len(solr_response.results)
-        for db in solr_response.results[:count]:
-            match = {'name': db['name'], 'url': db.get('url', ''),
-                     'description': db.get('description', '')}
-            matches.append(match)
-        response['matches'] = matches
-        if settings.DEBUG:
-            source = {'header': solr_response.header,
-                      'results': solr_response.results}
-            response['source'] = source
+        try: 
+            solr_response = s.query(query, rows=DATABASE_HIT_COUNT)
+            response['count_total'] = solr_response.numFound
+            response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
+            response['more_url_plain'] = settings.DATABASES_URL
+            if count == 0:
+                count = len(solr_response.results)
+            for db in solr_response.results[:count]:
+                match = {'name': db['name'], 'url': db.get('url', ''),
+                         'description': db.get('description', '')}
+                matches.append(match)
+            response['matches'] = matches
+            if settings.DEBUG:
+                source = {'header': solr_response.header,
+                          'results': solr_response.results}
+                response['source'] = source
+        except:
+            response['count_total'] = 0
+            response['more_url'] = settings.DATABASES_MORE_URL
+            response['more_url_plain'] = settings.DATABASES_URL
+            response['matches'] = []
     return response
 
 
@@ -275,26 +281,32 @@ def _journals_solr_query(request):
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
-        solr_response = s.query('+text:%s +name:%s +id:j-*' % (q, q))
-        response['count_total'] = solr_response.numFound
-        response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
-        response['more_url_plain'] = settings.JOURNALS_URL
-        if count == 0:
-            count = len(solr_response.results)
-        for j in solr_response.results[:count]:
-            url = settings.JOURNALS_TITLE_EXACT_URL + \
-                urllib.quote_plus(unicode(j['name']).encode('utf-8'))
-            match = {'title': j['name'], 'url': url}
-            if j.get('issn', ''):
-                match['issn'] = j['issn']
-            elif j.get('eissn', ''):
-                match['issn'] = j['eissn']
-            matches.append(match)
-        response['matches'] = matches
-        if settings.DEBUG:
-            source = {'header': solr_response.header,
-                      'results': solr_response.results}
-            response['source'] = source
+        try:
+            solr_response = s.query('+text:%s +name:%s +id:j-*' % (q, q))
+            response['count_total'] = solr_response.numFound
+            response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
+            response['more_url_plain'] = settings.JOURNALS_URL
+            if count == 0:
+                count = len(solr_response.results)
+            for j in solr_response.results[:count]:
+                url = settings.JOURNALS_TITLE_EXACT_URL + \
+                    urllib.quote_plus(unicode(j['name']).encode('utf-8'))
+                match = {'title': j['name'], 'url': url}
+                if j.get('issn', ''):
+                    match['issn'] = j['issn']
+                elif j.get('eissn', ''):
+                    match['issn'] = j['eissn']
+                matches.append(match)
+            response['matches'] = matches
+            if settings.DEBUG:
+                source = {'header': solr_response.header,
+                          'results': solr_response.results}
+                response['source'] = source
+        except:
+            response['count_total'] = 0
+            response['more_url'] = settings.JOURNALS_MORE_URL
+            response['more_url_plain'] = settings.JOURNALS_URL
+            response['matches'] = []
     return response
 
 
