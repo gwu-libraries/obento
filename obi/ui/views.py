@@ -25,7 +25,7 @@ RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 
 def home(request):
-    q = request.GET.get('q', '')
+    q = request.GET.get('q', '').strip()
     if q:
         articles_response = _summon_query(request, scope='articles')
         books_media_response = _aquabrowser_query(request)
@@ -186,7 +186,7 @@ def _databases_query(request):
 
 
 def _databases_solr_query(request):
-    q = request.GET.get('q', '')
+    q = request.GET.get('q', '').strip()
     # Don't use DEFAULT_HIT_COUNT, instead grab 25 so we can expand
     DATABASE_HIT_COUNT = 25
     try:
@@ -274,7 +274,7 @@ def _journals_query(request):
 
 
 def _journals_solr_query(request):
-    q = request.GET.get('q', '')
+    q = request.GET.get('q', '').strip()
     try:
         count = int(request.GET.get('count', None))
     except:
@@ -286,7 +286,7 @@ def _journals_solr_query(request):
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         try:
-            solr_response = s.query('+text:%s +name:%s +id:j-*' % (q, q))
+            solr_response = s.query('+id:j-* (name:%s OR text:%s)' % (q, q))
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
             response['more_url_plain'] = settings.JOURNALS_URL
