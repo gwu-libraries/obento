@@ -16,12 +16,13 @@
 	    var bento_url = "http://gwbento-test.wrlc.org/";
 
 	    function fetch(vals) {
-		$.post('obento/proxyscript.php',
-                        {"url": bento_url+vals[0]+"?q="+data+"&remote_addr="+"<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
+                $.get(bento_url+vals[0],
+                      {"q": data,
+                       "remote_addr": "<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
 			function(response){
        	           		$(vals[1]).html(response);
 			}
-		);
+		     );
     	    };
 
 	    var blocks = [
