@@ -165,7 +165,11 @@ If you choose to run obento in apache (versus django runserver):
 
         :%s/old_value/new_value/g
 
-3. Enable the new virtualhost. If you are using port 80 also disable the default host
+3. Enable the apache headers module, this is required for CORS support.
+
+        $ sudo a2enmod headers
+
+4. Enable the new virtualhost. If you are using port 80 also disable the default host
 
         $ sudo a2ensite obento
         $ sudo a2dissite default
