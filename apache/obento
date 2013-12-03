@@ -4,6 +4,8 @@
     ServerName <your server url>
     DocumentRoot <PATH_TO_OBENTO_HOME>/obi/obi
 
+    Header set Access-Control-Allow-Origin "*"
+
     Alias /static/admin/ <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
     <Directory <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
         Order deny,allow
