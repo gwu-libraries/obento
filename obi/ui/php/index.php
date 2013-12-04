@@ -7,12 +7,8 @@
         </script>
 
 	<script type='text/javascript'>
-        $.urlParam = function(name){
-            var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-            return results[1] || 0;
-        }
 	$(document).ready(function() {
-            var data = $.urlParam('query');
+            var data='<?php print $_GET["query"] ?>';
 	    var bento_url = "http://gwbento-test.wrlc.org/";
 
 	    function fetch(vals) {
