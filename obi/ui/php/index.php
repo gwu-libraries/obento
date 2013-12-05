@@ -37,6 +37,14 @@
 <?php if ($_GET["query"])
 {
 ?>
+<div id='form'>
+    <form action='search-beta' method='GET' class='search-form'>
+        <fieldset>
+            <input id='query' type='text' size='40' name='query' value='<?php print $_GET["query"] ?>' />
+            <input type='submit' value='Search'/>
+        </fieldset>
+    </form>
+</div>
 <div id='results' class='row-fluid'>
     <div id='bestbets-articles-databases' class='span4'>
         <h2 id='bestbets-title' style='display:none;'>Best Bets</h2>
