@@ -42,13 +42,15 @@ $(document).ready(function () {
 {% block content %}
 <h3>GW Libraries Search</h3>
 
-<div id='form'>
+<div id='form' class='search-all-banner'>
+    <div class='search-all-banner-inner'>
     <form action='{% url "home" %}' method='GET' class='form-search'>
         <fieldset>
             <input id='q' type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
             <input type='submit' class='btn' value='go'/>
         </fieldset>
     </form>
+    </div>
 </div>
 
 {% if q %}
