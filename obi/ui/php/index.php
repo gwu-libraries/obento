@@ -39,16 +39,15 @@
 ?>
 <div class='search-all-banner-outer'>
 <div id='form' class='search-all-banner'>
-  <div class='search-all-banner-inner'>
+  <div class='search-all-banner-inner' style=''>
     <form action='search-beta' method='GET' class='search-form'>
             <div class='search-all-label'><label>Search All</label></div>
-            <div>
+            <div class='search-all-form-fields'>
             <input id='query' type='text' size='40' name='query' value='<?php print $_GET["query"] ?>' />
             <input type='submit' value='Search'/>
             </div>
     </form>
   </div>
-</div>
 </div>
 <div id='results' class='row-fluid'>
     <div id='bestbets-articles-databases' class='span4'>
