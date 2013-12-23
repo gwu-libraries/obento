@@ -30,7 +30,9 @@
 		["libsite_html", '#libsite-response'],
 		["research_guides_html", '#guides-response'],
 	    ];
-	    blocks.forEach(fetch);
+            for (var i=0; i < blocks.length; i++) {
+                fetch(blocks[i]);
+            }
 	});
 	</script>
 
