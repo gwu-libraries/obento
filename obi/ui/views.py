@@ -517,10 +517,11 @@ def _libsite_query(request):
     params = {'keys': q}
     r = requests.get(settings.LIBSITE_SEARCH_URL, params=params)
 
-    # FIXME: VERY FRAGILE!!!!  Breaks when results contain \'ed characters
-    # Should be:
-    # j = json.loads(jstr)
-    j = json.loads(r.text[1:])  # FIXME: remove leading \ufeff at source
+    # Strip off BOM if present (presence depends on Drupal site configuration)
+    if r.text[0] == u'\ufeff':
+        j = json.loads(r.text[1:])
+    else:
+        j = json.loads(r.text)
     response = {}
     matches = []
     nodesarray = j['nodes']
