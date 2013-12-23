@@ -10,7 +10,7 @@ COMMIT_BLOCK_SIZE = 100
 
 
 class Command(BaseCommand):
-    help = 'index the database list'
+    help = 'index the database list and journal titles list'
 
     def handle(self, *args, **options):
         # TODO: add an option for zapping the index first
