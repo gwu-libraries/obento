@@ -70,6 +70,7 @@
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
+        <hr class="mobile-show-720" />
     </div>
     <div id='books-journals' class='span4 left-border'>
         <h2>Books &amp; Media</h2>
@@ -85,6 +86,7 @@
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
+        <hr class="mobile-show-720" />
     </div>
     <div id='website-other' class='span4 left-border'>
         <h2>Library Website</h2>
