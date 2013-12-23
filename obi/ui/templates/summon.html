@@ -14,7 +14,7 @@
             <br>
         {% endif %}
         {% if match.publicationtitle %}
-            <i>{{ match.publicationtitle }}</i>, {{ match.publicationyear }}
+            <em>{{ match.publicationtitle }}</em>, {{ match.publicationyear }}
             <br>
         {% elif response.scope != 'research_guides' %}
             {% if match.publicationplace %}
@@ -47,11 +47,11 @@
 {% else %}
 <p>
     {% if response.scope != 'research_guides' %}
-    <i>No articles found.  Please try another search in <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">ArticlesPlus.</a>
-    </i>
+    <em>No articles found.  Please try another search in <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">ArticlesPlus.</a>
+    </em>
     {% else %}
-    <i>No research guides found.  Please try browsing our <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">Research Guides.</a>
-    </i>
+    <em>No research guides found.  Please try browsing our <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">Research Guides.</a>
+    </em>
     {% endif %}
 </p>
 {% endif %}
