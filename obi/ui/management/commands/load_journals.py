@@ -29,6 +29,7 @@ class Command(BaseCommand):
         sh = book.sheet_by_index(0)
 
         # row 0 contains column headers so skip it
+        print 'Loading %d journals...' % sh.nrows
         for rx in range(1, sh.nrows):
             r = sh.row(rx)
             title = r[0].value.encode('utf-8')
@@ -37,3 +38,6 @@ class Command(BaseCommand):
             eissn = r[3].value.encode('utf-8')
             journal = Journal(title=title, ssid=ssid, issn=issn, eissn=eissn)
             journal.save()
+            if rx % 1000 == 0:
+                print "Loaded %d of %d" % (rx, sh.nrows)
+        print "Completed loading of %d journals" % sh.nrows
