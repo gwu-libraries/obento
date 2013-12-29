@@ -514,6 +514,17 @@ def _libsite_query(request):
         count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
     except:
         count = DEFAULT_HIT_COUNT
+    #----
+    #TODO: Remove this once the Drupal search json packaging stops
+    # choking on single quotes.  This wraps each word containing a '
+    # in double quotes.  Not a perfect solution but it'll handle "most"
+    # real-world queries
+    qlist = q.split(' ')
+    for i in range(len(qlist)):
+        if qlist[i].find("\'") > -1:
+            qlist[i]  = '\"' + qlist[i] + '\"'
+    q = ' '.join(qlist)
+    #----
     params = {'keys': q}
     r = requests.get(settings.LIBSITE_SEARCH_URL, params=params)
 
