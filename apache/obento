@@ -7,6 +7,7 @@
     Header set Access-Control-Allow-Origin "*"
 
     Alias /static/admin/ <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/
+    Alias /static/ <PATH_TO_OBENTO_HOME>/obi/ui/static/
     <Directory <PATH_TO_OBENTO_HOME>/ENV/lib/python2.7/site-packages/django/contrib/admin/static/admin/>
         Order deny,allow
         Allow from all
