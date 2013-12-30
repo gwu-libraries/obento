@@ -13,6 +13,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import RequestContext
 
 from ui.models import Database, Journal, Search
 
@@ -465,7 +466,8 @@ def summon_html(request, scope='all'):
     else:
         responsepage = 'summon.html'
     return render(request, responsepage,
-                  {'response': response, 'context': default_context_params()})
+                  {'response': response, 'context': default_context_params()},
+                  context_instance=RequestContext(request))
 
 
 def summon_json(request, scope='all'):
@@ -522,7 +524,7 @@ def _libsite_query(request):
     qlist = q.split(' ')
     for i in range(len(qlist)):
         if qlist[i].find("\'") > -1:
-            qlist[i]  = '\"' + qlist[i] + '\"'
+            qlist[i] = '\"' + qlist[i] + '\"'
     q = ' '.join(qlist)
     #----
     params = {'keys': q}
