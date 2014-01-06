@@ -1,7 +1,11 @@
         <!-- feedback form -->
         <script type='text/javascript'>
         function formFeedback() {
-            var formUrl = "https://docs.google.com/forms/d/1YNODxi35XiJEv80wOJDFV3H2IIfOYmU3K5hCU8SfunE/viewform?entry.229836285=" + encodeURIComponent(location.href);
+            // TEST form - uncomment for TEST
+            var formID = "1YNODxi35XiJEv80wOJDFV3H2IIfOYmU3K5hCU8SfunE";
+            // PRODUCTION form - uncomment for PRODUCTION
+            // var formID = "1zTbNA6_4urOuEAjcCJrGBqZD8JVY3xxqTIaHP44YHOA";
+            var formUrl = "https://docs.google.com/forms/d/" + formID + "/viewform?entry.229836285=" + encodeURIComponent(location.href);
                 window.open(formUrl);
         }
         </script>
