@@ -29,15 +29,25 @@ class Command(BaseCommand):
         sh = book.sheet_by_index(0)
 
         # row 0 contains column headers so skip it
-        print 'Loading %d journals...' % sh.nrows
+        print 'Reading %d rows...' % sh.nrows
+        loaded_count = 0
         for rx in range(1, sh.nrows):
             r = sh.row(rx)
-            title = r[0].value.encode('utf-8')
-            ssid = r[1].value.encode('utf-8')
-            issn = r[2].value.encode('utf-8')
-            eissn = r[3].value.encode('utf-8')
-            journal = Journal(title=title, ssid=ssid, issn=issn, eissn=eissn)
-            journal.save()
+            status = r[2].value
+            resource_type = r[3].value
+            if ((status == "Subscribed") or
+                    (status == "Canceled--Perpetual Access")) \
+                    and resource_type == "Journal":
+                title = r[0].value.encode('utf-8')
+                ssid = r[1].value.encode('utf-8')
+                issn = r[4].value.encode('utf-8')
+                eissn = r[5].value.encode('utf-8')
+                journal = Journal(title=title, ssid=ssid, issn=issn,
+                                  eissn=eissn)
+                journal.save()
+                loaded_count += 1
             if rx % 1000 == 0:
-                print "Loaded %d of %d" % (rx, sh.nrows)
-        print "Completed loading of %d journals" % sh.nrows
+                print "Read %d of %d rows, loaded %d titles" % (rx, sh.nrows,
+                                                                loaded_count)
+        print "Completed loading of %d journals from %d rows." % (loaded_count,
+                                                                  sh.nrows)
