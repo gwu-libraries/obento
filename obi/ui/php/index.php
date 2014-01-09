@@ -14,7 +14,7 @@
 
 	<script type='text/javascript'>
 	$(document).ready(function() {
-            var data='<?php print $_GET["query"] ?>';
+            var data="<?php print addslashes($_GET["query"]) ?>";
 	    var bento_url = "http://gwbento-test.wrlc.org/";
 
 	    function fetch(vals) {
@@ -51,7 +51,7 @@
       <form action='search-beta' method='GET' class='search-form'>
             <div class='search-all-label'><label>Search All</label></div>
             <div class='search-all-form-fields'>
-            <input id='query' type='text' size='40' name='query' value='<?php print $_GET["query"] ?>' />
+            <input id='query' type='text' size='40' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
             <input type='submit' value='Search'/>
             </div>
       </form>
