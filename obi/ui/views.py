@@ -349,11 +349,9 @@ def journals_solr_json(request):
 
 def _summon_id_string(accept, xsummondate, host, path, params):
     if len(params) > 0:
-        print "len > 0"
         params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
                                  for k, v in sorted(params.items())])
     else:
-        print "len == 0"
         params_sorted = ''
     s = '\n'.join([accept, xsummondate, host, path, params_sorted])
     # Don't forget the trailing '\n'!
