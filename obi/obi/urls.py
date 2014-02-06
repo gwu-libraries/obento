@@ -62,6 +62,10 @@ urlpatterns = patterns('ui.views',
     url(r'^libsite_html', 'libsite_html', name='libsite_html'),
     url(r'^libsite_json', 'libsite_json', name='libsite_json'),
 
+    url(r'^healthcheck_html', 'healthcheck_html',
+        name='healthcheck_html'),
+    url(r'^summon_healthcheck_json', 'summon_healthcheck_json',
+        name='summon_healthcheck_json'),
 )
 
 urlpatterns += patterns('',
