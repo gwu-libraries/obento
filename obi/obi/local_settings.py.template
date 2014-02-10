@@ -45,6 +45,7 @@ JOURNALS_TITLE_EXACT_URL = \
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
 AQUABROWSER_API_PATH = 'result.ashx'
+AQUABROWSER_TIMEOUT_SECONDS = 0.5
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
@@ -52,6 +53,7 @@ SUMMON_API_KEY = 'XXXXXXXXXXXXX'
 SUMMON_HOST = 'api.summon.serialssolutions.com'                                 
 SUMMON_PATH = '/2.0.0/search'                                                   
 SUMMON_HEALTHCHECK_PATH = '/2.0.0/search/ping'
+SUMMON_TIMEOUT_SECONDS = 0.5
 SUMMON_SCOPES = {
     'all': {'params': {'s.ff': 'ContentType,or,1,15', 's.role': 'none'},
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
