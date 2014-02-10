@@ -72,7 +72,10 @@ def _aquabrowser_query(request):
     params = {'output': 'xml', 'q': q}
     # TODO: move url to settings
     url = settings.AQUABROWSER_URL + settings.AQUABROWSER_API_PATH
-    r = requests.get(url, params=params)
+    r = requests.get(url, params=params,
+                     timeout=settings.AQUABROWSER_TIMEOUT_SECONDS)
+    # throw any bad response codes before proceeding
+    r.raise_for_status()
     root = etree.fromstring(r.text)
     matches = []
     records = root.findall('./results/record')
@@ -381,9 +384,18 @@ def _summon_query(request, scope='all'):
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
-    r = requests.get(url, params=params, headers=headers)
+    # Healthcheck is placed immediately before GET.
+    # Assumption here is that API availability is very unlikely to change
+    if _summon_healthcheck() is False:
+        response = {'service_status': 'unavailable'}
+        return response
+    r = requests.get(url, params=params, headers=headers,
+                     timeout=settings.SUMMON_TIMEOUT_SECONDS)
+    # ...but just in case:
+    r.raise_for_status()
     d = r.json()
-    response = {'count_total': d['recordCount']}
+    response = {'service_status': 'available',
+                'count_total': d['recordCount']}
     matches = []
     for document in d['documents'][:DEFAULT_HIT_COUNT]:
         match = {'url': document['link']}
@@ -532,7 +544,9 @@ def _libsite_query(request):
     q = ' '.join(qlist)
     #----
     params = {'keys': q}
-    r = requests.get(settings.LIBSITE_SEARCH_URL, params=params)
+    r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
+                     timeout=settings.LIBSITE_TIMEOUT_SECONDS)
+    r.raise_for_status()
 
     # Strip off BOM if present (presence depends on Drupal site configuration)
     if r.text[0] == u'\ufeff':
@@ -590,7 +604,7 @@ def _is_request_local(request):
     return found_ip
 
 
-def _summon_healthcheck_json_raw(request):
+def _summon_healthcheck():
     headers = {}
     headers['Accept'] = 'application/json'
     headers['Host'] = settings.SUMMON_HOST
@@ -606,27 +620,22 @@ def _summon_healthcheck_json_raw(request):
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST,
                            settings.SUMMON_HEALTHCHECK_PATH)
-    r = requests.get(url, headers=headers)
-    # response from summon includes 'status' key
-    response = r.json()
-    return response
+    try:
+        r = requests.get(url, headers=headers,
+                         timeout=settings.SUMMON_TIMEOUT_SECONDS)
+    except:
+        return False
+    if r.status_code == 200:
+        response = r.json()
+        if response['status'] == 'available':
+            return True
+    return False
 
 
 def summon_healthcheck_json(request):
-    response = _summon_healthcheck_json_raw(request)
+    summon_status = _summon_healthcheck()
+    if summon_status is True:
+        response = {'status': 'available'}
+    else:
+        response = {'status': 'unavailable'}
     return HttpResponse(json.dumps(response), content_type='application/json')
-
-
-def healthcheck_html(request):
-    status_list = []
-    status = {}
-    status['system'] = 'summon'
-    status['status'] = _summon_healthcheck_json_raw(request)['status']
-    status_list.append(status)
-    status = {}
-    status['system'] = 'aquabrowser'
-    status['status'] = 'unknown'
-    status_list.append(status)
-    return render(request, 'status.html',
-                  {'status_list': status_list,
-                   'context': default_context_params()})
