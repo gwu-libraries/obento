@@ -1,7 +1,8 @@
 {% load humanize %}
 {% load staticfiles %}
 
-{% if response.matches %}
+{% if response.service_status == 'available' %}
+  {% if response.matches %}
 <ul id='summon' class='unstyled'>
     {% for match in response.matches %}
     <li class='item'>
@@ -53,5 +54,10 @@
     <em>No research guides found.  Please try browsing our <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">Research Guides.</a>
     </em>
     {% endif %}
+</p>
+  {% endif %}
+{% else %}
+<p>
+    <em>Summon service is unavailable.  No results available at this time.</em>
 </p>
 {% endif %}
