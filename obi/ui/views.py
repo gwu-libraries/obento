@@ -349,7 +349,7 @@ def journals_solr_json(request):
 
 def _summon_id_string(headers, params):
     params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
-                             for k, v in sorted(params.items())])
+                             for k, v in sorted(params)])
     s = '\n'.join([headers['Accept'], headers['x-summon-date'],
                    settings.SUMMON_HOST, settings.SUMMON_PATH, params_sorted])
     # Don't forget the trailing '\n'!
@@ -362,22 +362,31 @@ def _summon_query(request, scope='all'):
     headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
     # TODO: API docs say to reuse this once it's set for a user, punt for now
     headers['x-summon-session-id'] = ''
-    params = settings.SUMMON_SCOPES[scope]['params']
+    params = list(settings.SUMMON_SCOPES[scope]['params'])
     q = request.GET.get('q', '')
     if scope == 'research_guides':
         q = q + " NOT \"Research Guides. Databases\""
-    params['s.q'] = q
-    # disable highlighting tags
-    params['s.hl'] = 'false'
+    params.append(('s.q', q))
+    # always disable highlighting tags
+    params.append(('s.hl', 'false'))
     if _is_request_local(request):
-        params['s.role'] = 'authenticated'
+        params.append(('s.role', 'authenticated'))
+    else:
+        params.append(('s.role', 'none'))
     id_str = _summon_id_string(headers, params)
+    if scope == 'articles':
+        print "id_str == " + id_str
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
     r = requests.get(url, params=params, headers=headers)
+    if scope == 'articles':
+        print "r.url = " + r.url
+    # if the request returns a bad status code,
+    # don't ignore it; raise it as the appropriate exception
+    r.raise_for_status()
     d = r.json()
     response = {'count_total': d['recordCount']}
     matches = []
