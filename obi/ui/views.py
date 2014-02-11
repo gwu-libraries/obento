@@ -374,16 +374,12 @@ def _summon_query(request, scope='all'):
     else:
         params.append(('s.role', 'none'))
     id_str = _summon_id_string(headers, params)
-    if scope == 'articles':
-        print "id_str == " + id_str
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
     r = requests.get(url, params=params, headers=headers)
-    if scope == 'articles':
-        print "r.url = " + r.url
     # if the request returns a bad status code,
     # don't ignore it; raise it as the appropriate exception
     r.raise_for_status()
