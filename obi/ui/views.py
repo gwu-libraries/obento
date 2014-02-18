@@ -381,7 +381,7 @@ def _summon_query(request, scope='all'):
     d = r.json()
     matches = []
     response = {}
-    if 'documnents' in d:
+    if 'documents' in d:
         response['count_total'] = len(d['documents'])
     else:
         response['count_total'] = 0
