@@ -379,9 +379,17 @@ def _summon_query(request, scope='all'):
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
     r = requests.get(url, params=params, headers=headers)
     d = r.json()
-    response = {'count_total': d['recordCount']}
     matches = []
-    for document in d['documents'][:DEFAULT_HIT_COUNT]:
+    response = {}
+    if 'documnents' in d:
+        response['count_total'] = len(d['documents'])
+    else:
+        response['count_totel'] = 0
+    try:
+        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+    except:
+        count = DEFAULT_HIT_COUNT
+    for document in d['documents'][:count]:
         match = {'url': document['link']}
         if document.get('Author', []):
             match['author'] = ", ".join(document['Author'])
