@@ -9,8 +9,9 @@ from ui.models import Journal
 
 
 class Command(BaseCommand):
-    help = 'ingest an .xlsx (Excel) file of journal titles where each line \
-            contains:  journal title, SSID, ISSN, eISSN'
+    help = 'ingest an .xlsx (Excel) file of journal titles where each ' + \
+           'line contains the following six columns:  journal title, ' + \
+           'SSID, status, resource type, ISSN, eISSN'
 
     def handle(self, *args, **options):
         try:
