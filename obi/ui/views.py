@@ -384,7 +384,7 @@ def _summon_query(request, scope='all'):
     if 'documnents' in d:
         response['count_total'] = len(d['documents'])
     else:
-        response['count_totel'] = 0
+        response['count_total'] = 0
     try:
         count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
     except:
