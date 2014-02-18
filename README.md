@@ -42,7 +42,7 @@ PART II - Set up project environment
 
 2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with 
 your desired directory path and name: for instance ```/obento``` or 
-```/home/&lt;username&gt;/obento```)
+```/home/<username>/obento``` )
 
         $ mkdir <OBENTO_HOME>
         $ cd <OBENTO_HOME>
