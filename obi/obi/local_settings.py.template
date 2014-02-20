@@ -52,26 +52,35 @@ SUMMON_API_KEY = 'XXXXXXXXXXXXX'
 SUMMON_HOST = 'api.summon.serialssolutions.com'                                 
 SUMMON_PATH = '/2.0.0/search'                                                   
 SUMMON_SCOPES = {
-    'all': {'params': {'s.ff': 'ContentType,or,1,15', 's.role': 'none'},
+    'all': {
+        'params': [
+            ('s.ff', 'ContentType,or,1,15')],
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
-    'articles': {'params': {'s.fvf': 'IsScholarly,true',
-        's.cmd': 'setHoldingsOnly(true)',
-        's.fvf[]': 'IsScholarly,true,f',
-        's.fvf[]': 'ContentType,Journal+Article,f',
-        's.fvf[]': 'ContentType,Newspaper+Article,t',
-        's.ho': 'f',
-        's.role': 'none'},
+    'articles': {
+        'params': [
+            ('s.cmd', 'setHoldingsOnly(true)'),
+            ('s.fvf', 'IsScholarly,true,f'),
+            ('s.fvf', 'ContentType,Journal Article,f'),
+            ('s.fvf', 'ContentType,Newspaper Article,t'),
+            ('s.ho', 'f')],
         'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf[]=ContentType,Journal+Article,f&s.fvf[]=IsScholarly,true,f&s.fvf[]=ContentType,Newspaper+Article,t&s.ho=f&s.role=none&keep_r=true&s.q='},
-    'books_media': {'params': {'s.fq': 'SourceType:(\"Library Catalog\")', 's.ho': 't', 's.role': 'none'},
+           'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf[]=ContentType,Journal+Article,f&s.fvf[]=IsScholarly,true,f&s.fvf[]=ContentType,Newspaper+Article,t&s.ho=f&s.role=none&s.q='},
+    'books_media': {
+        'params': [
+            ('s.fq', 'SourceType:(\"Library Catalog\")'),
+            ('s.ho', 't')],
         'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&s.ho=t&keep_r=true&s.q='},
-    'research_guides': {'params': {'s.cmd': 'setHoldingsOnly(true)',
-        's.fvf': 'ContentType,Research Guide,f', 's.role': 'none'},
+            'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&s.ho=t&keep_r=true&s.q='},
+    'research_guides': {
+        'params': [
+            ('s.cmd', 'setHoldingsOnly(true)'),
+            ('s.fvf', 'ContentType,Research Guide,f')],
         'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
-    'best_bets': {'params': {'s.role': 'none'}, 'more_url':
-        'http://gw.summon.serialssolutions.com/search?s.q='},
+            'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
+    'best_bets': {
+        'params': [],
+        'more_url':
+            'http://gw.summon.serialssolutions.com/search?s.q='},
 }
 
 # Research Guides
