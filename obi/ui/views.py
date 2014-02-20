@@ -91,6 +91,7 @@ def _aquabrowser_query(request):
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
         holding_institutions = _ab_field_list(fields, 'bsall')
+        holding_institutions_display = ''
         if len(holding_institutions) > 0:
             if 'library\m\gw' in holding_institutions:
                 holding_institutions_display = 'GW'
@@ -98,6 +99,10 @@ def _aquabrowser_query(request):
                     holding_institutions_display += ' and other WRLC Libraries'
             else:
                 holding_institutions_display = 'Other WRLC Libraries'
+        else:
+            origin = _ab_field_list(fields, 'origin')
+            if 'library\m\digitalcollections' in origin:
+                holding_institutions_display = 'WRLC Digital Collections'
         match['institutions'] = holding_institutions_display
         matches.append(match)
     count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
