@@ -94,6 +94,7 @@ def _aquabrowser_query(request):
         match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
                        record.attrib['extID']
         holding_institutions = _ab_field_list(fields, 'bsall')
+        holding_institutions_display = ''
         if len(holding_institutions) > 0:
             if 'library\m\gw' in holding_institutions:
                 holding_institutions_display = 'GW'
@@ -101,6 +102,10 @@ def _aquabrowser_query(request):
                     holding_institutions_display += ' and other WRLC Libraries'
             else:
                 holding_institutions_display = 'Other WRLC Libraries'
+        else:
+            origin = _ab_field_list(fields, 'origin')
+            if 'library\m\digitalcollections' in origin:
+                holding_institutions_display = 'WRLC Digital Collections'
         match['institutions'] = holding_institutions_display
         matches.append(match)
     count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
@@ -353,7 +358,7 @@ def journals_solr_json(request):
 def _summon_id_string(accept, xsummondate, host, path, params):
     if len(params) > 0:
         params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
-                                 for k, v in sorted(params.items())])
+                                 for k, v in sorted(params)])
     else:
         params_sorted = ''
     s = '\n'.join([accept, xsummondate, host, path, params_sorted])
@@ -367,15 +372,17 @@ def _summon_query(request, scope='all'):
     headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
     # TODO: API docs say to reuse this once it's set for a user, punt for now
     headers['x-summon-session-id'] = ''
-    params = settings.SUMMON_SCOPES[scope]['params']
+    params = list(settings.SUMMON_SCOPES[scope]['params'])
     q = request.GET.get('q', '')
     if scope == 'research_guides':
         q = q + " NOT \"Research Guides. Databases\""
-    params['s.q'] = q
-    # disable highlighting tags
-    params['s.hl'] = 'false'
+    params.append(('s.q', q))
+    # always disable highlighting tags
+    params.append(('s.hl', 'false'))
     if _is_request_local(request):
-        params['s.role'] = 'authenticated'
+        params.append(('s.role', 'authenticated'))
+    else:
+        params.append(('s.role', 'none'))
     id_str = _summon_id_string(headers['Accept'], headers['x-summon-date'],
                                settings.SUMMON_HOST, settings.SUMMON_PATH,
                                params)
@@ -392,10 +399,11 @@ def _summon_query(request, scope='all'):
     r = requests.get(url, params=params, headers=headers,
                      timeout=settings.SUMMON_TIMEOUT_SECONDS)
     # ...but just in case:
+    # if the request returns a bad status code,
+    # don't ignore it; raise it as the appropriate exception
     r.raise_for_status()
     d = r.json()
-    response = {'service_status': 'available',
-                'count_total': d['recordCount']}
+    response = {'service_status': 'available'}
     matches = []
     for document in d['documents'][:DEFAULT_HIT_COUNT]:
         match = {'url': document['link']}
