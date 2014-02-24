@@ -389,9 +389,17 @@ def _summon_query(request, scope='all'):
     # don't ignore it; raise it as the appropriate exception
     r.raise_for_status()
     d = r.json()
-    response = {'count_total': d['recordCount']}
     matches = []
-    for document in d['documents'][:DEFAULT_HIT_COUNT]:
+    response = {}
+    if 'documents' in d:
+        response['count_total'] = len(d['documents'])
+    else:
+        response['count_total'] = 0
+    try:
+        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+    except:
+        count = DEFAULT_HIT_COUNT
+    for document in d['documents'][:count]:
         match = {'url': document['link']}
         if document.get('Author', []):
             match['author'] = ", ".join(document['Author'])
