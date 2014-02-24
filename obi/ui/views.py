@@ -405,7 +405,15 @@ def _summon_query(request, scope='all'):
     d = r.json()
     response = {'service_status': 'available'}
     matches = []
-    for document in d['documents'][:DEFAULT_HIT_COUNT]:
+    if 'documents' in d:
+        response['count_total'] = len(d['documents'])
+    else:
+        response['count_total'] = 0
+    try:
+        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+    except:
+        count = DEFAULT_HIT_COUNT
+    for document in d['documents'][:count]:
         match = {'url': document['link']}
         if document.get('Author', []):
             match['author'] = ", ".join(document['Author'])
