@@ -39,7 +39,13 @@ class Command(BaseCommand):
             if ((status == "Subscribed") or
                     (status == "Canceled--Perpetual Access")) \
                     and resource_type == "Journal":
-                title = r[0].value.encode('utf-8')
+                rawtitle = r[0].value
+                # there are journals with numeric titles, e.g. "1895"
+                # and trying to encode a number will throw an exception
+                # so, convert it to a string
+                if not isinstance(rawtitle, (str, unicode)):
+                    rawtitle = str(rawtitle)
+                title = rawtitle.encode('utf-8')
                 ssid = r[1].value.encode('utf-8')
                 issn = r[4].value.encode('utf-8')
                 eissn = r[5].value.encode('utf-8')
