@@ -51,6 +51,8 @@ SUMMON_API_ID = 'gw'
 SUMMON_API_KEY = 'XXXXXXXXXXXXX'
 SUMMON_HOST = 'api.summon.serialssolutions.com'                                 
 SUMMON_PATH = '/2.0.0/search'                                                   
+SUMMON_HEALTHCHECK_PATH = '/2.0.0/search/ping'
+SUMMON_HEALTHCHECK_TIMEOUT_SECONDS = 5
 SUMMON_SCOPES = {
     'all': {
         'params': [

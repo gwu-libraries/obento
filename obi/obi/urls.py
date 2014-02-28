@@ -56,12 +56,14 @@ urlpatterns = patterns('ui.views',
 
     url(r'^best_bets_html', 'summon_html',
         name='best_bets_html', kwargs={'scope': 'best_bets'}),
-    url(r'^best_bets_json', 'summon_json', 
+    url(r'^best_bets_json', 'summon_json',
         name='best_bets_json', kwargs={'scope': 'best_bets'}),
 
     url(r'^libsite_html', 'libsite_html', name='libsite_html'),
     url(r'^libsite_json', 'libsite_json', name='libsite_json'),
 
+    url(r'^summon_healthcheck_json', 'summon_healthcheck_json',
+        name='summon_healthcheck_json'),
 )
 
 urlpatterns += patterns('',

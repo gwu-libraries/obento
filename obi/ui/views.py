@@ -352,11 +352,13 @@ def journals_solr_json(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-def _summon_id_string(headers, params):
-    params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
-                             for k, v in sorted(params)])
-    s = '\n'.join([headers['Accept'], headers['x-summon-date'],
-                   settings.SUMMON_HOST, settings.SUMMON_PATH, params_sorted])
+def _summon_id_string(accept, xsummondate, host, path, params):
+    if len(params) > 0:
+        params_sorted = '&'.join(['%s=%s' % (k, unicode(v).encode('utf-8'))
+                                 for k, v in sorted(params)])
+    else:
+        params_sorted = ''
+    s = '\n'.join([accept, xsummondate, host, path, params_sorted])
     # Don't forget the trailing '\n'!
     return s + '\n'
 
@@ -378,7 +380,9 @@ def _summon_query(request, scope='all'):
         params.append(('s.role', 'authenticated'))
     else:
         params.append(('s.role', 'none'))
-    id_str = _summon_id_string(headers, params)
+    id_str = _summon_id_string(headers['Accept'], headers['x-summon-date'],
+                               settings.SUMMON_HOST, settings.SUMMON_PATH,
+                               params)
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
@@ -602,3 +606,40 @@ def _is_request_local(request):
         if IPAddress(remote_addr) in IPGlob(ipg):
             found_ip = True
     return found_ip
+
+
+def _summon_healthcheck():
+    headers = {}
+    headers['Accept'] = 'application/json'
+    headers['Host'] = settings.SUMMON_HOST
+    headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
+    headers['x-summon-session-id'] = ''
+    id_str = _summon_id_string(headers['Accept'], headers['x-summon-date'],
+                               settings.SUMMON_HOST,
+                               settings.SUMMON_HEALTHCHECK_PATH,
+                               '')
+    hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
+    digest = base64.encodestring(hash_code.digest())
+    auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
+    headers['Authorization'] = auth_str
+    url = 'http://%s%s' % (settings.SUMMON_HOST,
+                           settings.SUMMON_HEALTHCHECK_PATH)
+    try:
+        r = requests.get(url, headers=headers,
+                         timeout=settings.SUMMON_HEALTHCHECK_TIMEOUT_SECONDS)
+    except:
+        return False
+    if r.status_code == 200:
+        response = r.json()
+        if response['status'] == 'available':
+            return True
+    return False
+
+
+def summon_healthcheck_json(request):
+    summon_status = _summon_healthcheck()
+    if summon_status is True:
+        response = {'status': 'available'}
+    else:
+        response = {'status': 'unavailable'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
