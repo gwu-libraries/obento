@@ -11,7 +11,7 @@ import solr
 
 from django.conf import settings
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from django.template import RequestContext
 
@@ -643,3 +643,13 @@ def summon_healthcheck_json(request):
     else:
         response = {'status': 'unavailable'}
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def searches(request):
+    tk = request.GET.get('token')
+    if tk != settings.STAFF_TOKEN:
+        return HttpResponseForbidden('Access Denied')
+    else:
+        searches = Search.objects.all()
+        return render(request, "searches.html",
+                      {"searches": Search.objects.all()})

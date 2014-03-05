@@ -1,6 +1,7 @@
 beautifulsoup4
 django>=1.6,<1.7
 django-nose
+django-tables2
 lxml
 netaddr
 psycopg2

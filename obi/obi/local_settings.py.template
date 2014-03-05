@@ -111,3 +111,7 @@ AUTHOR_DISPLAY_LENGTH = 45
 
 # URL of local Solr instance
 SOLR_URL = 'http://localhost:<JETTY_PORT>/solr'
+
+# Staff token for accessing /searches page
+# Use http://.../searches?token=<the token value>
+STAFF_TOKEN = ''
