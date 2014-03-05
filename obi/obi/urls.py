@@ -64,6 +64,8 @@ urlpatterns = patterns('ui.views',
 
     url(r'^summon_healthcheck_json', 'summon_healthcheck_json',
         name='summon_healthcheck_json'),
+
+    url(r'^searches', 'searches', name='searches'),
 )
 
 urlpatterns += patterns('',
