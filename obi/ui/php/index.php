@@ -42,9 +42,6 @@
 	});
 	</script>
 
-<?php if ($_GET["query"])
-{
-?>
 <div class='search-all-banner-outer'>
   <div id='form' class='search-all-banner'>
     <div class='search-all-banner-inner' style=''>
@@ -58,6 +55,9 @@
     </div>
   </div>
 </div>
+<?php if ($_GET["query"])
+{
+?>
 <div id='results' class='row-fluid'>
     <div id='bestbets-articles-databases' class='span4'>
         <h2 id='bestbets-title' style='display:none;'>Best Bets</h2>
