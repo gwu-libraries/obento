@@ -45,6 +45,7 @@ JOURNALS_TITLE_EXACT_URL = \
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
 AQUABROWSER_API_PATH = 'result.ashx'
+AQUABROWSER_RETRIES = 3
 AQUABROWSER_TIMEOUT_SECONDS = 10  # per try
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
