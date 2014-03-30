@@ -14,8 +14,10 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from django.template import RequestContext
+from django_tables2 import RequestConfig
 
 from ui.models import Database, Journal, Search
+from ui.tables import SearchTable
 
 from netaddr import IPAddress, IPGlob
 
@@ -650,6 +652,13 @@ def searches(request):
     if tk != settings.STAFF_TOKEN:
         return HttpResponseForbidden('Access Denied')
     else:
+        """
         searches = Search.objects.all()
         return render(request, "searches.html",
                       {"searches": Search.objects.all()})
+        """
+        searches_table = SearchTable(Search.objects.all())
+        searches_table.order_by = "-id"
+        RequestConfig(request).configure(searches_table)
+        return render(request, 'searches.html',
+                      {'searches_table': searches_table})
