@@ -665,7 +665,8 @@ def summon_healthcheck_json(request):
 
 def _render_cleanerror(request, scope, exception):
     logger = logging.getLogger('django.request')
-    logger.error(exception)
+    logger.error("EXCEPTION: %s - REQUEST URL: %s" % (exception,
+                                                      request.get_full_path()))
     # TODO: Log here
     return render(request, 'service_unavailable.html',
                   {'scope': scope})
