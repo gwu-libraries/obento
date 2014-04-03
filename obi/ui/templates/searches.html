@@ -5,6 +5,17 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
     </head>
     <body>
-        {% render_table searches_table %}
+    {% if this_week_qdata %}
+        <div>
+            Top searches this week:
+
+            <ul id='summon' class='unstyled'>
+            {% for q, c in this_week_qdata %}
+                <li class='item'>{{ q }}  - {{c}}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% render_table searches_table %}
     </body>
 </html>

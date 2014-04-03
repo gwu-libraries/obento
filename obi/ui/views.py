@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime
+import datetime
 import hashlib
 import hmac
 import json
@@ -9,6 +9,7 @@ from lxml import etree
 import requests
 import solr
 
+from django.utils.timezone import utc
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
@@ -368,7 +369,8 @@ def _summon_id_string(accept, xsummondate, host, path, params):
 def _summon_query(request, scope='all'):
     headers = {'Accept': 'application/json'}
     headers['Host'] = settings.SUMMON_HOST
-    headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
+    headers['x-summon-date'] = datetime.datetime.utcnow().strftime(
+        RFC2616_DATEFORMAT)
     # TODO: API docs say to reuse this once it's set for a user, punt for now
     headers['x-summon-session-id'] = ''
     params = list(settings.SUMMON_SCOPES[scope]['params'])
@@ -614,7 +616,8 @@ def _summon_healthcheck():
     headers = {}
     headers['Accept'] = 'application/json'
     headers['Host'] = settings.SUMMON_HOST
-    headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
+    headers['x-summon-date'] = datetime.datetime.utcnow().strftime(
+        RFC2616_DATEFORMAT)
     headers['x-summon-session-id'] = ''
     id_str = _summon_id_string(headers['Accept'], headers['x-summon-date'],
                                settings.SUMMON_HOST,
@@ -652,13 +655,28 @@ def searches(request):
     if tk != settings.STAFF_TOKEN:
         return HttpResponseForbidden('Access Denied')
     else:
-        """
-        searches = Search.objects.all()
-        return render(request, "searches.html",
-                      {"searches": Search.objects.all()})
-        """
+        #NOTE: A really basic, un-customizeable way to do this was:
+        #
+        #searches = Search.objects.order_by('-id')
+        #return render(request, "searches.html",
+        #              {"searches": Search.objects.order_by('-id')})
         searches_table = SearchTable(Search.objects.all())
         searches_table.order_by = "-id"
         RequestConfig(request).configure(searches_table)
+
+        # Top queries within the last 7 days
+        searches_this_week = Search.objects.filter(
+            date_searched__gte=datetime.datetime.utcnow().replace(tzinfo=utc)
+            - datetime.timedelta(days=7))
+        q_this_week = searches_this_week.distinct('q').values_list('q',
+                                                                   flat=True)
+        qdata = {}
+        for q in q_this_week:
+            c = searches_this_week.filter(q=q).count()
+            qdata[q] = c
+        # turn qdata into a list of tuples (q, c) sorted by c
+        qdata = sorted(qdata.items(), key=lambda tup: tup[1], reverse=True)
+
         return render(request, 'searches.html',
-                      {'searches_table': searches_table})
+                      {'searches_table': searches_table,
+                       'this_week_qdata': qdata})
