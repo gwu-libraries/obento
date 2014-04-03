@@ -123,6 +123,14 @@ LOG_FILE_PATH = '<PATH TO YOUR LOG FILE>/<NAME OF YOUR LOG FILE>'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -138,6 +146,7 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': LOG_FILE_PATH,
+            'formatter': 'verbose'
         },
     },
     'loggers': {
