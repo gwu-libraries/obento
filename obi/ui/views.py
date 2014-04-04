@@ -668,11 +668,15 @@ def searches(request):
         searches_this_week = Search.objects.filter(
             date_searched__gte=datetime.datetime.utcnow().replace(tzinfo=utc)
             - datetime.timedelta(days=7))
-        q_this_week = searches_this_week.distinct('q').values_list('q',
-                                                                   flat=True)
+        qdistinct = set()
+        for s in searches_this_week:
+            # it's a set, so it will only add if the
+            # value isn't already in the set
+            qdistinct.add(s.q.lower())
+
         qdata = {}
-        for q in q_this_week:
-            c = searches_this_week.filter(q=q).count()
+        for q in qdistinct:
+            c = searches_this_week.filter(q__iexact=q).count()
             qdata[q] = c
         # turn qdata into a list of tuples (q, c) sorted by c
         qdata = sorted(qdata.items(), key=lambda tup: tup[1], reverse=True)
