@@ -45,8 +45,8 @@ JOURNALS_TITLE_EXACT_URL = \
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
 AQUABROWSER_API_PATH = 'result.ashx'
-AQUABROWSER_RETRIES = 3
-AQUABROWSER_TIMEOUT_SECONDS = 10  # per try
+AQUABROWSER_RETRIES = 2
+AQUABROWSER_TIMEOUT_SECONDS = 5  # per try
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
@@ -55,8 +55,8 @@ SUMMON_HOST = 'api.summon.serialssolutions.com'
 SUMMON_PATH = '/2.0.0/search'                                                   
 SUMMON_HEALTHCHECK_PATH = '/2.0.0/search/ping'
 SUMMON_HEALTHCHECK_TIMEOUT_SECONDS = 5
-SUMMON_RETRIES = 3
-SUMMON_TIMEOUT_SECONDS = 10  # per try
+SUMMON_RETRIES = 2
+SUMMON_TIMEOUT_SECONDS = 5  # per try
 SUMMON_SCOPES = {
     'all': {
         'params': [
@@ -107,7 +107,7 @@ LIBGUIDES_DB_PAGE_SIDS = [
 LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
-LIBSITE_TIMEOUT_SECONDS = 10  # per try
+LIBSITE_TIMEOUT_SECONDS = 5  # per try
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 100
