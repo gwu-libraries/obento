@@ -144,7 +144,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south',
     'ui',
-    'django_tables2',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

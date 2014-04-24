@@ -6,21 +6,19 @@ import json
 import urllib
 
 from lxml import etree
+from netaddr import IPAddress, IPGlob
 import requests
 import solr
 
-from django.utils.timezone import utc
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from django.template import RequestContext
-from django_tables2 import RequestConfig
+from django.utils.timezone import utc
 
 from ui.models import Database, Journal, Search
-from ui.tables import SearchTable
-
-from netaddr import IPAddress, IPGlob
 
 
 # FIXME: make a local_setting
@@ -654,33 +652,62 @@ def searches(request):
     tk = request.GET.get('token')
     if tk != settings.STAFF_TOKEN:
         return HttpResponseForbidden('Access Denied')
+
+    sortby = request.GET.get("sort")
+    if sortby not in ['id', '-id', 'q', '-q', 'date_searched',
+                      '-date_searched']:
+        sortby = '-id'
+    searches = Search.objects.order_by(sortby)
+
+    page = request.GET.get("page")
+    if page is None:
+        page = 1
+    elif not page.isdigit():
+        page = 1
+    elif int(page) == 0:
+        page = 1
+
+    per_page = request.GET.get("per_page")
+    if per_page is None:
+        per_page = 25
+    elif not per_page.isdigit():
+        per_page = 25
+    elif int(per_page) == 0:
+        per_page = 25
+
+    p = Paginator(searches, per_page)
+    try:
+        searches = p.page(page)
+    except EmptyPage:
+        # get the last page
+        searches = p.page(p.num_pages)
+
+    # Top queries within the last 7 days
+    searches_this_week = Search.objects.filter(
+        date_searched__gte=datetime.datetime.utcnow().replace(tzinfo=utc)
+        - datetime.timedelta(days=7))
+    qdistinct = set()
+    for s in searches_this_week:
+        # it's a set, so it will only add if the
+        # value isn't already in the set
+        qdistinct.add(s.q.lower())
+
+    qdata = {}
+    for q in qdistinct:
+        c = searches_this_week.filter(q__iexact=q).count()
+        qdata[q] = c
+    # turn qdata into a list of tuples (q, c) sorted by c
+    qdata = sorted(qdata.items(), key=lambda tup: tup[1], reverse=True)
+
+    headersort = {'id': '-', 'q': '', 'date_searched': '-'}
+    # flip the bit for whichever column we're currently sorting on.
+    # set the other columns to default.
+    if sortby[0] == '-':
+        headersort[sortby[1:]] = ''
     else:
-        #NOTE: A really basic, un-customizeable way to do this was:
-        #
-        #searches = Search.objects.order_by('-id')
-        #return render(request, "searches.html",
-        #              {"searches": Search.objects.order_by('-id')})
-        searches_table = SearchTable(Search.objects.all())
-        searches_table.order_by = "-id"
-        RequestConfig(request).configure(searches_table)
+        headersort[sortby] = '-'
 
-        # Top queries within the last 7 days
-        searches_this_week = Search.objects.filter(
-            date_searched__gte=datetime.datetime.utcnow().replace(tzinfo=utc)
-            - datetime.timedelta(days=7))
-        qdistinct = set()
-        for s in searches_this_week:
-            # it's a set, so it will only add if the
-            # value isn't already in the set
-            qdistinct.add(s.q.lower())
-
-        qdata = {}
-        for q in qdistinct:
-            c = searches_this_week.filter(q__iexact=q).count()
-            qdata[q] = c
-        # turn qdata into a list of tuples (q, c) sorted by c
-        qdata = sorted(qdata.items(), key=lambda tup: tup[1], reverse=True)
-
-        return render(request, 'searches.html',
-                      {'searches_table': searches_table,
-                       'this_week_qdata': qdata})
+    return render(request, 'searches.html',
+                  {'searches': searches,
+                   'this_week_qdata': qdata,
+                   'headersort': headersort})
