@@ -567,6 +567,7 @@ def _libsite_query(request):
         match['title'] = nodeinfo['title']
         matches.append(match)
     response['count_total'] = len(nodesarray)
+    response['result_url'] = settings.LIBSITE_RESULT_URL
     response['more_url'] = '%s%s' % (settings.LIBSITE_MORE_URL, q)
     response['more_url_plain'] = settings.LIBSITE_URL
     response['matches'] = matches
