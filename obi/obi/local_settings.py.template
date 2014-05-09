@@ -45,6 +45,8 @@ JOURNALS_TITLE_EXACT_URL = \
 AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
 AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
 AQUABROWSER_API_PATH = 'result.ashx'
+AQUABROWSER_RETRIES = 2
+AQUABROWSER_TIMEOUT_SECONDS = 5  # per try
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
@@ -53,6 +55,8 @@ SUMMON_HOST = 'api.summon.serialssolutions.com'
 SUMMON_PATH = '/2.0.0/search'                                                   
 SUMMON_HEALTHCHECK_PATH = '/2.0.0/search/ping'
 SUMMON_HEALTHCHECK_TIMEOUT_SECONDS = 5
+SUMMON_RETRIES = 2
+SUMMON_TIMEOUT_SECONDS = 5  # per try
 SUMMON_SCOPES = {
     'all': {
         'params': [
@@ -103,6 +107,7 @@ LIBGUIDES_DB_PAGE_SIDS = [
 LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
+LIBSITE_TIMEOUT_SECONDS = 5  # per try
 LIBSITE_RESULT_URL = 'http://gwlibrary-test.wrlc.org/node/'
 
 # number of characters to display before truncating with ellipsis
@@ -116,3 +121,44 @@ SOLR_URL = 'http://localhost:<JETTY_PORT>/solr'
 # Staff token for accessing /searches page
 # Use http://.../searches?token=<the token value>
 STAFF_TOKEN = ''
+
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOG_FILE_PATH = '<PATH TO YOUR LOG FILE>/<NAME OF YOUR LOG FILE>'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': LOG_FILE_PATH,
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}

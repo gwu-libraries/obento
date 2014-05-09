@@ -3,6 +3,7 @@ import datetime
 import hashlib
 import hmac
 import json
+import logging
 import urllib
 
 from lxml import etree
@@ -28,27 +29,7 @@ RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 def home(request):
     q = request.GET.get('q', '').strip()
-    if q:
-        articles_response = _summon_query(request, scope='articles')
-        books_media_response = _aquabrowser_query(request)
-        libsite_response = _libsite_query(request)
-        databases_solr_response = _databases_solr_query(request)
-        journals_solr_response = _journals_solr_query(request)
-        research_guides_response = _summon_query(request,
-                                                 scope='research_guides')
-        best_bets_response = _summon_query(request, scope='best_bets')
-
-    params = {'title': 'home', 'q': q}
-    params['context'] = default_context_params()
-    if q:
-        params['articles_response'] = articles_response
-        params['books_media_response'] = books_media_response
-        params['research_guides_response'] = research_guides_response
-        params['best_bets_response'] = best_bets_response
-        params['databases_solr_response'] = databases_solr_response
-        params['journals_solr_response'] = journals_solr_response
-        params['libsite_response'] = libsite_response
-    return render(request, 'home.html', params)
+    return render(request, 'home.html', {'title': 'home', 'q': q})
 
 
 def everything(request):
@@ -71,9 +52,15 @@ def _aquabrowser_query(request):
     except:
         count = DEFAULT_HIT_COUNT
     params = {'output': 'xml', 'q': q}
-    # TODO: move url to settings
     url = settings.AQUABROWSER_URL + settings.AQUABROWSER_API_PATH
-    r = requests.get(url, params=params)
+    r = requests.get(url, params=params,
+                     timeout=settings.AQUABROWSER_TIMEOUT_SECONDS)
+    retries_left = settings.AQUABROWSER_RETRIES
+    while r.status_code != requests.codes.ok and retries_left > 0:
+        r = requests.get(url, params=params,
+                         timeout=settings.AQUABROWSER_TIMEOUT_SECONDS)
+        retries_left -= 1
+    r.raise_for_status()
     root = etree.fromstring(r.text)
     matches = []
     records = root.findall('./results/record')
@@ -158,7 +145,11 @@ def aquabrowser_json(request):
 
 
 def aquabrowser_html(request):
-    response = _aquabrowser_query(request)
+    try:
+        response = _aquabrowser_query(request)
+    except Exception as e:
+        return _render_cleanerror(request, 'books and media', e)
+
     return render(request, 'aquabrowser.html',
                   {'response': response, 'context': default_context_params()})
 
@@ -390,9 +381,16 @@ def _summon_query(request, scope='all'):
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
-    r = requests.get(url, params=params, headers=headers)
+    r = requests.get(url, params=params, headers=headers,
+                     timeout=settings.SUMMON_TIMEOUT_SECONDS)
     # if the request returns a bad status code,
+    # try again (a few times).  If it's still bad,
     # don't ignore it; raise it as the appropriate exception
+    retries_left = settings.SUMMON_RETRIES
+    while r.status_code != requests.codes.ok and retries_left > 0:
+        r = requests.get(url, params=params, headers=headers,
+                         timeout=settings.SUMMON_TIMEOUT_SECONDS)
+        retries_left -= 1
     r.raise_for_status()
     d = r.json()
     matches = []
@@ -484,7 +482,21 @@ def _summon_query(request, scope='all'):
 
 
 def summon_html(request, scope='all'):
-    response = _summon_query(request, scope)
+    try:
+        response = _summon_query(request, scope)
+    except Exception as e:
+        if scope == 'best_bets':
+            # if summon isn't working, don't even bother showing best bets
+            return render(request, 'emptypage.html')
+        else:
+            if scope == 'articles':
+                scopeterm = 'article'
+            if scope == 'books_media':
+                scopeterm = 'books and media'
+            if scope == 'research_guides':
+                scopeterm = 'research guides'
+            return _render_cleanerror(request, scopeterm, e)
+
     if scope == 'best_bets':
         responsepage = 'bestbets.html'
     else:
@@ -552,7 +564,9 @@ def _libsite_query(request):
     q = ' '.join(qlist)
     #----
     params = {'keys': q}
-    r = requests.get(settings.LIBSITE_SEARCH_URL, params=params)
+    r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
+                     timeout=settings.LIBSITE_TIMEOUT_SECONDS)
+    r.raise_for_status()
 
     # Strip off BOM if present (presence depends on Drupal site configuration)
     if r.text[0] == u'\ufeff':
@@ -583,7 +597,11 @@ def _libsite_query(request):
 
 
 def libsite_html(request):
-    response = _libsite_query(request)
+    try:
+        response = _libsite_query(request)
+    except Exception as e:
+        return _render_cleanerror(request, 'library website', e)
+
     return render(request, 'libsite.html',
                   {'response': response, 'context': default_context_params()})
 
@@ -647,6 +665,14 @@ def summon_healthcheck_json(request):
     else:
         response = {'status': 'unavailable'}
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def _render_cleanerror(request, scope, exception):
+    logger = logging.getLogger('django.request')
+    logger.error("%s -- %s" % (request.get_full_path(), exception))
+    # TODO: Log here
+    return render(request, 'service_unavailable.html',
+                  {'scope': scope})
 
 
 def searches(request):
