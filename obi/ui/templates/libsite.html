@@ -4,7 +4,7 @@
 <ul id='libsite' class='unstyled'>
     {% for match in response.matches %}
     <li>
-        <a href='http://library.gwu.edu/node/{{ match.view_node }}/' onclick="window.open(this.href); return false;">
+    <a href={{ response.result_url }}{{ match.view_node }}/ onclick="window.open(this.href); return false;">
             {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>

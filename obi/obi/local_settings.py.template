@@ -108,6 +108,7 @@ LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
 LIBSITE_TIMEOUT_SECONDS = 5  # per try
+LIBSITE_RESULT_URL = 'http://gwlibrary-test.wrlc.org/node/'
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 100
@@ -117,6 +118,7 @@ AUTHOR_DISPLAY_LENGTH = 45
 # URL of local Solr instance
 SOLR_URL = 'http://localhost:<JETTY_PORT>/solr'
 
+<<<<<<< HEAD
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOG_FILE_PATH = '<PATH TO YOUR LOG FILE>/<NAME OF YOUR LOG FILE>'
@@ -157,3 +159,6 @@ LOGGING = {
         },
     }
 }
+# Staff token for accessing /searches page
+# Use http://.../searches?token=<the token value>
+STAFF_TOKEN = ''

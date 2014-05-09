@@ -42,22 +42,22 @@
 	});
 	</script>
 
-<?php if ($_GET["query"])
-{
-?>
 <div class='search-all-banner-outer'>
   <div id='form' class='search-all-banner'>
     <div class='search-all-banner-inner' style=''>
       <form action='search-beta' method='GET' class='search-form'>
             <div class='search-all-label'><label>Search All</label></div>
             <div class='search-all-form-fields'>
-            <input id='query' type='text' size='40' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
+            <input id='query' type='text' size='40' maxlength='100' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
             <input type='submit' value='Search'/>
             </div>
       </form>
     </div>
   </div>
 </div>
+<?php if ($_GET["query"])
+{
+?>
 <div id='results' class='row-fluid'>
     <div id='bestbets-articles-databases' class='span4'>
         <h2 id='bestbets-title' style='display:none;'>Best Bets</h2>
