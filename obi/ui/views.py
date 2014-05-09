@@ -1,23 +1,24 @@
 import base64
-from datetime import datetime
+import datetime
 import hashlib
 import hmac
 import json
 import urllib
 
 from lxml import etree
+from netaddr import IPAddress, IPGlob
 import requests
 import solr
 
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from django.template import RequestContext
+from django.utils.timezone import utc
 
 from ui.models import Database, Journal, Search
-
-from netaddr import IPAddress, IPGlob
 
 
 # FIXME: make a local_setting
@@ -366,7 +367,8 @@ def _summon_id_string(accept, xsummondate, host, path, params):
 def _summon_query(request, scope='all'):
     headers = {'Accept': 'application/json'}
     headers['Host'] = settings.SUMMON_HOST
-    headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
+    headers['x-summon-date'] = datetime.datetime.utcnow().strftime(
+        RFC2616_DATEFORMAT)
     # TODO: API docs say to reuse this once it's set for a user, punt for now
     headers['x-summon-session-id'] = ''
     params = list(settings.SUMMON_SCOPES[scope]['params'])
@@ -613,7 +615,8 @@ def _summon_healthcheck():
     headers = {}
     headers['Accept'] = 'application/json'
     headers['Host'] = settings.SUMMON_HOST
-    headers['x-summon-date'] = datetime.utcnow().strftime(RFC2616_DATEFORMAT)
+    headers['x-summon-date'] = datetime.datetime.utcnow().strftime(
+        RFC2616_DATEFORMAT)
     headers['x-summon-session-id'] = ''
     id_str = _summon_id_string(headers['Accept'], headers['x-summon-date'],
                                settings.SUMMON_HOST,
@@ -644,3 +647,68 @@ def summon_healthcheck_json(request):
     else:
         response = {'status': 'unavailable'}
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def searches(request):
+    tk = request.GET.get('token')
+    if tk != settings.STAFF_TOKEN:
+        return HttpResponseForbidden('Access Denied')
+
+    sortby = request.GET.get("sort")
+    if sortby not in ['id', '-id', 'q', '-q', 'date_searched',
+                      '-date_searched']:
+        sortby = '-id'
+    searches = Search.objects.order_by(sortby)
+
+    page = request.GET.get("page")
+    if page is None:
+        page = 1
+    elif not page.isdigit():
+        page = 1
+    elif int(page) == 0:
+        page = 1
+
+    per_page = request.GET.get("per_page")
+    if per_page is None:
+        per_page = 25
+    elif not per_page.isdigit():
+        per_page = 25
+    elif int(per_page) == 0:
+        per_page = 25
+
+    p = Paginator(searches, per_page)
+    try:
+        searches = p.page(page)
+    except EmptyPage:
+        # get the last page
+        searches = p.page(p.num_pages)
+
+    # Top queries within the last 7 days
+    searches_this_week = Search.objects.filter(
+        date_searched__gte=datetime.datetime.utcnow().replace(tzinfo=utc)
+        - datetime.timedelta(days=7))
+    qdistinct = set()
+    for s in searches_this_week:
+        # it's a set, so it will only add if the
+        # value isn't already in the set
+        qdistinct.add(s.q.lower())
+
+    qdata = {}
+    for q in qdistinct:
+        c = searches_this_week.filter(q__iexact=q).count()
+        qdata[q] = c
+    # turn qdata into a list of tuples (q, c) sorted by c
+    qdata = sorted(qdata.items(), key=lambda tup: tup[1], reverse=True)
+
+    headersort = {'id': '-', 'q': '', 'date_searched': '-'}
+    # flip the bit for whichever column we're currently sorting on.
+    # set the other columns to default.
+    if sortby[0] == '-':
+        headersort[sortby[1:]] = ''
+    else:
+        headersort[sortby] = '-'
+
+    return render(request, 'searches.html',
+                  {'searches': searches,
+                   'this_week_qdata': qdata,
+                   'headersort': headersort})
