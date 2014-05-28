@@ -36,6 +36,10 @@ class Command(BaseCommand):
                 for itemlist in itemlists:
                     items = itemlist.find_all('li')
                     for item in items:
+                        # skip if there's no <a> tag
+                        # this is the case for discontinued databases
+                        if item.a is None:
+                            continue
                         name = item.a.string
                         url = item.a.get('href')
                         description = item.div.get_text()
