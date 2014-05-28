@@ -34,7 +34,7 @@
                  {% if this_week_qdata %}
                    <b>Top searches this week:</b>
                    <ul id='topsearches' class='unstyled'>
-                       {% for q, c in this_week_qdata %}
+                       {% for q, c in this_week_qdata|slice:":25" %}
                        <li class='item'>{{ q }}  - {{c}}</li>
                        {% endfor %}
                    </ul>
