@@ -289,9 +289,9 @@
 
         1.  Copy the Apache virtual host file to the Apache2 directory
 
-        $ cd /<OBENTO_HOME>/obento
+                $ cd /<OBENTO_HOME>/obento
         
-        $ sudo cp apache/obento /etc/apache2/sites-available/obento
+                $ sudo cp apache/obento /etc/apache2/sites-available/obento
 
 
         2.  Update the values in the Apache virtual host file.
