@@ -273,10 +273,11 @@ def _journals_query(request):
 
 def _journals_solr_query(request):
     q = request.GET.get('q', '').strip()
+    DATABASE_HIT_COUNT = 25
     try:
-        count = int(request.GET.get('count', None))
+        count = int(request.GET.get('count', DATABASE_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = DATABASE_HIT_COUNT
     response = {'q': q}
     if q:
         if not '"' in q:
@@ -284,7 +285,7 @@ def _journals_solr_query(request):
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         try:
-            solr_response = s.query('+id:j-* (name:%s OR text:%s)' % (q, q))
+            solr_response = s.query('+id:j-* (name:%s OR text:%s)' % (q, q), rows=DATABASE_HIT_COUNT)
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
             response['more_url_plain'] = settings.JOURNALS_URL
