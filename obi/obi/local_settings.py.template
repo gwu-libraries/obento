@@ -76,7 +76,7 @@ SUMMON_SCOPES = {
             ('s.fq', 'SourceType:(\"Library Catalog\")'),
             ('s.ho', 't')],
         'more_url':
-            'http://gw.summon.serialssolutions.com/search?s.fq=SourceType:(\"Library Catalog\")&s.ho=t&keep_r=true&s.q='},
+            'http://findit.library.gwu.edu/search?q='},
     'research_guides': {
         'params': [
             ('s.cmd', 'setHoldingsOnly(true)'),
