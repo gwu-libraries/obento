@@ -8,8 +8,8 @@
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
-        {% if match.description %}
-            {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
+        {% if match.author %}
+            {{ match.author|truncatechars:context.AUTHOR_DISPLAY_LENGTH }}
             <br>
         {% endif %}
         {% if match.publisher %}

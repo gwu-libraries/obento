@@ -6,7 +6,7 @@ ADMINS = (
 
 # This value should be something like [obento-test] (with a trailing space)
 EMAIL_SUBJECT_PREFIX = ' '
-# Set SERVER_EMIL to root@myserver, e.g. 'root@gwbento-test.wrlc.org'
+# Set SERVER_EMAIL to root@myserver, e.g. 'root@gwbento-test.wrlc.org'
 SERVER_EMAIL = ''
 
 MANAGERS = ADMINS
@@ -42,11 +42,11 @@ JOURNALS_MORE_URL = \
 JOURNALS_TITLE_EXACT_URL = \
     'http://findit.library.gwu.edu/?V=1.0&N=100&L=UZ4UG4LZ9G&S=T_M&C='
 
-AQUABROWSER_URL = 'http://surveyor.gelman.gwu.edu/'
-AQUABROWSER_MORE_URL = 'http://surveyor.gelman.gwu.edu/?q='
-AQUABROWSER_API_PATH = 'result.ashx'
-AQUABROWSER_RETRIES = 2
-AQUABROWSER_TIMEOUT_SECONDS = 5  # per try
+LAUNCHPAD_URL = 'http://findit.library.gwu.edu'
+LAUNCHPAD_API_URL = 'http://findit.library.gwu.edu/search'
+LAUNCHPAD_MORE_URL_PLAIN = 'http://findit.library.gwu.edu/catalog'
+LAUNCHPAD_RETRIES = 2
+LAUNCHPAD_TIMEOUT_SECONDS = 5  # per try
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            

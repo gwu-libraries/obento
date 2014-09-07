@@ -6,7 +6,6 @@ import json
 import logging
 import urllib
 
-from lxml import etree
 from netaddr import IPAddress, IPGlob
 import requests
 import solr
@@ -39,118 +38,67 @@ def everything(request):
     return render(request, 'everything.html', params)
 
 
-def _aquabrowser_query(request):
+def _launchpad_query(request):
     q = request.GET.get('q', '')
-    # if the query is not already quoted, enclose in quotes
-    if not(q.startswith('\"')):
-        q = '\"'+q
-    if not(q.endswith('\"')):
-        q = q+'\"'
+    #TODO: Add 'page_size' parameter pending launchpad #855 and #859
+    #params = {'q': q, 'format': 'json', 'page_size': 3}
+    params = {'q': q, 'format': 'json'}
 
-    try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
-    except:
-        count = DEFAULT_HIT_COUNT
-    params = {'output': 'xml', 'q': q}
-    url = settings.AQUABROWSER_URL + settings.AQUABROWSER_API_PATH
-    r = requests.get(url, params=params,
-                     timeout=settings.AQUABROWSER_TIMEOUT_SECONDS)
-    retries_left = settings.AQUABROWSER_RETRIES
+    r = requests.get(settings.LAUNCHPAD_API_URL, params=params,
+                     timeout=settings.LAUNCHPAD_TIMEOUT_SECONDS)
+    retries_left = settings.LAUNCHPAD_RETRIES
     while r.status_code != requests.codes.ok and retries_left > 0:
-        r = requests.get(url, params=params,
-                         timeout=settings.AQUABROWSER_TIMEOUT_SECONDS)
+        r = requests.get(settings.LAUNCHPAD_API_URL, params=params,
+                         timeout=settings.LAUNCHPAD_TIMEOUT_SECONDS)
         retries_left -= 1
     r.raise_for_status()
-    root = etree.fromstring(r.text)
+    d = r.json()
     matches = []
-    records = root.findall('./results/record')
-    for record in records[:count]:
-        match = {}
-        d = record.find('d')
-        if d is None:
-            break
-        fields = record.find('fields')
-        if fields is None:
-            break
-        match['name'] = _ab_marc_field_str(d, 'df245', ['a', 'h', 'b', 'c'])
-        match['description'] = _ab_marc_field_str(d, 'df100', ['a'])
-        match['publisher'] = _ab_marc_field_str(d, 'df260', ['a', 'b', 'c'])
-        match['edition'] = _ab_marc_field_str(d, 'df250', ['a'])
-        match['url'] = 'http://surveyor.gelman.gwu.edu/?hreciid=%s' % \
-                       record.attrib['extID']
-        holding_institutions = _ab_field_list(fields, 'bsall')
-        holding_institutions_display = ''
-        if len(holding_institutions) > 0:
-            if 'library\m\gw' in holding_institutions:
-                holding_institutions_display = 'GW'
-                if len(holding_institutions) > 1:
-                    holding_institutions_display += ' and other WRLC Libraries'
+    response = {'q': q}
+
+    for result in d['results'][:DEFAULT_HIT_COUNT]:
+        match = {'name': result['name']}
+        match['url'] = settings.LAUNCHPAD_URL + result['@id']
+        if 'author' in result:
+            match['author'] = '; '.join(a['name'] for a in result['author'])
+        if 'publisher' in result:
+            match['publisher'] = result['publisher']['name']
+        if 'datePublished' in result:
+            if 'publisher' in match:
+                match['publisher'] += ' ' + result['datePublished'] + '.'
             else:
-                holding_institutions_display = 'Other WRLC Libraries'
-        else:
-            origin = _ab_field_list(fields, 'origin')
-            if 'library\m\digitalcollections' in origin:
-                holding_institutions_display = 'WRLC Digital Collections'
-        match['institutions'] = holding_institutions_display
+                match['publisher'] = result['datePublished'] + '.'
+        if result['offers']:
+            holders = [offer['seller'] for offer in result['offers']]
+            if len(holders) == 1:
+                match['institutions'] = holders[0]
+            elif len(holders) > 1:
+                if 'George Washington University' in holders:
+                    match['institutions'] = 'GW and other WRLC Libraries'
+                else:
+                    match['institutions'] = 'Other WRLC Libraries'
         matches.append(match)
-    count_total_nodes = root.xpath('/root/feedbacks/standard/resultcount')
-    if count_total_nodes:
-        # there should be exactly one
-        count_total = count_total_nodes[0].text
-    else:
-        count_total = len(records)
-    response = {}
-    response['more_url'] = '%s%s' % (settings.AQUABROWSER_MORE_URL, q)
-    response['more_url_plain'] = settings.AQUABROWSER_URL
+
     response['matches'] = matches
-    response['q'] = q
-    response['count_total'] = count_total
-    if settings.DEBUG:
-        # TODO: NOT WORKING YET:
-        #response['source'] = records.json()
-        response['query_url'] = r.url
+    response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
+    response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
+    response['count_total'] = len(d['results'])
     return response
 
 
-# Returns a concatenation of the values of the specified subfield codes
-# Warning: this is specific to Aquabrowser result formatting
-def _ab_marc_field_str(marcdict, fieldname, codes):
-    fields = marcdict.find(fieldname)
-    if fields is None:
-        return ''
-    result = ''
-    for fieldrow in fields.findall(fieldname):
-        key = fieldrow.attrib['key']
-        if key in codes:
-            result = result + ' ' + ''.join(fieldrow.xpath('.//text()'))
-    return result
-
-
-# Returns a list of the values of the specified field
-# Warning: this is specific to Aquabrowser result formatting
-def _ab_field_list(abfields, fieldname):
-    fields = abfields.findall(fieldname)
-    if fields is None:
-        return []
-    result = []
-    for fieldrow in fields:
-        result.append(fieldrow.text)
-    return result
-
-
-def aquabrowser_json(request):
-    response = _aquabrowser_query(request)
+def launchpad_json(request):
+    response = _launchpad_query(request)
     return HttpResponse(json.dumps(response, encoding='utf-8'),
                         content_type='application/json')
 
 
-def aquabrowser_html(request):
+def launchpad_html(request):
     try:
-        response = _aquabrowser_query(request)
+        response = _launchpad_query(request)
     except Exception as e:
         return _render_cleanerror(request, 'books and media', e)
 
-    return render(request, 'aquabrowser.html',
+    return render(request, 'launchpad.html',
                   {'response': response, 'context': default_context_params()})
 
 
@@ -512,18 +460,12 @@ def summon_json(request, scope='all'):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-def books_media_html(request, scope='all'):
-    if _is_non_roman(request):
-        return summon_html(request, scope)
-    else:
-        return aquabrowser_html(request)
+def books_media_html(request):
+    return launchpad_html(request)
 
 
-def books_media_json(request, scope='all'):
-    if _is_non_roman(request):
-        return summon_json(request, scope)
-    else:
-        return aquabrowser_json(request)
+def books_media_json(request):
+    return launchpad_json(request)
 
 
 def _is_non_roman(request):

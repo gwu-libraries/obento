@@ -8,11 +8,6 @@ urlpatterns = patterns('ui.views',
     url(r'^$', 'home', name='home'),
     url(r'^everything$', 'everything', name='everything'),
 
-    url(r'^aquabrowser_html', 'aquabrowser_html',
-        name='aquabrowser_html'),
-    url(r'^aquabrowser_json', 'aquabrowser_json',
-        name='aquabrowser_json'),
-
     url(r'^databases_html', 'databases_html', name='databases_html'),
     url(r'^databases_json', 'databases_json', name='databases_json'),
 
@@ -40,9 +35,14 @@ urlpatterns = patterns('ui.views',
         kwargs={'scope': 'articles'}),
 
     url(r'^books_media_html', 'books_media_html',
-        name='books_media_html', kwargs={'scope': 'books_media'}),
+        name='books_media_html'),
     url(r'^books_media_json', 'books_media_json',
-        name='books_media_json', kwargs={'scope': 'books_media'}),
+        name='books_media_json'),
+
+    url(r'^launchpad_html', 'launchpad_html',
+        name='launchpad_html'),
+    url(r'^launchpad_json', 'launchpad_json',
+        name='launchpad_json'),
 
     url(r'^summon_books_media_html', 'summon_html',
         name='summon_books_media_html', kwargs={'scope': 'books_media'}),
