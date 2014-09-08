@@ -34,7 +34,7 @@ $(document).ready(function () {
         ["{% url 'journals_solr_html' %}", '#journals-solr-response'],
         ["{% url 'libsite_html' %}", '#libsite-response'],
         ["{% url 'research_guides_html' %}", '#guides-response'],
-        ["{% url 'aquabrowser_html' %}", '#aqua-response'],
+        ["{% url 'launchpad_html' %}", '#launchpad-response'],
     ];
     blocks.forEach(fetch);
 });
@@ -114,8 +114,8 @@ $(document).ready(function () {
             </div>
         </div>
         <hr />
-        <h4>Aquabrowser</h4>
-        <div id='aqua-response' class='row-fluid'>
+        <h4>Launchpad</h4>
+        <div id='launchpad-response' class='row-fluid'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
