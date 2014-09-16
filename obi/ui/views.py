@@ -96,7 +96,9 @@ def launchpad_html(request):
     try:
         response = _launchpad_query(request)
     except Exception as e:
-        return _render_cleanerror(request, 'books and media', e)
+        return _render_cleanerror(request, 'books and media', e,
+                                  settings.WRLC_CATALOG_LABEL,
+                                  settings.WRLC_CATALOG_URL)
 
     return render(request, 'launchpad.html',
                   {'response': response, 'context': default_context_params()})
@@ -610,12 +612,13 @@ def summon_healthcheck_json(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-def _render_cleanerror(request, scope, exception):
+def _render_cleanerror(request, scope, exception, altsite_label, altsite_url):
     logger = logging.getLogger('django.request')
     logger.error("%s -- %s" % (request.get_full_path(), exception))
     # TODO: Log here
     return render(request, 'service_unavailable.html',
-                  {'scope': scope})
+                  {'scope': scope, 'altsite_label': altsite_label,
+                   'altsite_url': altsite_url})
 
 
 def searches(request):
