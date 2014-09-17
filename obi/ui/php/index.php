@@ -15,7 +15,7 @@
 	<script type='text/javascript'>
 	$(document).ready(function() {
             var data="<?php print addslashes($_GET["query"]) ?>";
-	    var bento_url = "http://gwbento-test.wrlc.org/";
+            var bento_url = "<?php echo catalog_pointer_bento(); ?>";
 
 	    function fetch(vals) {
                 $.get(bento_url+vals[0],
