@@ -15,7 +15,11 @@
 	<script type='text/javascript'>
 	$(document).ready(function() {
             var data="<?php print addslashes($_GET["query"]) ?>";
-            var bento_url = "<?php echo catalog_pointer_bento(); ?>";
+            <?php
+  	      // checks to see if function exists and sets the Bento target (set in GW custom Catalog Pointer module) and if not sets a default value (the prod Bento server).
+  	      if (function_exists('catalog_pointer_bento')) {$bentoTarget = catalog_pointer_bento();} else {$bentoTarget = "http://gwbento-prod.wrlc.org:8080/";} 
+	    ?>
+            var bento_url = "<?php echo $bentoTarget; ?>";
 
 	    function fetch(vals) {
                 $.get(bento_url+vals[0],
