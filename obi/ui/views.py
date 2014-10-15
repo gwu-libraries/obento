@@ -82,7 +82,7 @@ def _launchpad_query(request):
     response['matches'] = matches
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
-    response['count_total'] = len(d['results'])
+    response['count_total'] = d['totalResults']
     return response
 
 

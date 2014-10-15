@@ -31,7 +31,7 @@
 {% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all matches</a>
+    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all {{response.count_total}} matches</a>
 </p>
 {% endif %}
 {% else %}
