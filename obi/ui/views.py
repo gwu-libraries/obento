@@ -612,7 +612,7 @@ def summon_healthcheck_json(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-def _render_cleanerror(request, scope, exception, altsite_label, altsite_url):
+def _render_cleanerror(request, scope, exception, altsite_label='', altsite_url=''):
     logger = logging.getLogger('django.request')
     logger.error("%s -- %s" % (request.get_full_path(), exception))
     # TODO: Log here
