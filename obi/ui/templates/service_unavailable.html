@@ -1,1 +1,6 @@
+{% if altsite_url %}
+<em>The {{ scope }} search service is not currently responding or encountered a problem.  Alternatively, you may wish to try your search in the
+<a href="{{ altsite_url }}">{{ altsite_label }}</a>.</em>
+{% else %}
 <em>The {{ scope }} search service is not currently responding or encountered a problem.  Please try your request again.</em>
+{% endif %}
