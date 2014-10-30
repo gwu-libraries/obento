@@ -74,7 +74,7 @@ PART I - Basic server requirements
 
         Starting Jetty: OK
 
-   Verify that <MYSERVER>:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
+   Verify that MYSERVER:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
 
 8. Add jetty to startup
 
@@ -119,12 +119,12 @@ PART I - Basic server requirements
         $ cd /opt/solr
             
         $ sudo mv collection1 obento
+
+    Replace ``name=collection1`` with ``name=obento`` in core.properties:
             
         $ sudo vi obento/core.properties
             
-     Replace ``name=collection1`` with ``name=obento``
-
-15. Restart jetty
+14. Restart jetty
 
         $ sudo service jetty restart
             
