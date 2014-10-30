@@ -8,7 +8,7 @@ frontend.
 requirements
 ============
 
-Developed using Python 2.7, Django 1.5, and PostgreSQL 9.1 on Ubuntu 12.04.
+Developed using Python 2.7, Django 1.6, and PostgreSQL 9.1 on Ubuntu 12.04.
 
 
 Installation Instructions
@@ -19,35 +19,127 @@ PART I - Basic server requirements
 
 1. Install Apache and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev solr-jetty openjdk-6-jdk
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev openjdk-7-jdk python-setuptools python-virtualenv
 
-2. Set up Postgresql
+2. Prepare Java JVM symlink for Jetty
 
-    Create a user for django (and make a note of the password you create).  A name for MYDBUSER might be something like ```obentouser_m1``` (m1 for milestone 1)
+   Create a symlink to the java jvm
 
-        $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt MYDBUSER
+        $ sudo mkdir /usr/java
 
-    Create a database for the obento application.  A name for MYDBNAME might be something like ```obi_m1```
+        $ sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
 
-        $ sudo -u postgres createdb -O MYDBUSER MYDBNAME
+3. Download Jetty and unzip.  
 
+        $ cd /opt
+
+   Go to http://download.eclipse.org/jetty/stable-9/dist/ and copy the link to the .tar.gz version of the latest download of Jetty 9.  Use this link in the following wget command to download the .tar.gz file (again, the URL may change):
+
+        $ sudo wget -O jetty.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.2.3.v20140905.tar.gz&r=1"
+
+        $ sudo mkdir jetty
+
+        $ sudo tar -xvf jetty.gz -C jetty --strip-components=1
+
+4. Create jetty user and make it the owner of /opt/jetty
+
+        $ sudo useradd jetty -U -s /bin/false
+
+        $ sudo chown -R jetty:jetty /opt/jetty
+
+5. Set up jetty to run as a service
+
+        $ sudo cp /opt/jetty/bin/jetty.sh /etc/init.d/jetty
+
+6. Create the jetty settings file
+  
+        $ sudo vi /etc/default/jetty
+
+   Paste the following into the file, and save it:
+
+        JAVA=/usr/bin/java
+        NO_START=0                 # Start on boot
+        JETTY_HOST=0.0.0.0         # Listen to all hosts
+        JETTY_ARGS=jetty.port=8983
+        JETTY_USER=jetty           # Run as this user
+        JETTY_HOME=/opt/jetty
+
+    In production, jetty should be running on a port that won't be publicly exposed.  In development and testing, exposing Solr might be helpful; never expose it in production.
+
+7. Start jetty
+
+        $ sudo service jetty start
+
+   This should return something that starts with:
+
+        Starting Jetty: OK
+
+   Verify that MYSERVER:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
+
+8. Add jetty to startup
+
+        $ sudo update-rc.d jetty defaults
+
+9. Download and unzip solr
+
+   Go to http://www.apache.org/dyn/closer.cgi/lucene/solr and copy the link to the .tgz version of the latest download of Solr 4.  Use this link in the following wget command to download the .tgz file (again, the URL may change).  This may also require a --no-check-certificate option as well, depending on the download site:
+
+        $ sudo wget -O solr.gz "https://www.carfab.com/apachesoftware/lucene/solr/4.10.2/solr-4.10.2.tgz"
+
+        $ sudo tar -xvf solr.gz
+
+    Copy solr contents (precise solr 4 version number may vary):
+
+        $ sudo cp -R solr-4.10.2/example/solr /opt
+
+        $ sudo cp -r /opt/solr-4.10.2/dist /opt/solr
+
+        $ sudo cp -r /opt/solr-4.10.2/contrib /opt/solr
+
+10. Copy solr .war and .jar files to jetty
+
+        $ sudo cp /opt/solr/dist/solr-4.10.2.war /opt/jetty/webapps/solr.war
+
+        $ sudo cp /opt/solr-4.10.2/example/lib/ext/* /opt/jetty/lib/ext
+
+11. Update jetty settings
+
+        $ sudo vi /etc/default/jetty
+
+    Append the following line:
+
+        JAVA_OPTIONS="-Dsolr.solr.home=/opt/solr $JAVA_OPTIONS"
+    
+12. Change the owner of the solr folder and contents to jetty
+        
+        $ sudo chown -R jetty:jetty /opt/solr
+
+13. Change ``collection1`` in solr to ``obento``:
+
+        $ cd /opt/solr
+            
+        $ sudo mv collection1 obento
+
+    Replace ``name=collection1`` with ``name=obento`` in core.properties:
+            
+        $ sudo vi obento/core.properties
+            
+14. Restart jetty
+
+        $ sudo service jetty restart
+            
 
 PART II - Set up project environment
 ------------------------------------
 
-1. Install virtualenv
-
-        $ sudo apt-get install python-setuptools
-        $ sudo easy_install virtualenv
-
-2. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with 
+1. Create a directory for your projects (replace &lt;OBENTO_HOME&gt; with 
 your desired directory path and name: for instance ```/obento``` or 
 ```/home/<username>/obento``` )
 
         $ mkdir <OBENTO_HOME>
         $ cd <OBENTO_HOME>
 
-3. Pull down the project from github
+2. Pull down the project from github
 
         (GW staff only)
         $ git clone git@github.com:gwu-libraries/obento.git
@@ -55,16 +147,16 @@ your desired directory path and name: for instance ```/obento``` or
         (everyone else)
         $ git clone https://github.com/gwu-libraries/obento.git
 
-4. Create virtual Python environment for the project
+3. Create virtual Python environment for the project
 
         $ cd <OBENTO_HOME>/obento
         $ virtualenv --no-site-packages ENV
 
-5. Activate your virtual environment
+4. Activate your virtual environment
 
         $ source ENV/bin/activate
 
-6. Install django, tastypie, and other python dependencies
+5. Install project dependencies
 
         (ENV)$ pip install -r requirements.txt
         
@@ -72,27 +164,23 @@ your desired directory path and name: for instance ```/obento``` or
 
         easy_install --upgrade pytz
 
-7. Set up Solr via jetty
 
-    Edit ```/etc/default/jetty``` to set ```NO_START=0```, set
-    ```JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64```, and consider
-    changing ```JETTY_PORT``` to a port that won't be publicly exposed.
-    In development and testing, exposing Solr might be helpful; never 
-    expose it in production.
-
-    Copy the solr ```schema.xml``` for obento into system-wide solr config
-    (making a backup of the original if you like):
-
-        $ sudo cp /etc/solr/conf/schema.xml /etc/solr/conf/schema.xml.orig
-        $ sudo cp obi/obi/schema.xml /etc/solr/conf/schema.xml
-
-    Start jetty:
-
-        sudo service jetty start
     
+PART III - Set up the database
+------------------------------
 
-PART III - Configure your installation
---------------------------------------
+1. Create a database user for django (and make a note of the password you create).  A name for MYDBUSER might be something like ```obentouser_m1``` (m1 for milestone 1)
+
+        $ sudo -u postgres createuser --createdb --no-superuser --no-createrole --pwprompt MYDBUSER
+
+2. Create a database for the obento application.  A name for MYDBNAME might be something like ```obi_m1```
+
+        $ sudo -u postgres createdb -O MYDBUSER MYDBNAME
+
+
+
+PART IV - Configure the web application
+---------------------------------------
 
 1. Copy the local settings template to an active file
 
@@ -101,15 +189,15 @@ PART III - Configure your installation
 
 2. Update the values in the ```local_settings.py``` file:  for the database, ```NAME```, ```USER```, and ```PASSWORD``` to the database you created above, and set ```ENGINE``` to 'postgresql_psycopg2'; also, set a ```SECRET_KEY```.  Ensure that the port number in ```SOLR_URL``` matches ```JETTY_PORT``` configured earlier in ```/etc/default/jetty```.
 
-        $ vim local_settings.py
+        $ vi local_settings.py
 
 3. Copy the WSGI file template to an active file
 
         $ cp wsgi.py.template wsgi.py
 
-4. Update the wsgi.py file. (Change the value of ENV to your environment path)
+4. Update the wsgi.py file. (Uncomment the virtualenv settings starting with "import site" and Change the value of ENV to your environment path)
 
-        $ vim wsgi.py
+        $ vi wsgi.py
         
 5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
 
@@ -131,54 +219,65 @@ PART III - Configure your installation
         export LC_ALL=en_US.UTF-8
         export LANG=en_US.UTF-8
 
-    Now, reload your bashrc changes
+    Now, reload your bashrc changes:
 
         source ~/.bashrc
 
-    Now, rerun the syncdb command
+    Now, rerun the syncdb command.
 
 6. Migrate the database to the latest updates
 
         $ python manage.py migrate
 
-
-
-Part IV - Start the server
---------------------------
-
-If you choose to run obento in apache (versus django runserver):
-
-1. Copy the Apache virtual host file to the Apache2 directory
+7. Copy the Apache virtual host file to the Apache2 directory
 
         $ cd /<OBENTO_HOME>/obento
         $ sudo cp apache/obento /etc/apache2/sites-available/obento
 
-2. Update the values in the Apache virtual host file.
+8. Restart jetty
+
+        $ sudo service jetty restart
+
+
+Part V - Start the server
+--------------------------
+
+If you choose to run obento in apache (versus django runserver):
+
+1. Update the values in the Apache virtual host file.
 
     Edit the host port number
     Edit your server name (base url)
     Edit the many instances of &lt;path to OBENTO_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
 
-        $ sudo vim /etc/apache2/sites-available/obento
+        $ sudo vi /etc/apache2/sites-available/obento
 
     To change all of the path values at once use the global replace command in vim
 
         :%s/old_value/new_value/g
 
-3. Enable the apache headers module, this is required for CORS support.
+2. Enable the apache headers module, this is required for CORS support.
 
         $ sudo a2enmod headers
 
-4. Enable the new virtualhost. If you are using port 80 also disable the default host
+3. Enable the new virtualhost. If you are using port 80 also disable the default host
 
         $ sudo a2ensite obento
         $ sudo a2dissite default
-        $ sudo /etc/init.d/apache2 restart
+        $ sudo service apache2 restart
 
 
 
-Part V - Load some data
+Part VI - Load some data
 ------------------------
+
+1.  Copy the obento solr configuration files to solr
+        
+        $ sudo cp -r cd /<OBENTO_HOME>/obento/obi/obi/conf /opt/solr/obento/
+
+    Restart jetty
+
+        $ sudo service jetty restart
 
 To load GW's list of databases from libguides, first configure 
 ```local_settings.py``` with a list of libguides page sids.
