@@ -74,7 +74,7 @@ PART I - Basic server requirements
 
         Starting Jetty: OK
 
-   Verify that <<MYSERVER>>:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
+   Verify that <MYSERVER>:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
 
 8. Add jetty to startup
 
@@ -122,7 +122,7 @@ PART I - Basic server requirements
             
         $ sudo vi obento/core.properties
             
-        Replace ``name=collection1`` with ``name=obento``
+     Replace ``name=collection1`` with ``name=obento``
 
 15. Restart jetty
 
@@ -229,6 +229,14 @@ PART IV - Configure the web application
 
         $ python manage.py migrate
 
+7. Copy the Apache virtual host file to the Apache2 directory
+
+        $ cd /<OBENTO_HOME>/obento
+        $ sudo cp apache/obento /etc/apache2/sites-available/obento
+
+8. Restart jetty
+
+        $ sudo service jetty restart
 
 
 Part V - Start the server
@@ -236,12 +244,7 @@ Part V - Start the server
 
 If you choose to run obento in apache (versus django runserver):
 
-1. Copy the Apache virtual host file to the Apache2 directory
-
-        $ cd /<OBENTO_HOME>/obento
-        $ sudo cp apache/obento /etc/apache2/sites-available/obento
-
-2. Update the values in the Apache virtual host file.
+1. Update the values in the Apache virtual host file.
 
     Edit the host port number
     Edit your server name (base url)
@@ -253,11 +256,11 @@ If you choose to run obento in apache (versus django runserver):
 
         :%s/old_value/new_value/g
 
-3. Enable the apache headers module, this is required for CORS support.
+2. Enable the apache headers module, this is required for CORS support.
 
         $ sudo a2enmod headers
 
-4. Enable the new virtualhost. If you are using port 80 also disable the default host
+3. Enable the new virtualhost. If you are using port 80 also disable the default host
 
         $ sudo a2ensite obento
         $ sudo a2dissite default
