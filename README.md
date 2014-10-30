@@ -65,6 +65,8 @@ PART I - Basic server requirements
         JETTY_HOME=/opt/jetty
 
     In production, jetty should be running on a port that won't be publicly exposed.  In development and testing, exposing Solr might be helpful; never expose it in production.
+    
+    NOTE:  In the step above, JAVA is set to /usr/bin/java.  When upgrading from an environment that had Java 6 installed, /usr/bin/java may be a symbolic link (...to another symbolic link) which still points to a Java 6 JRE.  If that is the case, reconfigure to ensure that either /usr/bin/java resolves to a Java 7 JRE, or point JAVA in the jetty config file to wherever the Java 7 JRE is.
 
 7. Start jetty
 
