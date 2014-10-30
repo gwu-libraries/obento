@@ -40,9 +40,9 @@ def everything(request):
 
 def _launchpad_query(request):
     q = request.GET.get('q', '')
-    #TODO: Add 'page_size' parameter pending launchpad #855 and #859
-    #params = {'q': q, 'format': 'json', 'page_size': 3}
-    params = {'q': q, 'format': 'json'}
+    page_no =1
+    page_size = 10
+    params = {'q': q, 'format': 'json', 'page': page_no, 'page_size': page_size}
 
     r = requests.get(settings.LAUNCHPAD_API_URL, params=params,
                      timeout=settings.LAUNCHPAD_TIMEOUT_SECONDS)
