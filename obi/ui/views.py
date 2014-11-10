@@ -504,41 +504,38 @@ def _libsite_query(request):
     # choking on single quotes.  This wraps each word containing a '
     # in double quotes.  Not a perfect solution but it'll handle "most"
     # real-world queries
+    """
     qlist = q.split(' ')
     for i in range(len(qlist)):
         if qlist[i].find("\'") > -1:
             qlist[i] = '\"' + qlist[i] + '\"'
     q = ' '.join(qlist)
+    """
     #----
-    params = {'keys': q}
+    params = {'keys': q, 'fields': 'none'}
     r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
                      timeout=settings.LIBSITE_TIMEOUT_SECONDS)
     r.raise_for_status()
 
     # Strip off BOM if present (presence depends on Drupal site configuration)
-    if r.text[0] == u'\ufeff':
-        j = json.loads(r.text[1:])
+    if r.text[0:3] == u'\u010f\u0165\u017c':
+        j = json.loads(r.text[3:])
     else:
         j = json.loads(r.text)
     response = {}
     matches = []
-    nodesarray = j['nodes']
-    for node in nodesarray[:count]:
-        nodeinfo = node['node']
+    for result in j[:count]:
         match = {}
-        match['view_node'] = nodeinfo['view_node']
-        match['title'] = nodeinfo['title']
+        match['title'] = result['title']
+        match['link'] = result['link']
+        match['snippet'] = result['snippet']
         matches.append(match)
-    response['count_total'] = len(nodesarray)
-    response['result_url'] = settings.LIBSITE_RESULT_URL
+    response['count_total'] = len(j)
     response['more_url'] = '%s%s' % (settings.LIBSITE_MORE_URL, q)
     response['more_url_plain'] = settings.LIBSITE_URL
     response['matches'] = matches
     response['q'] = q
-    #response['count_total'] = count_total
     if settings.DEBUG:
-        # TODO: NOT WORKING YET:
-        #response['source'] = records.json()
         response['query_url'] = r.url
     return response
 
