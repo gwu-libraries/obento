@@ -4,11 +4,11 @@
 <ul id='libsite' class='unstyled'>
     {% for match in response.matches %}
     <li>
-    <a href={{ response.result_url }}{{ match.view_node }}/ onclick="window.open(this.href); return false;">
+    <a href="{{ match.link }}" onclick="window.open(this.href); return false;">
             {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
         <p>
-            {{ match.description }}
+            {{ match.snippet|safe }}
         </p>
     </li>
     {% endfor %}
@@ -16,7 +16,7 @@
 {% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all matches</a>
+    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all {{ response.count_total|intcomma }} matches</a>
 </p>
 {% endif %}
 {% else %}
