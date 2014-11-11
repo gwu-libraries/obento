@@ -64,7 +64,7 @@
 ?>
 <div id='results' class='row-fluid'>
     <div id='bestbets-articles-databases' class='span4'>
-        <div class="mobile-show">
+        <div class="mobile-show-720">
           <div>Results by:</div>
           <div class="bento-jumpto"><a href="#articles">Articles</a> &bull; <a href="#databases">Databases</a> &bull; <a href="#books-media">Books & Media</a> &bull; <a href="#journals">Journals</a> &bull; <a href="#website">Website</a> &bull; <a href="#research-guides">Research Guides</a></div>
         </div>
