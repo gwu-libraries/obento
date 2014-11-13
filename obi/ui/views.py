@@ -16,7 +16,6 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from django.template import RequestContext
-from django.utils.timezone import utc
 
 from ui.models import Database, Journal, Search
 
@@ -40,9 +39,10 @@ def everything(request):
 
 def _launchpad_query(request):
     q = request.GET.get('q', '')
-    page_no =1
+    page_no = 1
     page_size = 10
-    params = {'q': q, 'format': 'json', 'page': page_no, 'page_size': page_size}
+    params = {'q': q, 'format': 'json', 'page': page_no,
+              'page_size': page_size}
 
     r = requests.get(settings.LAUNCHPAD_API_URL, params=params,
                      timeout=settings.LAUNCHPAD_TIMEOUT_SECONDS)
@@ -231,7 +231,8 @@ def _journals_solr_query(request):
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         try:
-            solr_response = s.query('+id:j-* +(name:%s OR text:%s)' % (q, q), rows=DATABASE_HIT_COUNT)
+            solr_response = s.query('+id:j-* +(name:%s OR text:%s)' % (q, q),
+                                    rows=DATABASE_HIT_COUNT)
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
             response['more_url_plain'] = settings.JOURNALS_URL
@@ -608,7 +609,8 @@ def summon_healthcheck_json(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-def _render_cleanerror(request, scope, exception, altsite_label='', altsite_url=''):
+def _render_cleanerror(request, scope, exception, altsite_label='',
+                       altsite_url=''):
     logger = logging.getLogger('django.request')
     logger.error("%s -- %s" % (request.get_full_path(), exception))
     # TODO: Log here
@@ -651,23 +653,24 @@ def searches(request):
         # get the last page
         searches = p.page(p.num_pages)
 
-    # Top queries within the last 7 days
-    searches_this_week = Search.objects.filter(
-        date_searched__gte=datetime.datetime.utcnow().replace(tzinfo=utc)
-        - datetime.timedelta(days=7))
-    qdistinct = set()
-    for s in searches_this_week:
-        # it's a set, so it will only add if the
-        # value isn't already in the set
-        qdistinct.add(s.q.lower())
+    # Top queries within the last n days
+    last_n_days = request.GET.get("last_n_days")
+    if last_n_days is None:
+        last_n_days = 7
+    elif not last_n_days.isdigit():
+        last_n_days = 7
+    elif int(last_n_days) == 0:
+        last_n_days = 7
 
-    qdata = {}
-    for q in qdistinct:
-        c = searches_this_week.filter(q__iexact=q).count()
-        qdata[q] = c
-    # turn qdata into a list of tuples (q, c) sorted by c
-    qdata = sorted(qdata.items(), key=lambda tup: tup[1], reverse=True)
+    top_n_searches = request.GET.get("top_n_searches")
+    if top_n_searches is None:
+        top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
+    elif not top_n_searches.isdigit():
+        top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
+    elif int(top_n_searches) == 0:
+        top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
 
+    qdata = Search.searchTermManager.searched_terms(last_n_days, top_n_searches)
     headersort = {'id': '-', 'q': '', 'date_searched': '-'}
     # flip the bit for whichever column we're currently sorting on.
     # set the other columns to default.
@@ -679,4 +682,6 @@ def searches(request):
     return render(request, 'searches.html',
                   {'searches': searches,
                    'this_week_qdata': qdata,
-                   'headersort': headersort})
+                   'headersort': headersort,
+                   'last_n_days': last_n_days,
+                   'top_n_searches': top_n_searches})
