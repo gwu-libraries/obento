@@ -9,13 +9,13 @@
                     <thead>
                        <tr>
                           <th align="left">
-                            <a href="?sort={{ headersort.id }}id&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}">ID</a>
+                              <a href="?sort={{ headersort.id }}id&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">ID</a>
                          </th>
                          <th align="left">
-                            <a href="?sort={{ headersort.q }}q&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}">Query</a>
+                             <a href="?sort={{ headersort.q }}q&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">Query</a>
                          </th>
                          <th align="left">
-                            <a href="?sort={{ headersort.date_searched }}date_searched&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}">Date</a>
+                             <a href="?sort={{ headersort.date_searched }}date_searched&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">Date</a>
                          </th>
                       </tr>
                    </thead>
@@ -32,10 +32,10 @@
               </div>
               <div style="max-width:32%;float:right;">
                  {% if this_week_qdata %}
-                   <b>Top searches this week:</b>
+                 <b>Top {{ top_n_searches }} searches of last {{ last_n_days }} days:</b>
                    <ul id='topsearches' class='unstyled'>
-                       {% for q, c in this_week_qdata|slice:":25" %}
-                       <li class='item'>{{ q }}  - {{c}}</li>
+                       {% for q,count in this_week_qdata %}
+                       <li class='item'>{{ q }}  - {{ count}}</li>
                        {% endfor %}
                    </ul>
                  {% endif %}
@@ -46,13 +46,13 @@
           <div class="span12">
             <span>
              {% if searches.has_previous %}
-             <a href="?page={{ searches.previous_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}">previous</a>
+             <a href="?page={{ searches.previous_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">previous</a>
              {% endif %}
              <span>
              Page {{ searches.number }} of {{ searches.paginator.num_pages }}
              </span>
              {% if searches.has_next %}
-             <a href="?page={{ searches.next_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}">next</a>
+             <a href="?page={{ searches.next_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">next</a>
              {% endif %}
             </span>
           </div>

@@ -1,3 +1,4 @@
+from django.db import connection
 from django.db import models
 
 
@@ -20,9 +21,23 @@ class Journal(models.Model):
         return '<Journal %s "%s">' % (self.id, self.title)
 
 
+class SearchTermManager(models.Manager):
+    def searched_terms(self, ndays, topn):
+        cursor = connection.cursor()
+        cursor.execute('''SELECT LOWER(q) q,COUNT(LOWER(q)) count
+                       FROM ui_search WHERE
+                         date_searched > current_date - interval ' %s days '
+                       GROUP BY LOWER(q)
+                       ORDER BY count DESC
+                       LIMIT %s''', [ndays, topn])
+        return cursor.fetchall()
+
+
 class Search(models.Model):
     q = models.TextField(blank=True, db_index=True)
     date_searched = models.DateTimeField(auto_now_add=True, db_index=True)
+    objects = models.Manager()
+    searchTermManager = SearchTermManager()
 
     class Meta:
         verbose_name_plural = 'searches'
