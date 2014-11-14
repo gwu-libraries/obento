@@ -98,6 +98,14 @@ PART I - Basic server requirements
 
         $ sudo cp -r /opt/solr-4.10.2/contrib /opt/solr
 
+    Copy ICU Tokenizer jars to /opt/solr/lib
+
+        $ sudo mkdir /opt/solr/lib
+
+        $ sudo cp /opt/solr/contrib/analysis-extras/lib/icu4j-*.jar /opt/solr/lib
+
+        $ sudo cp /opt/solr/contrib/analysis-extras/lucene-libs/lucene-analyzers-icu-* /opt/solr/lib
+
 10. Copy solr .war and .jar files to jetty
 
         $ sudo cp /opt/solr/dist/solr-4.10.2.war /opt/jetty/webapps/solr.war
