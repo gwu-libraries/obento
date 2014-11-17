@@ -32,7 +32,7 @@
             {% endif %}
         {% endif %}
         {% if match.hasFullText and response.scope != 'research_guides' %}
-            <img src="http://{{ request.get_host }}{% static "img/pdf.gif" %}" alt="Full Text Available Online" title="Full Text Available Online"/> Full Text Online
+            <i class="fa fa-book" title="Full Text Available Online"></i> Full Text Online
         {% endif %}
         </p>
     </li>
