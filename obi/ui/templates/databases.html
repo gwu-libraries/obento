@@ -8,8 +8,13 @@
         <a href='{{ match.url }}' title='{{ match.name }}' onclick="window.open(this.href); return false;">
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
-        <p>
+        <p id="partialdescriptioni{{ forloop.counter }}">
             {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
+            <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').hide();$('#completedescription{{ forloop.counter }}').show()">more</a>
+        </p>
+        <p id="completedescription{{ forloop.counter }}" style="display:none">
+            {{ match.description }}
+            <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').show();$('#completedescription{{ forloop.counter }}').hide()">less</a>    
         </p>
     </li>
     {% endfor %}
