@@ -29,7 +29,7 @@ class SearchTermManager(models.Manager):
                          date_searched > current_date - interval ' %s days '
                        GROUP BY LOWER(q)
                        ORDER BY count DESC
-                       LIMIT %s''', [ndays, topn])
+                       LIMIT %s''' % (ndays, topn))
         return cursor.fetchall()
 
 
