@@ -106,6 +106,7 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719917',
 ]
 
+LIBSITE_SEARCH_ALL_URL = <SEARCH URL> #'http://test.library.gwu.edu/search-all?query='
 LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'

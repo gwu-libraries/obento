@@ -670,7 +670,8 @@ def searches(request):
     elif int(top_n_searches) == 0:
         top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
 
-    qdata = Search.searchTermManager.searched_terms(last_n_days, top_n_searches)
+    qdata = Search.searchTermManager.searched_terms(last_n_days,
+                                                    top_n_searches)
     headersort = {'id': '-', 'q': '', 'date_searched': '-'}
     # flip the bit for whichever column we're currently sorting on.
     # set the other columns to default.
@@ -679,9 +680,14 @@ def searches(request):
     else:
         headersort[sortby] = '-'
 
+    search_all_url = 'http://library.gwu.edu/search-all?query='
+    if settings.LIBSITE_SEARCH_ALL_URL:
+        search_all_url = settings.LIBSITE_SEARCH_ALL_URL
+
     return render(request, 'searches.html',
                   {'searches': searches,
                    'this_week_qdata': qdata,
                    'headersort': headersort,
                    'last_n_days': last_n_days,
-                   'top_n_searches': top_n_searches})
+                   'top_n_searches': top_n_searches,
+                   'search_all_url': search_all_url})
