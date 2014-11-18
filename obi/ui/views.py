@@ -96,10 +96,7 @@ def launchpad_html(request):
     try:
         response = _launchpad_query(request)
     except Exception as e:
-        wrlc_url = settings.WRLC_CATALOG_URL
-        wrlc_url += "cgi-bin/Pwebrecon.cgi?Search_Arg="
-        wrlc_url += request.GET.get('q')
-        wrlc_url += "&Search_Code=GKEY^&SL=None&CNT=25&DB=local"
+        wrlc_url = settings.WRLC_CATALOG_URL % request.GET.get('q')
         return _render_cleanerror(request, 'books and media', e,
                                   settings.WRLC_CATALOG_LABEL,
                                   wrlc_url)
