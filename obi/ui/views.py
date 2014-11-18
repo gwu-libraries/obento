@@ -136,18 +136,17 @@ def _databases_query(request):
 def _databases_solr_query(request):
     q = request.GET.get('q', '').strip()
     # Don't use DEFAULT_HIT_COUNT, instead grab 25 so we can expand
-    DATABASE_HIT_COUNT = 25
     try:
-        count = int(request.GET.get('count', DATABASE_HIT_COUNT))
+        count = int(request.GET.get('count', 0))
     except:
-        count = DATABASE_HIT_COUNT
+        count = 0
     response = {'q': q}
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         query = u'+id:db-* +(name:%s OR description:%s)' % (q, q)
         try:
-            solr_response = s.query(query, rows=DATABASE_HIT_COUNT)
+            solr_response = s.query(query)
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
             response['more_url_plain'] = settings.DATABASES_URL
@@ -221,18 +220,16 @@ def _journals_query(request):
 
 def _journals_solr_query(request):
     q = request.GET.get('q', '').strip()
-    DATABASE_HIT_COUNT = 25
     try:
-        count = int(request.GET.get('count', DATABASE_HIT_COUNT))
+        count = int(request.GET.get('count', 0))
     except:
-        count = DATABASE_HIT_COUNT
+        count = 0
     response = {'q': q}
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         try:
-            solr_response = s.query('+id:j-* +(name:%s OR text:%s)' % (q, q),
-                                    rows=DATABASE_HIT_COUNT)
+            solr_response = s.query('+id:j-* +(name:%s OR text:%s)' % (q, q))
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
             response['more_url_plain'] = settings.JOURNALS_URL
