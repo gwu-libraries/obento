@@ -96,9 +96,10 @@ def launchpad_html(request):
     try:
         response = _launchpad_query(request)
     except Exception as e:
+        wrlc_url = settings.WRLC_CATALOG_URL % request.GET.get('q')
         return _render_cleanerror(request, 'books and media', e,
                                   settings.WRLC_CATALOG_LABEL,
-                                  settings.WRLC_CATALOG_URL)
+                                  wrlc_url)
 
     return render(request, 'launchpad.html',
                   {'response': response, 'context': default_context_params()})

@@ -48,7 +48,8 @@ LAUNCHPAD_MORE_URL_PLAIN = 'http://findit.library.gwu.edu/catalog'
 LAUNCHPAD_RETRIES = 2
 LAUNCHPAD_TIMEOUT_SECONDS = 5  # per try
 WRLC_CATALOG_LABEL = 'WRLC Catalog'
-WRLC_CATALOG_URL = 'http://catalog.wrlc.org/'
+WRLC_CATALOG_URL = \
+    'http://catalog.wrlc.org/cgi-bin/Pwebrecon.cgi?Search_Arg=%s&Search_Code=GKEY^&SL=None&CNT=25&DB=local'
 
 SUMMON_URL = 'http://gw.summon.serialssolutions.com/'
 SUMMON_API_ID = 'gw'                                                            
