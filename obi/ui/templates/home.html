@@ -15,7 +15,15 @@ $(document).ready(function () {
     var q = $('input[name=q]');
     var ignoresearch = location.search.split('ignoresearch=')[1] ? 
                     (location.search.split('ignoresearch=')[1]).toLowerCase() : 'false';
-    var data = {q: q.val(), ignoresearch: ignoresearch};
+    var count  = location.search.split('count=')[1] ? 
+                    location.search.split('count=')[1] : '0';
+    var data;
+    if(count == 0 || !/^\d+$/.test(count)){
+        data = {q: q.val(), ignoresearch: ignoresearch};
+    }
+    else{
+        data = {q: q.val(), ignoresearch: ignoresearch, count: count};
+    }
     function fetch(vals) {
         $.ajax({
             type: "GET",
