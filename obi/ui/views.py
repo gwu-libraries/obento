@@ -270,8 +270,9 @@ def journals_solr_html(request):
     # of search terms from proliferating
     querystring = request.GET.get('q', '')
     if querystring:
-        s = Search(q=querystring)
-        s.save()
+        if not (request.GET.get('ignoresearch') == 'true'):
+            s = Search(q=querystring)
+            s.save()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
@@ -280,8 +281,9 @@ def journals_json(request):
     response = _journals_query(request)
     # Save search terms only here, and in journals_json, to limit copies
     # of search terms from proliferating
-    s = Search(q=request.GET.get('q', ''))
-    s.save()
+    if not (request.GET.get('ignoresearch') == 'true'):
+        s = Search(q=request.GET.get('q', ''))
+        s.save()
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 

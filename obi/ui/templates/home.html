@@ -13,8 +13,9 @@
 <script type='text/javascript'>
 $(document).ready(function () {
     var q = $('input[name=q]');
-    var data = {q: q.val()};
-
+    var ignoresearch = location.search.split('ignoresearch=')[1] ? 
+                    (location.search.split('ignoresearch=')[1]).toLowerCase() : 'false';
+    var data = {q: q.val(), ignoresearch: ignoresearch};
     function fetch(vals) {
         $.ajax({
             type: "GET",
