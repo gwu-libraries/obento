@@ -10,7 +10,9 @@
         </a>
         <p id="partialdescriptioni{{ forloop.counter }}">
             {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
-            <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').hide();$('#completedescription{{ forloop.counter }}').show()">more</a>
+            {% if match.description and match.description|length > context.DESCRIPTION_DISPLAY_LENGTH %}
+                <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').hide();$('#completedescription{{ forloop.counter }}').show()">more</a>
+            {% endif %}
         </p>
         <p id="completedescription{{ forloop.counter }}" style="display:none">
             {{ match.description }}
