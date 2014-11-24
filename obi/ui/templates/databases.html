@@ -2,9 +2,11 @@
 <script>
     $( document ).ready(function() {
         var x = parseInt($('#expand_size').val(),10);
-        if( (y = $('#databases li').size() - x) < 5){ 
+        if ((y = $('#databases li').size() - x) == 1) { 
+            $('#next-database-results').text('Next Database'); 
+        } else if ((y = $('#databases li').size() - x) < 5) { 
             $('#next-database-results').text('Next '+y+' Databases'); 
-        }else { 
+        } else { 
             $('#next-database-results').text('Next 5 Databases'); 
         }
     });

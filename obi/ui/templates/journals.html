@@ -2,9 +2,11 @@
 <script>
     $( document ).ready(function() {
         var x = parseInt($('#expand_size_j').val(),10);
-        if( (y = $('#journals li').size() - x) < 5){ 
+        if ((y = $('#journals li').size() - x) == 1) { 
+            $('#next-journal-results').text('Next Journal'); 
+        } else if ((y = $('#journals li').size() - x) < 5) { 
             $('#next-journal-results').text('Next '+y+' Journals'); 
-        }else { 
+        } else { 
             $('#next-journal-results').text('Next 5 Journals'); 
         }
     });
