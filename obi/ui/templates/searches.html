@@ -23,7 +23,7 @@
                      {% for s in searches %}
                      <tr>
                         <td>{{ s.id }}</td>
-                        <td>{{ s.q }}</td>
+                        <td><a href="{{ search_all_url }}{{ s.q }}&ignoresearch=true">{{ s.q }}</a></td>
                         <td>{{ s.date_searched }}</td>
                      </tr>
                      {% endfor %}
