@@ -41,6 +41,10 @@ def _launchpad_query(request):
     q = request.GET.get('q', '')
     page_no = 1
     count = int(float(request.GET.get('count', DEFAULT_HIT_COUNT)))
+    # Getting three times the required results by multiplying page_size by 3
+    # This is needed since launchpad merges some of the results returned by
+    # summon into 1 before passing it to obento. The multiplier ensures that
+    # we will get atleast the expected number of results in 90% of the cases.
     page_size = count*3
     params = {'q': q, 'format': 'json', 'page': page_no,
               'page_size': page_size}
