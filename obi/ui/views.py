@@ -40,7 +40,12 @@ def everything(request):
 def _launchpad_query(request):
     q = request.GET.get('q', '')
     page_no = 1
-    page_size = 10
+    count = int(float(request.GET.get('count', DEFAULT_HIT_COUNT)))
+    # Getting three times the required results by multiplying page_size by 3
+    # This is needed since launchpad merges some of the results returned by
+    # summon into 1 before passing it to obento. The multiplier ensures that
+    # we will get atleast the expected number of results in 90% of the cases.
+    page_size = count*3
     params = {'q': q, 'format': 'json', 'page': page_no,
               'page_size': page_size}
 
@@ -56,7 +61,7 @@ def _launchpad_query(request):
     matches = []
     response = {'q': q}
 
-    for result in d['results'][:DEFAULT_HIT_COUNT]:
+    for result in d['results'][:count]:
         match = {'name': result['name']}
         match['url'] = settings.LAUNCHPAD_URL + result['@id']
         if 'author' in result:
@@ -270,8 +275,9 @@ def journals_solr_html(request):
     # of search terms from proliferating
     querystring = request.GET.get('q', '')
     if querystring:
-        s = Search(q=querystring)
-        s.save()
+        if not (request.GET.get('ignoresearch') == 'true'):
+            s = Search(q=querystring)
+            s.save()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
@@ -280,8 +286,9 @@ def journals_json(request):
     response = _journals_query(request)
     # Save search terms only here, and in journals_json, to limit copies
     # of search terms from proliferating
-    s = Search(q=request.GET.get('q', ''))
-    s.save()
+    if not (request.GET.get('ignoresearch') == 'true'):
+        s = Search(q=request.GET.get('q', ''))
+        s.save()
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 

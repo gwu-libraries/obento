@@ -35,7 +35,7 @@
                  <b>Top {{ top_n_searches }} searches of last {{ last_n_days }} days:</b>
                    <ul id='topsearches' class='unstyled'>
                        {% for q,count in this_week_qdata %}
-                       <li class='item'><a href="{{search_all_url}}{{ q }}">{{ q }}</a> - {{ count}}</li>
+                       <li class='item'><a href="{{search_all_url}}{{ q }}&ignoresearch=true">{{ q }}</a> - {{ count}}</li>
                        {% endfor %}
                    </ul>
                  {% endif %}
