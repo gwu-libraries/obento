@@ -40,7 +40,7 @@ def everything(request):
 def _launchpad_query(request):
     q = request.GET.get('q', '')
     page_no = 1
-    page_size = 10
+    page_size = int(float(request.GET.get('count', 'DEFAULT_HIT_COUNT')))*3
     params = {'q': q, 'format': 'json', 'page': page_no,
               'page_size': page_size}
 
@@ -56,7 +56,7 @@ def _launchpad_query(request):
     matches = []
     response = {'q': q}
 
-    for result in d['results'][:DEFAULT_HIT_COUNT]:
+    for result in d['results'][:(page_size/3)]:
         match = {'name': result['name']}
         match['url'] = settings.LAUNCHPAD_URL + result['@id']
         if 'author' in result:
