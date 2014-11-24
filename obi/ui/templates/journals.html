@@ -1,5 +1,15 @@
 {% load humanize %}
-
+<script>
+    $( document ).ready(function() {
+        var x = parseInt($('#expand_size_j').val(),10);
+        if( (y = $('#journals li').size() - x) < 5){ 
+            $('#next-journal-results').text('Next '+y+' Journals'); 
+        }else { 
+            $('#next-journal-results').text('Next 5 Journals'); 
+        }
+    });
+</script>
+                                                                
 {% if response.matches %}
 <ul id='journals' class='unstyled'>
     {% for match in response.matches %}
@@ -17,7 +27,7 @@
 {% if response.count_total > 3 %}
 <p id='show-remainder-journals'>
     <i class='icon-arrow-right'></i>
-    <a  onclick="var x = parseInt($('#expand_size_j').val(),10);  x = (x + 5 < $('#journals li').size()) ? x+5 : $('#journals li').size();$('#expand_size_j').val(x);$('#journals li:lt('+x+')').delay(250).show(500);if( x == $('#journals li').size()){ $('#show-remainder-journals').hide();}">Next 5 Journals</a>
+    <a id='next-journal-results' onclick="var x = parseInt($('#expand_size_j').val(),10);  x = (x + 5 < $('#journals li').size()) ? x+5 : $('#journals li').size();$('#expand_size_j').val(x);$('#journals li:lt('+x+')').delay(250).show(500);if( (y = $('#journals li').size() - x) < 5){ $('#next-journal-results').text('Next '+y+' Journals'); }else { $('#next-journal-results').text('Next 5 Journals'); };if( x == $('#journals li').size()){ $('#show-remainder-journals').hide();}">Next 5 Journals</a>
 </p>
 <p class='x remainder-journals'>
     <i class='icon-arrow-right'></i>
