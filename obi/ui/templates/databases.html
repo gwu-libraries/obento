@@ -1,5 +1,16 @@
 {% load humanize %}
-
+<script>
+    $( document ).ready(function() {
+        var x = parseInt($('#expand_size').val(),10);
+        if ((y = $('#databases li').size() - x) == 1) { 
+            $('#next-database-results').text('Next Database'); 
+        } else if ((y = $('#databases li').size() - x) < 5) { 
+            $('#next-database-results').text('Next '+y+' Databases'); 
+        } else { 
+            $('#next-database-results').text('Next 5 Databases'); 
+        }
+    });
+</script>
 {% if response.matches %}
 <ul id='databases' class='unstyled'>
     {% for match in response.matches %}
@@ -21,20 +32,21 @@
     </li>
     {% endfor %}
 </ul>
-    {% if response.count_total > 3 %}
-<p class='x remainder' style='display:none;'>
+{% if response.count_total > 3 %}
+<p id='show-remainder'>
+    <i class='icon-arrow-right'></i>
+    <a id="next-database-results" onclick="var x = parseInt($('#expand_size').val(),10); x = (x + 5 < $('#databases li').size()) ? x+5 : $('#databases li').size();$('#expand_size').val(x);$('#databases li:lt('+x+')').delay(250).show(500);if( (y = $('#databases li').size() - x) < 5){ $('#next-database-results').text('Next '+y+' Databases'); }else { $('#next-database-results').text('Next 5 Databases'); };if( x == $('#databases li').size()){ $('#show-remainder').hide();}"></a>
+</p>
+
+<p class='x remainder'>
     <i class='icon-arrow-right'></i>
     <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all {{response.count_total|intcomma}} databases</a>
 </p>
-<p id='show-remainder'>
-    <i class='icon-arrow-right'></i>
-    <a onclick="$('#show-remainder').hide(200);$('.remainder').delay(250).show(500);">More databases</a>
-</p>
-    {% endif %}
+{% endif %}
 {% else %}
 <p>
     <em>No matching database titles or descriptions found.  Please browse <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">Databases by subject.</a>
     </em>
 </p>
 {% endif %}
-
+<input id='expand_size' type='hidden' value='3' />
