@@ -112,7 +112,6 @@ LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
 LIBSITE_TIMEOUT_SECONDS = 5  # per try
-LIBSITE_RESULT_URL = 'http://gwlibrary-test.wrlc.org/node/'
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 100
