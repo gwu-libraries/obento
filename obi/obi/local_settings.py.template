@@ -107,11 +107,12 @@ LIBGUIDES_DB_PAGE_SIDS = [
     '1719917',
 ]
 
-LIBSITE_SEARCH_ALL_URL = <SEARCH URL> #'http://test.library.gwu.edu/search-all?query='
-LIBSITE_SEARCH_URL = 'http://gwlibrary-test.wrlc.org/search-page'
+LIBSITE_SEARCH_ALL_URL = 'http://test.library.gwu.edu/search-all?query='
+LIBSITE_TIMEOUT_SECONDS = 10  # per try
+LIBSITE_SEARCH_URL = \
+    'http://test.library.gwu.edu/services-test/search-node/retrieve.json'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
-LIBSITE_TIMEOUT_SECONDS = 5  # per try
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 100
