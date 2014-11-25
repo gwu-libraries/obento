@@ -13,12 +13,10 @@
     </li>
     {% endfor %}
 </ul>
-{% if response.count_total > 3 %}
 <p>
     <i class='icon-arrow-right'></i>
-    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all {{ response.count_total|intcomma }} matches</a>
+    <a href='{{ response.more_url }}' onclick="window.open(this.href); return false;">See all matches</a>
 </p>
-{% endif %}
 {% else %}
 <p>
     <em>No library website results found.  Please try another search at <a href='{{ response.more_url_plain }}' onclick="window.open(this.href); return false;">Library Website Search.</a>
