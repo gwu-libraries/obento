@@ -519,13 +519,18 @@ def _libsite_query(request):
     response = {'more_url': '%s%s' % (settings.LIBSITE_MORE_URL, q),
                 'more_url_plain': settings.LIBSITE_URL,
                 'q': q}
-    if r.text[3:] == "[\"Search returned no results.\"]":
-        return response
+
+    rtext = r.text
     # Strip off BOM if present (presence depends on Drupal site configuration)
-    elif r.text[0:3] == u'\u010f\u0165\u017c':
-        j = json.loads(r.text[3:])
-    else:
-        j = json.loads(r.text)
+    response_prefix = settings.LIBSITE_RESPONSE_BOM_PREFIX
+    if r.text.startswith(response_prefix):
+        rtext = r.text[len(response_prefix):]
+
+    # Check for no-results case
+    if rtext == "[\"Search returned no results.\"]":
+        return response
+
+    j = json.loads(rtext)
     matches = []
     for result in j[:count]:
         match = {}
