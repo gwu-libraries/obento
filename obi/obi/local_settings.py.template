@@ -113,6 +113,7 @@ LIBSITE_SEARCH_URL = \
     'http://test.library.gwu.edu/services-test/search-node/retrieve.json'
 LIBSITE_URL = 'http://gwlibrary-test.wrlc.org/search/'
 LIBSITE_MORE_URL = 'http://gwlibrary-test.wrlc.org/search/node/'
+LIBSITE_RESPONSE_BOM_PREFIX = u'\u010f\u0165\u017c'
 
 # number of characters to display before truncating with ellipsis
 TITLE_DISPLAY_LENGTH = 100
