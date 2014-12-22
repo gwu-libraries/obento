@@ -283,7 +283,7 @@ Part VI - Load some data
 
 1.  Copy the obento solr configuration files to solr
         
-        $ sudo cp -r cd /<OBENTO_HOME>/obento/obi/obi/conf /opt/solr/obento/
+        $ sudo cp -r /<OBENTO_HOME>/obento/obi/obi/conf /opt/solr/obento/
 
     Restart jetty
 
