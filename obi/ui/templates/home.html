@@ -18,7 +18,7 @@ $(document).ready(function () {
     for (var i=0;i<vars.length;i++) {
         var pair = vars[i].split("=");
         if(pair[0] == 'q'){
-            data[pair[0]] = pair[1];
+            data[pair[0]] = decodeURIComponent(pair[1]);
         }
 
         if(pair[0] == 'ignoresearch'){
