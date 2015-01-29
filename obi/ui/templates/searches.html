@@ -28,7 +28,19 @@
                      </tr>
                      {% endfor %}
                    </tbody>
-                 </table>
+                </table> 
+               <div style="display:block; float-left; width:100%; padding:1em;padding-left:0em;">
+                   {% if searches.has_previous %}
+                        <a href="?page={{ searches.previous_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">previous</a>
+                    {% endif %}
+                    <span>
+                        Page {{ searches.number }} of {{ searches.paginator.num_pages }}
+                    </span>
+                    {% if searches.has_next %}
+                        <a href="?page={{ searches.next_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">next</a>
+                    {% endif %}
+               </div>
+
               </div>
               <div style="max-width:32%;float:right;">
                  {% if this_week_qdata %}
@@ -41,21 +53,6 @@
                  {% endif %}
                </div>
             </div>
-        </div>
-        <div class="row-fluid">
-          <div class="span12">
-            <span>
-             {% if searches.has_previous %}
-             <a href="?page={{ searches.previous_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">previous</a>
-             {% endif %}
-             <span>
-             Page {{ searches.number }} of {{ searches.paginator.num_pages }}
-             </span>
-             {% if searches.has_next %}
-             <a href="?page={{ searches.next_page_number }}&token={{ request.GET.token }}&sort={{ request.GET.sort }}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">next</a>
-             {% endif %}
-            </span>
-          </div>
         </div>
     {% endif %}
 {% endblock content %}
