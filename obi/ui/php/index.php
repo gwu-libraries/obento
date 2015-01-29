@@ -13,45 +13,47 @@
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
-	$(document).ready(function() {
-            var data="<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
-            data = data.trim();
-            data = data.replace(/ /g,'+');
-            var ignoresearch="<?php if (isset($_GET["ignoresearch"])) {print addslashes($_GET["ignoresearch"]);} else {print "false";}?>";
-            var count="<?php if (isset($_GET["count"])) {print $_GET["count"];} else {print "0";}?>";
-            <?php
-  	      // checks to see if function exists and sets the Bento target (set in GW custom Catalog Pointer module) and if not sets a default value (the prod Bento server).
-  	      if (function_exists('catalog_pointer_bento')) {$bentoTarget = catalog_pointer_bento();} else {$bentoTarget = "http://gwbento-prod.wrlc.org:8080/";} 
-	    ?>
-            var bento_url = "<?php echo $bentoTarget; ?>";
-
-            if(count == "0" || !/^\d+$/.test(count)){
-    	        function fetch(vals) {
-                    $.get(bento_url+vals[0],
+	var data;
+	var ignoresearch;
+	var count;
+	var bento_url;
+	var remote_addr = "<?php echo $_SERVER["REMOTE_ADDR"] ?>";
+	function fetch(vals){
+	    if(count == "0" || !/^\d+$/.test(count)){
+		$.get(bento_url+vals[0],
                         {"q": data,
                         "ignoresearch": ignoresearch,
-                        "remote_addr": "<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
-			function(response){
-       	           	    $(vals[1]).html(response);
-			}
-		     );
-                };
-            }
-
-            else{
-                function fetch(vals) {
-                    $.get(bento_url+vals[0],
+                        "remote_addr": remote_addr},
+                        function(response){
+                            $(vals[1]).html(response);
+                        }
+                     );
+	    }
+	    else{
+		 $.get(bento_url+vals[0],
                         {"q": data,
                         "ignoresearch": ignoresearch,
                         "count": count,
-                        "remote_addr": "<?php echo $_SERVER["REMOTE_ADDR"] ?>"},
+                        "remote_addr": remote_addr},
                         function(response){
                             $(vals[1]).html(response);
                         }
                     );
-                };
-            }
 
+	    }
+	
+	}
+	$(document).ready(function() {
+            data="<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
+	    data = data.trim();
+	    data = data.replace(/ /g,'+');
+            ignoresearch="<?php if (isset($_GET["ignoresearch"])) {print addslashes($_GET["ignoresearch"]);} else {print "false";}?>";
+            count="<?php if (isset($_GET["count"])) {print $_GET["count"];} else {print "0";}?>";
+            <?php
+  	      // checks to see if function exists and sets the Bento target (set in GW custom Catalog Pointer module) and if not sets a default value (the prod Bento server).
+  	      if (function_exists('catalog_pointer_bento')) {$bentoTarget = catalog_pointer_bento();} else {$bentoTarget = "http://gwbento-prod.wrlc.org:8080/";} 
+	    ?>
+            bento_url = "<?php echo $bentoTarget; ?>";
 	    var blocks = [
         	["best_bets_html", '#bestbets-response'],
 		["articles_html", '#articles-response'],
@@ -62,7 +64,7 @@
 		["research_guides_html", '#guides-response'],
 	    ];
             for (var i=0; i < blocks.length; i++) {
-                fetch(blocks[i]);
+		fetch(blocks[i]);
             }
 	});
 	</script>
