@@ -15,6 +15,8 @@
 	<script type='text/javascript'>
 	$(document).ready(function() {
             var data="<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
+            data = data.trim();
+            data = data.replace(/ /g,'+');
             var ignoresearch="<?php if (isset($_GET["ignoresearch"])) {print addslashes($_GET["ignoresearch"]);} else {print "false";}?>";
             var count="<?php if (isset($_GET["count"])) {print $_GET["count"];} else {print "0";}?>";
             <?php
