@@ -10,6 +10,22 @@
             $('#next-database-results').text('Next 5 Databases'); 
         }
     });
+
+    function NextLinkDB(){
+        var x = parseInt($('#expand_size').val(),10);
+        x = (x + 5 < $('#databases li').size()) ? x+5 : $('#databases li').size();
+        $('#expand_size').val(x);
+        $('#databases li:lt('+x+')').delay(250).show(500);
+        if( (y = $('#databases li').size() - x) < 5){
+            $('#next-database-results').text('Next '+y+' Databases');
+        }
+        else{
+            $('#next-database-results').text('Next 5 Databases');
+        }
+        if( x == $('#databases li').size()){
+            $('#show-remainder').hide();
+        }
+    }
 </script>
 {% if response.matches %}
 <ul id='databases' class='unstyled'>
@@ -35,7 +51,7 @@
 {% if response.count_total > 3 %}
 <p id='show-remainder'>
     <i class='icon-arrow-right'></i>
-    <a id="next-database-results" onclick="var x = parseInt($('#expand_size').val(),10); x = (x + 5 < $('#databases li').size()) ? x+5 : $('#databases li').size();$('#expand_size').val(x);$('#databases li:lt('+x+')').delay(250).show(500);if( (y = $('#databases li').size() - x) < 5){ $('#next-database-results').text('Next '+y+' Databases'); }else { $('#next-database-results').text('Next 5 Databases'); };if( x == $('#databases li').size()){ $('#show-remainder').hide();}"></a>
+    <a id="next-database-results" onclick=NextLinkDB() >Next 5 Databases</a>
 </p>
 
 <p class='x remainder'>
