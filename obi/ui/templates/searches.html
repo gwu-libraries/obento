@@ -17,6 +17,21 @@
                          <th align="left">
                              <a href="?sort={{ headersort.date_searched }}date_searched&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">Date</a>
                          </th>
+                         <th>
+                             Articles Count
+                         </th>
+                         <th>
+                             Books Count
+                         </th>
+                         <th>
+                             Database Count
+                         </th>
+                         <th>
+                             Journals Count
+                         </th>
+                         <th>
+                             Research Guides Count
+                         </th>
                       </tr>
                    </thead>
                    <tbody>
@@ -25,6 +40,11 @@
                         <td>{{ s.id }}</td>
                         <td><a href="{{ search_all_url }}{{ s.q }}&ignoresearch=true" target="_blank">{{ s.q }}</a></td>
                         <td>{{ s.date_searched }}</td>
+                        <td>{{s.articles_count}}</td>
+                        <td>{{s.books_count}}</td>
+                        <td>{{s.database_count}}</td>
+                        <td>{{s.journals_count}}</td>
+                        <td>{{s.researchguides_count}}</td>
                      </tr>
                      {% endfor %}
                    </tbody>
