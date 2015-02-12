@@ -13,6 +13,7 @@
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
+	var dbid;
 	var data;
 	var ignoresearch;
 	var count;
@@ -22,6 +23,7 @@
 	    if(count == "0" || !/^\d+$/.test(count)){
 		$.get(bento_url+vals[0],
                         {"q": data,
+			 "dbid": dbid,
                         "ignoresearch": ignoresearch,
                         "remote_addr": remote_addr},
                         function(response){
@@ -32,6 +34,7 @@
 	    else{
 		 $.get(bento_url+vals[0],
                         {"q": data,
+                         "dbid": dbid,
                         "ignoresearch": ignoresearch,
                         "count": count,
                         "remote_addr": remote_addr},
@@ -54,19 +57,35 @@
   	      if (function_exists('catalog_pointer_bento')) {$bentoTarget = catalog_pointer_bento();} else {$bentoTarget = "http://gwbento-prod.wrlc.org:8080/";} 
 	    ?>
             bento_url = "<?php echo $bentoTarget; ?>";
-	    var blocks = [
-        	["best_bets_html", '#bestbets-response'],
-		["articles_html", '#articles-response'],
-		["databases_solr_html", '#databases-solr-response'],
-		["books_media_html", '#books-response'],
-		["journals_solr_html", '#journals-solr-response'],
-		["libsite_html", '#libsite-response'],
-		["research_guides_html", '#guides-response'],
-	    ];
-            for (var i=0; i < blocks.length; i++) {
-		fetch(blocks[i]);
-            }
+	    var save_data_url = "save_data";
+	    function save_query(save_data_url){
+		$.get(bento_url+save_data_url,
+                        {"q": data,
+                        "ignoresearch": ignoresearch,
+                        "remote_addr": remote_addr},
+                        function(response){
+                            var info = JSON.parse(response);
+			    dbid = info.dbid;
+			    load_bento_boxes();
+                        }
+                    );
+    	     };
+    	     save_query(save_data_url);
 	});
+function load_bento_boxes(){
+	var blocks = [
+                ["best_bets_html", '#bestbets-response'],
+                ["articles_html", '#articles-response'],
+                ["databases_solr_html", '#databases-solr-response'],
+                ["books_media_html", '#books-response'],
+                ["journals_solr_html", '#journals-solr-response'],
+                ["libsite_html", '#libsite-response'],
+                ["research_guides_html", '#guides-response'],
+            ];
+            for (var i=0; i < blocks.length; i++) {
+                fetch(blocks[i]);
+            }
+}
 	</script>
 
 <div class='search-all-banner-outer'>
