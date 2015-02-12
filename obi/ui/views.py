@@ -23,12 +23,6 @@ from ui.models import Database, Journal, Search
 # FIXME: make a local_setting
 DEFAULT_HIT_COUNT = 3
 RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
-RESULT_COUNTS = {'articles_count': 0,
-                 'books_count': 0,
-                 'database_count': 0,
-                 'journals_count': 0,
-                 'researchguides_count': 0
-                 }
 
 
 def home(request):
@@ -94,7 +88,8 @@ def _launchpad_query(request):
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
     response['count_total'] = d['totalResults']
-    RESULT_COUNTS['books_count'] = response['count_total']
+    dbid = request.GET.get('dbid', 0)
+    save_result_count(dbid, "books", response['count_total'])
     return response
 
 
@@ -161,7 +156,6 @@ def _databases_solr_query(request):
         try:
             solr_response = s.query(query)
             response['count_total'] = solr_response.numFound
-            RESULT_COUNTS['database_count'] = response['count_total']
             response['more_url'] = '%s%s' % (settings.DATABASES_MORE_URL, q)
             response['more_url_plain'] = settings.DATABASES_URL
             if count == 0:
@@ -180,6 +174,8 @@ def _databases_solr_query(request):
             response['more_url'] = settings.DATABASES_MORE_URL
             response['more_url_plain'] = settings.DATABASES_URL
             response['matches'] = []
+    dbid = request.GET.get('dbid', 0)
+    save_result_count(dbid, "database", response['count_total'])
     return response
 
 
@@ -245,7 +241,6 @@ def _journals_solr_query(request):
         try:
             solr_response = s.query('+id:j-* +(name:%s OR text:%s)' % (q, q))
             response['count_total'] = solr_response.numFound
-            RESULT_COUNTS['journals_count'] = response['count_total']
             response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
             response['more_url_plain'] = settings.JOURNALS_URL
             if count == 0:
@@ -269,6 +264,8 @@ def _journals_solr_query(request):
             response['more_url'] = settings.JOURNALS_MORE_URL
             response['more_url_plain'] = settings.JOURNALS_URL
             response['matches'] = []
+    dbid = request.GET.get('dbid', 0)
+    save_result_count(dbid, "journals", response['count_total'])
     return response
 
 
@@ -350,10 +347,6 @@ def _summon_query(request, scope='all'):
     else:
         response['count_total'] = 0
 
-    if scope == 'research_guides':
-        RESULT_COUNTS['researchguides_count'] = response['count_total']
-    elif scope == 'articles':
-        RESULT_COUNTS['articles_count'] = response['count_total']
     try:
         count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
     except:
@@ -433,6 +426,11 @@ def _summon_query(request, scope='all'):
         response['more_url'] += '&s.role=authenticated'
     else:
         response['more_url'] += '&s.role=none'
+    dbid = request.GET.get('dbid', 0)
+    if scope == 'research_guides':
+        save_result_count(dbid, "researchguides", response['count_total'])
+    elif scope == 'articles':
+        save_result_count(dbid, "articles", response['count_total'])
     return response
 
 
@@ -704,24 +702,29 @@ def searches(request):
 
 def save_data(request):
     querystring = request.GET.get('q', '')
-    dbid = request.GET.get('dbid', 0)
     response = {}
-    if querystring and dbid != 0:
-        if not (request.GET.get('ignoresearch') == 'true'):
-            Search.objects.filter(id=dbid).update(
-                articles_count=RESULT_COUNTS['articles_count'],
-                books_count=RESULT_COUNTS['books_count'],
-                database_count=RESULT_COUNTS['database_count'],
-                journals_count=RESULT_COUNTS['journals_count'],
-                researchguides_count=RESULT_COUNTS['researchguides_count']
-                )
-    elif querystring and not (request.GET.get('ignoresearch') == 'true'):
-        RESULT_COUNTS['articles_count'] = 0
-        RESULT_COUNTS['books_count'] = 0
-        RESULT_COUNTS['database_count'] = 0
-        RESULT_COUNTS['journals_count'] = 0
-        RESULT_COUNTS['researchguides_count'] = 0
+    if querystring and not (request.GET.get('ignoresearch') == 'true'):
         s = Search(q=querystring)
         s.save()
         response['dbid'] = s.id
     return HttpResponse(json.dumps(response))
+
+
+def save_result_count(dbid, section_name, count):
+    if dbid == 0:
+        return
+    if(section_name == "articles"):
+        Search.objects.filter(id=dbid).update(
+            articles_count=count)
+    elif(section_name == "books"):
+        Search.objects.filter(id=dbid).update(
+            books_count=count)
+    elif(section_name == "database"):
+        Search.objects.filter(id=dbid).update(
+            database_count=count)
+    elif(section_name == "journals"):
+        Search.objects.filter(id=dbid).update(
+            journals_count=count)
+    elif(section_name == "researchguides"):
+        Search.objects.filter(id=dbid).update(
+            researchguides_count=count)

@@ -59,7 +59,6 @@ function load_bento_boxes(){
             data: data
          }).done(function(resp) {
                 $(vals[1]).html(resp);
-                save_data();
         });
     };
 
@@ -77,18 +76,6 @@ function load_bento_boxes(){
     }
 }
 
-function save_data(){
-
-        var save_data_url = "{% url 'save_data' %}";
-        function save_q_data(save_data_url){
-            $.ajax({
-                type: "GET",
-                url: save_data_url,
-                data: data
-                }).done(function(resp){});
-        };
-        save_q_data(save_data_url);
-}
 </script>
 {% endblock javascript_extra %}
 
