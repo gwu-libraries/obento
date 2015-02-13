@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView
 
 from django.contrib import admin
 admin.autodiscover()
@@ -67,6 +68,10 @@ urlpatterns = patterns('ui.views',
 
     url(r'^searches', 'searches', name='searches'),
     url(r'^topsearches_json', 'topsearches_json', name='topsearches_json'),
+
+    url(r'^bentobubbles',
+        TemplateView.as_view(template_name='bentobubbles.html'),
+        name='bentobubbles'),
 )
 
 urlpatterns += patterns('',
