@@ -698,3 +698,32 @@ def searches(request):
                    'last_n_days': last_n_days,
                    'top_n_searches': top_n_searches,
                    'search_all_url': search_all_url})
+
+
+def topsearches_json(request):
+    # Top queries within the last n days
+    last_n_days = request.GET.get("last_n_days")
+    if last_n_days is None:
+        last_n_days = 7
+    elif not last_n_days.isdigit():
+        last_n_days = 7
+    elif int(last_n_days) == 0:
+        last_n_days = 7
+
+    top_n_searches = request.GET.get("top_n_searches")
+    if top_n_searches is None:
+        top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
+    elif not top_n_searches.isdigit():
+        top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
+    elif int(top_n_searches) == 0:
+        top_n_searches = settings.DEFAULT_TOP_N_SEARCHES
+
+    qdata = Search.searchTermManager.searched_terms(last_n_days,
+                                                    top_n_searches)
+    queries = []
+    for q in qdata:
+        queries.append({"name": q[0], "value": q[1]})
+
+    response = {'name': 'root', 'value': 1, 'children': queries}
+    return HttpResponse(json.dumps(response, encoding='utf-8'),
+                        content_type='application/json')
