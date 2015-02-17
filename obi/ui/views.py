@@ -510,7 +510,7 @@ def _libsite_query(request):
             qlist[i] = '\"' + qlist[i] + '\"'
     q = ' '.join(qlist)
     #----
-    params = {'keys': q, 'fields': 'none'}
+    params = {'keys': q, 'fields': 'nid'}
     r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
                      timeout=settings.LIBSITE_TIMEOUT_SECONDS)
     if r.status_code != 404:
