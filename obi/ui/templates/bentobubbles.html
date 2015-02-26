@@ -22,7 +22,7 @@
                 .size([width-50, height-50])
                 .padding(5);
 
-            d3.json("topsearches_json?last_n_days=25&top_n_searches=25",
+            d3.json("topsearches_json?last_n_days=100&top_n_searches=25",
             function(data) {
 
                 var nodes = pack.nodes(data);
