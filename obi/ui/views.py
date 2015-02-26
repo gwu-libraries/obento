@@ -704,11 +704,11 @@ def topsearches_json(request):
     # Top queries within the last n days
     last_n_days = request.GET.get("last_n_days")
     if last_n_days is None:
-        last_n_days = 7
+        last_n_days = settings.DEFAULT_LAST_N_DAYS
     elif not last_n_days.isdigit():
-        last_n_days = 7
+        last_n_days = settings.DEFAULT_LAST_N_DAYS
     elif int(last_n_days) == 0:
-        last_n_days = 7
+        last_n_days = settings.DEFAULT_LAST_N_DAYS
 
     top_n_searches = request.GET.get("top_n_searches")
     if top_n_searches is None:
