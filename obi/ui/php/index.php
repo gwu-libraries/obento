@@ -75,7 +75,7 @@
       <form action='search-beta' method='GET' class='search-form'>
             <div class='search-all-label'><label>Search All</label></div>
             <div class='search-all-form-fields'>
-            <input aria-label='Search' id='query' type='text' size='40' maxlength='100' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
+            <input aria-label='Enter your search terms' id='query' type='text' size='40' maxlength='100' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
             <input type='submit' value='Search'/>
             </div>
       </form>
