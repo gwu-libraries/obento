@@ -150,7 +150,10 @@ def _databases_solr_query(request):
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
-        query = u'+id:db-* +(name:%s OR description:%s)' % (q, q)
+        if not q[0] == '\"':
+            q = " AND ".join(q.split())
+            q = q.replace("\"", " ")
+        query = u'+id:db-* +(name:(%s) OR description:(%s))' % (q, q)
         try:
             solr_response = s.query(query)
             response['count_total'] = solr_response.numFound
@@ -234,8 +237,11 @@ def _journals_solr_query(request):
     if q:
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
+        if not q[0] == '\"':
+            q = " AND ".join(q.split())
+            q = q.replace("\"", " ")
         try:
-            solr_response = s.query('+id:j-* +(name:%s OR text:%s)' % (q, q))
+            solr_response = s.query('+id:j-* +(name:(%s) OR text:(%s))' % (q, q))
             response['count_total'] = solr_response.numFound
             response['more_url'] = '%s%s' % (settings.JOURNALS_MORE_URL, q)
             response['more_url_plain'] = settings.JOURNALS_URL

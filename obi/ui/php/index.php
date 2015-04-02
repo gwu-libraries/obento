@@ -13,20 +13,12 @@
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
-	var data1;
-	var data2;
 	var data;
 	var ignoresearch;
 	var count;
 	var bento_url;
 	var remote_addr = "<?php echo $_SERVER["REMOTE_ADDR"] ?>";
 	function fetch(vals){
-	    if(vals[0] == "journals_solr_html" || vals[0] == "databases_solr_html" ){
-	    	data = data2;
-	    }
-	    else{
-		data = data1;
-	    }
 	    if(count == "0" || !/^\d+$/.test(count)){
 		$.get(bento_url+vals[0],
                         {"q": data,
@@ -53,8 +45,7 @@
 	}
 	$(document).ready(function() {
             data="<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
-	    data1 = data2 = data = data.trim();
-	    data2 = data.replace(/ /g,'+');
+	    data = data.trim();
             ignoresearch="<?php if (isset($_GET["ignoresearch"])) {print addslashes($_GET["ignoresearch"]);} else {print "false";}?>";
             count="<?php if (isset($_GET["count"])) {print $_GET["count"];} else {print "0";}?>";
             <?php
