@@ -1,20 +1,43 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        pass
+    dependencies = [
+    ]
 
-    def backwards(self, orm):
-        pass
-
-    models = {
-        
-    }
-
-    complete_apps = ['ui']
+    operations = [
+        migrations.CreateModel(
+            name='Database',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.TextField(db_index=True)),
+                ('description', models.TextField(db_index=True, blank=True)),
+                ('url', models.URLField(max_length=300)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Journal',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.TextField(db_index=True)),
+                ('ssid', models.TextField(max_length=13, db_index=True)),
+                ('issn', models.TextField(db_index=True, max_length=9, blank=True)),
+                ('eissn', models.TextField(db_index=True, max_length=9, blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Search',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('q', models.TextField(db_index=True, blank=True)),
+                ('date_searched', models.DateTimeField(auto_now_add=True, db_index=True)),
+            ],
+            options={
+                'verbose_name_plural': 'searches',
+            },
+        ),
+    ]

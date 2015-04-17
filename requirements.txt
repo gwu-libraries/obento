@@ -1,5 +1,5 @@
 beautifulsoup4
-django>=1.6,<1.7
+django>=1.8,<1.9
 django-nose
 lxml
 netaddr
@@ -7,5 +7,4 @@ psycopg2
 pytz
 requests>=1.2
 solrpy
-south
 xlrd
