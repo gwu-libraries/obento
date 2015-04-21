@@ -13,7 +13,7 @@
 <script type='text/javascript'>
 var data = {};
 var load_page_count=0
-var dbid=0;
+var searchid=0;
 
 $(document).ready(function (){
     var query = window.location.search.substring(1);
@@ -44,7 +44,7 @@ $(document).ready(function (){
             data: data
             }).done(function(resp){
                 var info = JSON.parse(resp);
-                data['dbid'] = info.dbid;
+                data['searchid'] = info.searchid;
                 load_bento_boxes();
         });
     };
