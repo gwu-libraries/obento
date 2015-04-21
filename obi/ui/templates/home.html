@@ -11,8 +11,11 @@
 
 {% block javascript_extra %}
 <script type='text/javascript'>
-$(document).ready(function () {
-    var data = {};    
+var data = {};
+var load_page_count=0
+var dbid=0;
+
+$(document).ready(function (){
     var query = window.location.search.substring(1);
     var vars = query.split("&");
     for (var i=0;i<vars.length;i++) {
@@ -33,13 +36,29 @@ $(document).ready(function () {
 
     }
 
+    var save_data_url = "{% url 'save_data' %}";
+    function save_query(save_data_url){
+        $.ajax({
+            type: "GET",
+            url: save_data_url,
+            data: data
+            }).done(function(resp){
+                var info = JSON.parse(resp);
+                data['dbid'] = info.dbid;
+                load_bento_boxes();
+        });
+    };
+    save_query(save_data_url);
+});
+
+function load_bento_boxes(){
     function fetch(vals) {
         $.ajax({
             type: "GET",
             url: vals[0],
             data: data
-        }).done(function(resp) {
-            $(vals[1]).html(resp);
+         }).done(function(resp) {
+                $(vals[1]).html(resp);
         });
     };
 
@@ -55,7 +74,8 @@ $(document).ready(function () {
     for (var i=0; i < blocks.length; i++) {
         fetch(blocks[i]);
     }
-});
+}
+
 </script>
 {% endblock javascript_extra %}
 

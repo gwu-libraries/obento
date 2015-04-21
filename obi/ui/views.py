@@ -88,6 +88,8 @@ def _launchpad_query(request):
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
     response['count_total'] = d['totalResults']
+    dbid = request.GET.get('dbid', 0)
+    save_result_count(dbid, "books", response['count_total'])
     return response
 
 
@@ -172,6 +174,8 @@ def _databases_solr_query(request):
             response['more_url'] = settings.DATABASES_MORE_URL
             response['more_url_plain'] = settings.DATABASES_URL
             response['matches'] = []
+    dbid = request.GET.get('dbid', 0)
+    save_result_count(dbid, "database", response['count_total'])
     return response
 
 
@@ -260,6 +264,8 @@ def _journals_solr_query(request):
             response['more_url'] = settings.JOURNALS_MORE_URL
             response['more_url_plain'] = settings.JOURNALS_URL
             response['matches'] = []
+    dbid = request.GET.get('dbid', 0)
+    save_result_count(dbid, "journals", response['count_total'])
     return response
 
 
@@ -271,24 +277,12 @@ def journals_html(request):
 
 def journals_solr_html(request):
     response = _journals_solr_query(request)
-    # Save search terms only here, and in journals_json, to limit copies
-    # of search terms from proliferating
-    querystring = request.GET.get('q', '')
-    if querystring:
-        if not (request.GET.get('ignoresearch') == 'true'):
-            s = Search(q=querystring)
-            s.save()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
 
 def journals_json(request):
     response = _journals_query(request)
-    # Save search terms only here, and in journals_json, to limit copies
-    # of search terms from proliferating
-    if not (request.GET.get('ignoresearch') == 'true'):
-        s = Search(q=request.GET.get('q', ''))
-        s.save()
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
@@ -352,6 +346,7 @@ def _summon_query(request, scope='all'):
         response['count_total'] = d.get('recordCount')
     else:
         response['count_total'] = 0
+
     try:
         count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
     except:
@@ -431,6 +426,11 @@ def _summon_query(request, scope='all'):
         response['more_url'] += '&s.role=authenticated'
     else:
         response['more_url'] += '&s.role=none'
+    dbid = request.GET.get('dbid', 0)
+    if scope == 'research_guides':
+        save_result_count(dbid, "researchguides", response['count_total'])
+    elif scope == 'articles':
+        save_result_count(dbid, "articles", response['count_total'])
     return response
 
 
@@ -632,8 +632,14 @@ def searches(request):
         return HttpResponseForbidden('Access Denied')
 
     sortby = request.GET.get("sort")
-    if sortby not in ['id', '-id', 'q', '-q', 'date_searched',
-                      '-date_searched']:
+    if sortby not in ['id', '-id',
+                      'q', '-q',
+                      'date_searched', '-date_searched',
+                      'articles_count', '-articles_count',
+                      'books_count', '-books_count',
+                      'database_count', '-database_count',
+                      'journals_count', '-journals_count',
+                      'researchguides_count', '-researchguides_count']:
         sortby = '-id'
     searches = Search.objects.order_by(sortby)
 
@@ -698,3 +704,33 @@ def searches(request):
                    'last_n_days': last_n_days,
                    'top_n_searches': top_n_searches,
                    'search_all_url': search_all_url})
+
+
+def save_data(request):
+    querystring = request.GET.get('q', '')
+    response = {}
+    if querystring and not (request.GET.get('ignoresearch') == 'true'):
+        s = Search(q=querystring)
+        s.save()
+        response['dbid'] = s.id
+    return HttpResponse(json.dumps(response))
+
+
+def save_result_count(dbid, section_name, count):
+    if dbid == 0:
+        return
+    if(section_name == "articles"):
+        Search.objects.filter(id=dbid).update(
+            articles_count=count)
+    elif(section_name == "books"):
+        Search.objects.filter(id=dbid).update(
+            books_count=count)
+    elif(section_name == "database"):
+        Search.objects.filter(id=dbid).update(
+            database_count=count)
+    elif(section_name == "journals"):
+        Search.objects.filter(id=dbid).update(
+            journals_count=count)
+    elif(section_name == "researchguides"):
+        Search.objects.filter(id=dbid).update(
+            researchguides_count=count)
