@@ -88,8 +88,8 @@ def _launchpad_query(request):
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
     response['count_total'] = d['totalResults']
-    dbid = request.GET.get('dbid', 0)
-    save_result_count(dbid, "books", response['count_total'])
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "books", response['count_total'])
     return response
 
 
@@ -174,8 +174,8 @@ def _databases_solr_query(request):
             response['more_url'] = settings.DATABASES_MORE_URL
             response['more_url_plain'] = settings.DATABASES_URL
             response['matches'] = []
-    dbid = request.GET.get('dbid', 0)
-    save_result_count(dbid, "database", response['count_total'])
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "database", response['count_total'])
     return response
 
 
@@ -264,8 +264,8 @@ def _journals_solr_query(request):
             response['more_url'] = settings.JOURNALS_MORE_URL
             response['more_url_plain'] = settings.JOURNALS_URL
             response['matches'] = []
-    dbid = request.GET.get('dbid', 0)
-    save_result_count(dbid, "journals", response['count_total'])
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "journals", response['count_total'])
     return response
 
 
@@ -426,11 +426,11 @@ def _summon_query(request, scope='all'):
         response['more_url'] += '&s.role=authenticated'
     else:
         response['more_url'] += '&s.role=none'
-    dbid = request.GET.get('dbid', 0)
+    searchid = request.GET.get('searchid', 0)
     if scope == 'research_guides':
-        save_result_count(dbid, "researchguides", response['count_total'])
+        save_result_count(searchid, "researchguides", response['count_total'])
     elif scope == 'articles':
-        save_result_count(dbid, "articles", response['count_total'])
+        save_result_count(searchid, "articles", response['count_total'])
     return response
 
 
@@ -712,25 +712,25 @@ def save_data(request):
     if querystring and not (request.GET.get('ignoresearch') == 'true'):
         s = Search(q=querystring)
         s.save()
-        response['dbid'] = s.id
+        response['searchid'] = s.id
     return HttpResponse(json.dumps(response))
 
 
-def save_result_count(dbid, section_name, count):
-    if dbid == 0:
+def save_result_count(searchid, section_name, count):
+    if searchid == 0:
         return
     if(section_name == "articles"):
-        Search.objects.filter(id=dbid).update(
+        Search.objects.filter(id=searchid).update(
             articles_count=count)
     elif(section_name == "books"):
-        Search.objects.filter(id=dbid).update(
+        Search.objects.filter(id=searchid).update(
             books_count=count)
     elif(section_name == "database"):
-        Search.objects.filter(id=dbid).update(
+        Search.objects.filter(id=searchid).update(
             database_count=count)
     elif(section_name == "journals"):
-        Search.objects.filter(id=dbid).update(
+        Search.objects.filter(id=searchid).update(
             journals_count=count)
     elif(section_name == "researchguides"):
-        Search.objects.filter(id=dbid).update(
+        Search.objects.filter(id=searchid).update(
             researchguides_count=count)

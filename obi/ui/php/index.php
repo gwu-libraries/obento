@@ -13,7 +13,7 @@
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
-	var dbid;
+	var searchid;
 	var data;
 	var ignoresearch;
 	var count;
@@ -23,7 +23,7 @@
 	    if(count == "0" || !/^\d+$/.test(count)){
 		$.get(bento_url+vals[0],
                         {"q": data,
-			 "dbid": dbid,
+			 "searchid": searchid,
                         "ignoresearch": ignoresearch,
                         "remote_addr": remote_addr},
                         function(response){
@@ -34,7 +34,7 @@
 	    else{
 		 $.get(bento_url+vals[0],
                         {"q": data,
-                         "dbid": dbid,
+                         "searchid": searchid,
                         "ignoresearch": ignoresearch,
                         "count": count,
                         "remote_addr": remote_addr},
@@ -65,7 +65,7 @@
                         "remote_addr": remote_addr},
                         function(response){
                             var info = JSON.parse(response);
-			    dbid = info.dbid;
+			    searchid = info.searchid;
 			    load_bento_boxes();
                         }
                     );
