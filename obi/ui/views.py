@@ -632,8 +632,14 @@ def searches(request):
         return HttpResponseForbidden('Access Denied')
 
     sortby = request.GET.get("sort")
-    if sortby not in ['id', '-id', 'q', '-q', 'date_searched',
-                      '-date_searched']:
+    if sortby not in ['id', '-id',
+                      'q', '-q',
+                      'date_searched', '-date_searched',
+                      'articles_count', '-articles_count',
+                      'books_count', '-books_count',
+                      'database_count', '-database_count',
+                      'journals_count', '-journals_count',
+                      'researchguides_count', '-researchguides_count']:
         sortby = '-id'
     searches = Search.objects.order_by(sortby)
 
