@@ -1,5 +1,6 @@
 import time
 
+import json
 from bs4 import BeautifulSoup
 import requests
 
@@ -24,30 +25,26 @@ class Command(BaseCommand):
         transaction.commit_unless_managed()
         time.sleep(1)
 
-        for page_sid in settings.LIBGUIDES_DB_PAGE_SIDS:
-            params = {'pid': settings.LIBGUIDES_DB_PID, 'sid': page_sid}
-            print 'SID:', page_sid
-            try:
-                r = requests.get(settings.LIBGUIDES_DB_BASE_URL,
-                                 params=params)
-                print r.encoding, r.status_code, r.url
-                soup = BeautifulSoup(r.text)
-                itemlists = soup.find_all('div', class_='itemlist')
-                for itemlist in itemlists:
-                    items = itemlist.find_all('li')
-                    for item in items:
-                        # skip if there's no <a> tag
-                        # this is the case for discontinued databases
-                        if item.a is None:
-                            continue
-                        name = item.a.string
-                        url = item.a.get('href')
-                        description = item.div.get_text()
-                        database = Database(name=name, url=url,
-                                            description=description)
-                        database.save()
-            except:
-                import traceback
-                print traceback.print_exc()
-                print 'ERROR'
-            time.sleep(SLEEP_SECONDS)
+        try:
+	    r = requests.get(settings.LIBGUIDES_DB_URL)
+            print r.encoding, r.status_code, r.url
+	    soup = BeautifulSoup(r.json()['data']['html'])
+            itemlists = soup.find_all('div', class_='s-lg-az-result')
+	    for itemlist in itemlists:
+                name_div = itemlist.find('div', class_='s-lg-az-result-title')
+		if name_div is not None:
+                    url = "http://gwu.beta.libguides.com"+name_div.a.get('href')
+                    name = name_div.a.string
+		    description = ''
+		    if itemlist.find('div',class_='s-lg-az-result-description'):
+                        description = itemlist.find('div',
+                                         class_='s-lg-az-result-description').get_text()
+                    database = Database(name=name, url=url,
+                                        description=description)
+                    database.save()
+		
+        except:
+            import traceback
+            print traceback.print_exc()
+            print 'ERROR'
+        time.sleep(SLEEP_SECONDS)
