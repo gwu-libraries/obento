@@ -33,7 +33,7 @@ class Command(BaseCommand):
 	    for itemlist in itemlists:
                 name_div = itemlist.find('div', class_='s-lg-az-result-title')
 		if name_div is not None:
-                    url = "http://gwu.beta.libguides.com"+name_div.a.get('href')
+                    url = settings.LIBGUIDES_URL+name_div.a.get('href')
                     name = name_div.a.string
 		    description = ''
 		    if itemlist.find('div',class_='s-lg-az-result-description'):
