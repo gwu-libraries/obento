@@ -21,7 +21,6 @@ from ui.models import Database, Journal, Search
 
 
 # FIXME: make a local_setting
-DEFAULT_HIT_COUNT = 3
 RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 
@@ -40,7 +39,7 @@ def everything(request):
 def _launchpad_query(request):
     q = request.GET.get('q', '')
     page_no = 1
-    count = int(float(request.GET.get('count', DEFAULT_HIT_COUNT)))
+    count = int(float(request.GET.get('count', settings.DEFAULT_HIT_COUNT)))
     # Getting three times the required results by multiplying page_size by 3
     # This is needed since launchpad merges some of the results returned by
     # summon into 1 before passing it to obento. The multiplier ensures that
@@ -117,7 +116,7 @@ def _databases_query(request):
     try:
         count = int(request.GET.get('count', None))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     response = {'q': q}
     if q:
         matches = []
@@ -204,9 +203,9 @@ def databases_solr_json(request):
 def _journals_query(request):
     q = request.GET.get('q', '')
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     response = {'q': q}
     if q:
         matches = []
@@ -348,9 +347,9 @@ def _summon_query(request, scope='all'):
         response['count_total'] = 0
 
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     for document in d['documents'][:count]:
         match = {'url': document['link']}
         if document.get('Author', []):
@@ -401,7 +400,7 @@ def _summon_query(request, scope='all'):
         rl = d['recommendationLists']
         if rl.get('bestBet', []):
             bblist = rl['bestBet']
-            for bestbet in bblist[:DEFAULT_HIT_COUNT]:
+            for bestbet in bblist[:settings.DEFAULT_HIT_COUNT]:
                 match = {'url': bestbet['link']}
                 if bestbet.get('title', []):
                     match['title'] = bestbet['title']
@@ -496,9 +495,9 @@ def best_bets_json(request, scope='all'):
 def _libsite_query(request):
     q = request.GET.get('q', '')
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     #----
     #TODO: Remove this once the Drupal search json packaging stops
     # choking on single quotes.  This wraps each word containing a '
