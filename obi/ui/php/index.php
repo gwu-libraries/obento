@@ -13,6 +13,7 @@
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
+	(function($) {
 	var searchid;
 	var data;
 	var ignoresearch;
@@ -86,6 +87,7 @@ function load_bento_boxes(){
                 fetch(blocks[i]);
             }
 }
+	})(jQuery);
 	</script>
 
 <div class='search-all-banner-outer'>
