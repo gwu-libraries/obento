@@ -11,6 +11,7 @@
 
 {% block javascript_extra %}
 <script type='text/javascript'>
+(function($) {
 var data = {};
 var load_page_count=0
 var searchid=0;
@@ -74,8 +75,8 @@ function load_bento_boxes(){
     for (var i=0; i < blocks.length; i++) {
         fetch(blocks[i]);
     }
-}
-
+  }
+})(jQuery);
 </script>
 {% endblock javascript_extra %}
 
