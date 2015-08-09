@@ -11,7 +11,8 @@
 
 {% block javascript_extra %}
 <script type='text/javascript'>
-$(document).ready(function () {
+(function($) {
+  $(document).ready(function () {
     var q = $('input[name=q]');
     var data = {q: q.val()};
 
@@ -37,7 +38,8 @@ $(document).ready(function () {
         ["{% url 'launchpad_html' %}", '#launchpad-response'],
     ];
     blocks.forEach(fetch);
-});
+  });
+})(jQuery);
 </script>
 {% endblock javascript_extra %}
 

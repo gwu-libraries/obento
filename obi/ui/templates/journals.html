@@ -1,5 +1,6 @@
 {% load humanize %}
 <script>
+  (function($) {
     $( document ).ready(function() {
         var x = parseInt($('#expand_size_j').val(),10);
         if ((y = $('#journals li').size() - x) == 1) { 
@@ -26,6 +27,7 @@
             $('#show-remainder-journals').hide();
         }
     }
+  })(jQuery);    
 </script>
                                                                 
 {% if response.matches %}
