@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
 LOCAL_IPS = ['YOUR.LOCAL1.*.*', 'YOUR.LOCAL.NETWORK2.*', 'YOUR.LOCAL.NET.WORK']
 
 DATABASES_URL = 'http://libguides.gwu.edu/databases'
-DATABASES_MORE_URL = 'http://libguides.gwu.edu/search.php?iid=131&c=0&gid=0&pid=98717&search='
+DATABASES_MORE_URL = 'http://libguides.gwu.edu/az.php?q='
 
 JOURNALS_URL = 'http://findit.library.gwu.edu/'
 JOURNALS_MORE_URL = \
