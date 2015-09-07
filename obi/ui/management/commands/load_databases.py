@@ -1,15 +1,14 @@
 import time
 
-import json
 from bs4 import BeautifulSoup
 import requests
+import traceback
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
 
 from ui.models import Database
-
 
 SLEEP_SECONDS = 2
 
@@ -26,25 +25,28 @@ class Command(BaseCommand):
         time.sleep(1)
 
         try:
-	    r = requests.get(settings.LIBGUIDES_DB_URL)
-            print r.encoding, r.status_code, r.url
-	    soup = BeautifulSoup(r.json()['data']['html'])
+            r = requests.get(settings.LIBGUIDES_DB_URL)
+            soup = BeautifulSoup(r.json()['data']['html'])
             itemlists = soup.find_all('div', class_='s-lg-az-result')
-	    for itemlist in itemlists:
+            loaded_count = 0
+            for itemlist in itemlists:
                 name_div = itemlist.find('div', class_='s-lg-az-result-title')
-		if name_div is not None:
-                    url = settings.LIBGUIDES_URL+name_div.a.get('href')
-                    name = name_div.a.string
-		    description = ''
-		    if itemlist.find('div',class_='s-lg-az-result-description'):
-                        description = itemlist.find('div',
-                                         class_='s-lg-az-result-description').get_text()
-                    database = Database(name=name, url=url,
-                                        description=description)
-                    database.save()
-		
+                if name_div is None:
+                    continue
+                if name_div.a is None:
+                    continue
+                url = settings.LIBGUIDES_URL+name_div.a.get('href')
+                name = name_div.a.string
+                description = ''
+                if itemlist.find('div', class_='s-lg-az-result-description'):
+                    description = itemlist.find('div', class_=
+                                                's-lg-az-result-description'
+                                                ).get_text()
+                database = Database(name=name, url=url,
+                                    description=description)
+                database.save()
+                loaded_count += 1
         except:
-            import traceback
             print traceback.print_exc()
-            print 'ERROR'
-        time.sleep(SLEEP_SECONDS)
+        print("Completed loading of %d database titles and descriptions" %
+              loaded_count)
