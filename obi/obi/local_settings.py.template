@@ -93,7 +93,7 @@ SUMMON_SCOPES = {
 }
 
 # Research Guides
-LIBGUIDES_URL = 'http://gwu.beta.libguides.com'
+LIBGUIDES_URL = 'http://libguides.gwu.edu'
 
 # libguides database url 
 LIBGUIDES_DB_URL = 'http://libguides.gwu.edu/az_process.php?action=520'
