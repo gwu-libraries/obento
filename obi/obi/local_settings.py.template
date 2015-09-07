@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
 LOCAL_IPS = ['YOUR.LOCAL1.*.*', 'YOUR.LOCAL.NETWORK2.*', 'YOUR.LOCAL.NET.WORK']
 
 DATABASES_URL = 'http://libguides.gwu.edu/databases'
-DATABASES_MORE_URL = 'http://libguides.gwu.edu/search.php?iid=131&c=0&gid=0&pid=98717&search='
+DATABASES_MORE_URL = 'http://libguides.gwu.edu/az.php?q='
 
 JOURNALS_URL = 'http://findit.library.gwu.edu/'
 JOURNALS_MORE_URL = \
@@ -93,19 +93,10 @@ SUMMON_SCOPES = {
 }
 
 # Research Guides
-LIBGUIDES_URL = 'http://libguides.gwu.edu/'
+LIBGUIDES_URL = 'http://gwu.beta.libguides.com'
 
-# libguides database config with page ids
-# e.g.: http://libguides.gwu.edu/content.php?pid=98717&sid=1719900
-LIBGUIDES_DB_BASE_URL = 'http://libguides.gwu.edu/content.php'
-LIBGUIDES_DB_PID = 98717
-LIBGUIDES_DB_PAGE_SIDS = [
-    '1943946', '1719891', '1719892', '1719893', '1719894', '1719895', 
-    '1719896', '1719897', '1719898', '1719899', '1719900', '1719901', 
-    '1719902', '1719903', '1719904', '1719905', '1719906', '1719908',
-    '1719909', '1719910', '1719911', '1719913', '1719914', '1719916', 
-    '1719917',
-]
+# libguides database url 
+LIBGUIDES_DB_URL = 'http://libguides.gwu.edu/az_process.php?action=520'
 
 LIBSITE_SEARCH_ALL_URL = 'http://test.library.gwu.edu/search-all?query='
 LIBSITE_TIMEOUT_SECONDS = 10  # per try
