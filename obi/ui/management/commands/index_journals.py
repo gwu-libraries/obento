@@ -2,7 +2,7 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand
 
-from ui.utils import index_databases, index_journals
+from ui.utils import index_journals
 
 
 class Command(BaseCommand):
@@ -13,5 +13,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        index_databases(options.get('no-clear', None))
         index_journals(options.get('no-clear', None))

@@ -303,7 +303,7 @@ To verify that the databases loaded, try querying the html or json view:
 
 To index the list of databases in Solr:
 
-        $ ./manage.py index_all
+        $ ./manage.py index_databases
 
 Test that indexing worked with this path:
 
@@ -323,7 +323,7 @@ To verify that the journal titles loaded, try querying the html or json view:
 
 To index the list of journals in Solr:
 
-        $ ./manage.py index_all
+        $ ./manage.py index_journals
 
 Test that indexing worked with this path:
 
@@ -331,3 +331,10 @@ Test that indexing worked with this path:
         http://<OBENTO_URL>/journals_solr_json?q=science
 
 The results should look different from the test above.
+
+You may also wish to have a cron job reload (and reindex) the databases list on a
+regular basis.  To accomplish this, you can add a line in your crontab similar to this:
+
+       0 2 * * * <PATH TO YOUR APP>/obento/ENV/bin/python <PATH TO YOUR APP>/obento/obi/manage.py load_databases && <PATH TO YOUR APP>/obento/ENV/bin/python <PATH TO YOUR APP>/obento/obi/manage.py index_databases 
+
+This would run ```load_databases```, then ```index_databases``` every night at 2:00 A.M.
