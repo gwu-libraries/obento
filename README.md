@@ -17,15 +17,15 @@ Installation Instructions
 PART I - Basic server requirements
 ----------------------------------
 
-1. Install Apache and other dependencies
+1. Install Apache, OpenJDK8 and other dependencies
 
         $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev python-setuptools python-virtualenv
 
-	$ sudo add-apt-repository ppa:openjdk-r/ppa
+        $ sudo add-apt-repository ppa:openjdk-r/ppa
 
-	$ sudo apt-get update 
-
-	$ sudo apt-get install openjdk-8-jdk	
+        $ sudo apt-get update 
+    
+        $ sudo apt-get install openjdk-8-jdk	
 
 2. Prepare Java JVM symlink for Jetty
 
