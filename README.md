@@ -1,4 +1,4 @@
-myobento
+obento
 ======
 
 A simple python/django search multiplexing backend for use in a bento-style
