@@ -1,9 +1,8 @@
 import time
-
 import xlrd
 
-from django.core.management.base import BaseCommand
-from django.db import connection, transaction
+from django.core.management.base import BaseCommand, CommandError
+from django.db import connection
 
 from ui.models import Journal
 
@@ -13,17 +12,20 @@ class Command(BaseCommand):
            'line contains the following six columns:  journal title, ' + \
            'SSID, status, resource type, ISSN, eISSN'
 
+    def add_arguments(self, parser):
+        parser.add_argument('inputfilename', nargs=1)
+
     def handle(self, *args, **options):
         try:
-            filename = args[0]
+            filename = options['inputfilename'][0]
         except:
-            print 'load_journals <inputfile>'
+            raise CommandError('Syntax: load_journals <inputfilename>')
 
         cursor = connection.cursor()
         print 'emptying DB'
         cursor.execute('DELETE FROM ui_journal')
         cursor.execute('ALTER SEQUENCE ui_journal_id_seq RESTART WITH 1')
-        transaction.commit_unless_managed()
+        cursor.close()
         time.sleep(1)
 
         book = xlrd.open_workbook(filename, encoding_override='utf-8')

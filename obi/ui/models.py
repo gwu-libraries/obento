@@ -36,11 +36,11 @@ class SearchTermManager(models.Manager):
 class Search(models.Model):
     q = models.TextField(blank=True, db_index=True)
     date_searched = models.DateTimeField(auto_now_add=True, db_index=True)
-    articles_count = models.BigIntegerField(blank=True, default=0)
-    books_count = models.BigIntegerField(blank=True, default=0)
-    database_count = models.BigIntegerField(blank=True, default=0)
-    journals_count = models.BigIntegerField(blank=True, default=0)
-    researchguides_count = models.BigIntegerField(blank=True, default=0)
+    articles_count = models.IntegerField(blank=True, default=0)
+    books_count = models.IntegerField(blank=True, default=0)
+    database_count = models.IntegerField(blank=True, default=0)
+    journals_count = models.IntegerField(blank=True, default=0)
+    researchguides_count = models.IntegerField(blank=True, default=0)
     objects = models.Manager()
     searchTermManager = SearchTermManager()
 

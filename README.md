@@ -172,8 +172,9 @@ your desired directory path and name: for instance ```/obento``` or
 
         $ source ENV/bin/activate
 
-5. Install project dependencies
+5. Upgrade to the latest pip and install project dependencies
 
+        (ENV)$ pip install pip --upgrade
         (ENV)$ pip install -r requirements.txt
         
    If the previous step encounters problems installing pytz, then it can be installed as follows
@@ -218,7 +219,7 @@ PART IV - Configure the web application
 5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
 
         (ENV)$ cd <OBENTO_HOME>/obento/obi
-        (ENV)$ python manage.py syncdb
+        (ENV)$ python manage.py migrate
 
     If you encounter an authentication error with postgresql edit your local_settings.py file and set HOST = 'localhost'
 
@@ -239,20 +240,14 @@ PART IV - Configure the web application
 
         source ~/.bashrc
 
-    Now, rerun the syncdb command.
+    Now, rerun the migrate command.
 
-6. Migrate the database to the latest updates
-
-        $ python manage.py migrate
+        (ENV)$ python manage.py migrate
 
 7. Copy the Apache virtual host file to the Apache2 directory
 
         $ cd /<OBENTO_HOME>/obento
-        $ sudo cp apache/obento /etc/apache2/sites-available/obento
-
-8. Restart jetty
-
-        $ sudo service jetty restart
+        $ sudo cp apache/obento /etc/apache2/sites-available/obento.conf
 
 
 Part V - Start the server
@@ -266,7 +261,7 @@ If you choose to run obento in apache (versus django runserver):
     Edit your server name (base url)
     Edit the many instances of &lt;path to OBENTO_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
 
-        $ sudo vi /etc/apache2/sites-available/obento
+        $ sudo vi /etc/apache2/sites-available/obento.conf
 
     To change all of the path values at once use the global replace command in vim
 
