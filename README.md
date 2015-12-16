@@ -212,7 +212,7 @@ PART IV - Configure the web application
 5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
 
         (ENV)$ cd <OBENTO_HOME>/obento/obi
-        (ENV)$ python manage.py makemigrations
+        (ENV)$ python manage.py migrate
 
     If you encounter an authentication error with postgresql edit your local_settings.py file and set HOST = 'localhost'
 
@@ -233,11 +233,9 @@ PART IV - Configure the web application
 
         source ~/.bashrc
 
-    Now, rerun the syncdb command.
+    Now, rerun the migrate command.
 
-6. Migrate the database to the latest updates
-
-        $ python manage.py migrate
+        (ENV)$ python manage.py migrate
 
 7. Copy the Apache virtual host file to the Apache2 directory
 
