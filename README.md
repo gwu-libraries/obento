@@ -166,8 +166,9 @@ your desired directory path and name: for instance ```/obento``` or
 
         $ source ENV/bin/activate
 
-5. Install project dependencies
+5. Upgrade to the latest pip and install project dependencies
 
+        (ENV)$ pip install pip --upgrade
         (ENV)$ pip install -r requirements.txt
         
    If the previous step encounters problems installing pytz, then it can be installed as follows
