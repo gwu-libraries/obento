@@ -16,8 +16,6 @@ class Command(BaseCommand):
         parser.add_argument('inputfilename', nargs=1)
 
     def handle(self, *args, **options):
-        print "&&&&"
-        print options
         try:
             filename = options['inputfilename'][0]
         except:
