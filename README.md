@@ -17,9 +17,15 @@ Installation Instructions
 PART I - Basic server requirements
 ----------------------------------
 
-1. Install Apache and other dependencies
+1. Install Apache, OpenJDK8 and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev openjdk-7-jdk python-setuptools python-virtualenv
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev python-setuptools python-virtualenv
+
+        $ sudo add-apt-repository ppa:openjdk-r/ppa
+
+        $ sudo apt-get update 
+    
+        $ sudo apt-get install openjdk-8-jdk	
 
 2. Prepare Java JVM symlink for Jetty
 
@@ -27,7 +33,7 @@ PART I - Basic server requirements
 
         $ sudo mkdir /usr/java
 
-        $ sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
+        $ sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/java/default
 
 3. Download Jetty and unzip.  
 
@@ -35,7 +41,7 @@ PART I - Basic server requirements
 
    Go to http://download.eclipse.org/jetty/stable-9/dist/ and copy the link to the .tar.gz version of the latest download of Jetty 9.  Use this link in the following wget command to download the .tar.gz file (again, the URL may change):
 
-        $ sudo wget -O jetty.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.2.3.v20140905.tar.gz&r=1"
+        $ sudo wget -O jetty.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.6.v20151106.tar.gz&r=1"
 
         $ sudo mkdir jetty
 
@@ -66,7 +72,7 @@ PART I - Basic server requirements
 
     In production, jetty should be running on a port that won't be publicly exposed.  In development and testing, exposing Solr might be helpful; never expose it in production.
     
-    NOTE:  In the step above, JAVA is set to /usr/bin/java.  When upgrading from an environment that had Java 6 installed, /usr/bin/java may be a symbolic link (...to another symbolic link) which still points to a Java 6 JRE.  If that is the case, reconfigure to ensure that either /usr/bin/java resolves to a Java 7 JRE, or point JAVA in the jetty config file to wherever the Java 7 JRE is.
+    NOTE:  In the step above, JAVA is set to /usr/bin/java.  When upgrading from an environment that had Java 7 installed, /usr/bin/java may be a symbolic link (...to another symbolic link) which still points to a Java 7 JRE.  If that is the case, reconfigure to ensure that either /usr/bin/java resolves to a Java 8 JRE, or point JAVA in the jetty config file to wherever the Java 8 JRE is.
 
 7. Start jetty
 
