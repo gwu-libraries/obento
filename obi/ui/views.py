@@ -21,7 +21,6 @@ from ui.models import Database, Journal, Search
 
 
 # FIXME: make a local_setting
-DEFAULT_HIT_COUNT = 3
 RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 
@@ -40,7 +39,7 @@ def everything(request):
 def _launchpad_query(request):
     q = request.GET.get('q', '')
     page_no = 1
-    count = int(float(request.GET.get('count', DEFAULT_HIT_COUNT)))
+    count = int(float(request.GET.get('count', settings.DEFAULT_HIT_COUNT)))
     # Getting three times the required results by multiplying page_size by 3
     # This is needed since launchpad merges some of the results returned by
     # summon into 1 before passing it to obento. The multiplier ensures that
@@ -88,6 +87,8 @@ def _launchpad_query(request):
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
     response['count_total'] = d['totalResults']
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "books", response['count_total'])
     return response
 
 
@@ -115,7 +116,7 @@ def _databases_query(request):
     try:
         count = int(request.GET.get('count', None))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     response = {'q': q}
     if q:
         matches = []
@@ -175,6 +176,8 @@ def _databases_solr_query(request):
             response['more_url'] = settings.DATABASES_MORE_URL
             response['more_url_plain'] = settings.DATABASES_URL
             response['matches'] = []
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "database", response['count_total'])
     return response
 
 
@@ -203,9 +206,9 @@ def databases_solr_json(request):
 def _journals_query(request):
     q = request.GET.get('q', '')
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     response = {'q': q}
     if q:
         matches = []
@@ -266,6 +269,8 @@ def _journals_solr_query(request):
             response['more_url'] = settings.JOURNALS_MORE_URL
             response['more_url_plain'] = settings.JOURNALS_URL
             response['matches'] = []
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "journals", response['count_total'])
     return response
 
 
@@ -277,24 +282,12 @@ def journals_html(request):
 
 def journals_solr_html(request):
     response = _journals_solr_query(request)
-    # Save search terms only here, and in journals_json, to limit copies
-    # of search terms from proliferating
-    querystring = request.GET.get('q', '')
-    if querystring:
-        if not (request.GET.get('ignoresearch') == 'true'):
-            s = Search(q=querystring)
-            s.save()
     return render(request, 'journals.html',
                   {'response': response, 'context': default_context_params()})
 
 
 def journals_json(request):
     response = _journals_query(request)
-    # Save search terms only here, and in journals_json, to limit copies
-    # of search terms from proliferating
-    if not (request.GET.get('ignoresearch') == 'true'):
-        s = Search(q=request.GET.get('q', ''))
-        s.save()
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
@@ -358,10 +351,11 @@ def _summon_query(request, scope='all'):
         response['count_total'] = d.get('recordCount')
     else:
         response['count_total'] = 0
+
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     for document in d['documents'][:count]:
         match = {'url': document['link']}
         if document.get('Author', []):
@@ -412,7 +406,7 @@ def _summon_query(request, scope='all'):
         rl = d['recommendationLists']
         if rl.get('bestBet', []):
             bblist = rl['bestBet']
-            for bestbet in bblist[:DEFAULT_HIT_COUNT]:
+            for bestbet in bblist[:settings.DEFAULT_HIT_COUNT]:
                 match = {'url': bestbet['link']}
                 if bestbet.get('title', []):
                     match['title'] = bestbet['title']
@@ -437,6 +431,11 @@ def _summon_query(request, scope='all'):
         response['more_url'] += '&s.role=authenticated'
     else:
         response['more_url'] += '&s.role=none'
+    searchid = request.GET.get('searchid', 0)
+    if scope == 'research_guides':
+        save_result_count(searchid, "researchguides", response['count_total'])
+    elif scope == 'articles':
+        save_result_count(searchid, "articles", response['count_total'])
     return response
 
 
@@ -502,9 +501,9 @@ def best_bets_json(request, scope='all'):
 def _libsite_query(request):
     q = request.GET.get('q', '')
     try:
-        count = int(request.GET.get('count', DEFAULT_HIT_COUNT))
+        count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
-        count = DEFAULT_HIT_COUNT
+        count = settings.DEFAULT_HIT_COUNT
     #----
     #TODO: Remove this once the Drupal search json packaging stops
     # choking on single quotes.  This wraps each word containing a '
@@ -638,8 +637,14 @@ def searches(request):
         return HttpResponseForbidden('Access Denied')
 
     sortby = request.GET.get("sort")
-    if sortby not in ['id', '-id', 'q', '-q', 'date_searched',
-                      '-date_searched']:
+    if sortby not in ['id', '-id',
+                      'q', '-q',
+                      'date_searched', '-date_searched',
+                      'articles_count', '-articles_count',
+                      'books_count', '-books_count',
+                      'database_count', '-database_count',
+                      'journals_count', '-journals_count',
+                      'researchguides_count', '-researchguides_count']:
         sortby = '-id'
     searches = Search.objects.order_by(sortby)
 
@@ -704,3 +709,33 @@ def searches(request):
                    'last_n_days': last_n_days,
                    'top_n_searches': top_n_searches,
                    'search_all_url': search_all_url})
+
+
+def save_data(request):
+    querystring = request.GET.get('q', '')
+    response = {}
+    if querystring and not (request.GET.get('ignoresearch') == 'true'):
+        s = Search(q=querystring)
+        s.save()
+        response['searchid'] = s.id
+    return HttpResponse(json.dumps(response))
+
+
+def save_result_count(searchid, section_name, count):
+    if searchid == 0:
+        return
+    if(section_name == "articles"):
+        Search.objects.filter(id=searchid).update(
+            articles_count=count)
+    elif(section_name == "books"):
+        Search.objects.filter(id=searchid).update(
+            books_count=count)
+    elif(section_name == "database"):
+        Search.objects.filter(id=searchid).update(
+            database_count=count)
+    elif(section_name == "journals"):
+        Search.objects.filter(id=searchid).update(
+            journals_count=count)
+    elif(section_name == "researchguides"):
+        Search.objects.filter(id=searchid).update(
+            researchguides_count=count)

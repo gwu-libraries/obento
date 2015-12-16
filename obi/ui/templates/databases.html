@@ -1,5 +1,6 @@
 {% load humanize %}
 <script>
+    (function($) {
     $( document ).ready(function() {
         var x = parseInt($('#expand_size').val(),10);
         if ((y = $('#databases li').size() - x) == 1) { 
@@ -26,6 +27,7 @@
             $('#show-remainder').hide();
         }
     }
+    })(jQuery);
 </script>
 {% if response.matches %}
 <ul id='databases' class='unstyled'>

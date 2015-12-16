@@ -13,6 +13,8 @@
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
+	(function($) {
+	var searchid;
 	var data;
 	var ignoresearch;
 	var count;
@@ -22,6 +24,7 @@
 	    if(count == "0" || !/^\d+$/.test(count)){
 		$.get(bento_url+vals[0],
                         {"q": data,
+			 "searchid": searchid,
                         "ignoresearch": ignoresearch,
                         "remote_addr": remote_addr},
                         function(response){
@@ -32,6 +35,7 @@
 	    else{
 		 $.get(bento_url+vals[0],
                         {"q": data,
+                         "searchid": searchid,
                         "ignoresearch": ignoresearch,
                         "count": count,
                         "remote_addr": remote_addr},
@@ -53,19 +57,36 @@
   	      if (function_exists('catalog_pointer_bento')) {$bentoTarget = catalog_pointer_bento();} else {$bentoTarget = "http://gwbento-prod.wrlc.org:8080/";} 
 	    ?>
             bento_url = "<?php echo $bentoTarget; ?>";
-	    var blocks = [
-        	["best_bets_html", '#bestbets-response'],
-		["articles_html", '#articles-response'],
-		["databases_solr_html", '#databases-solr-response'],
-		["books_media_html", '#books-response'],
-		["journals_solr_html", '#journals-solr-response'],
-		["libsite_html", '#libsite-response'],
-		["research_guides_html", '#guides-response'],
-	    ];
-            for (var i=0; i < blocks.length; i++) {
-		fetch(blocks[i]);
-            }
+	    var save_data_url = "save_data";
+	    function save_query(save_data_url){
+		$.get(bento_url+save_data_url,
+                        {"q": data,
+                        "ignoresearch": ignoresearch,
+                        "remote_addr": remote_addr},
+                        function(response){
+                            var info = JSON.parse(response);
+			    searchid = info.searchid;
+			    load_bento_boxes();
+                        }
+                    );
+    	     };
+    	     save_query(save_data_url);
 	});
+function load_bento_boxes(){
+	var blocks = [
+                ["best_bets_html", '#bestbets-response'],
+                ["articles_html", '#articles-response'],
+                ["databases_solr_html", '#databases-solr-response'],
+                ["books_media_html", '#books-response'],
+                ["journals_solr_html", '#journals-solr-response'],
+                ["libsite_html", '#libsite-response'],
+                ["research_guides_html", '#guides-response'],
+            ];
+            for (var i=0; i < blocks.length; i++) {
+                fetch(blocks[i]);
+            }
+}
+	})(jQuery);
 	</script>
 
 <div class='search-all-banner-outer'>
@@ -74,7 +95,7 @@
       <form action='search-beta' method='GET' class='search-form'>
             <div class='search-all-label'><label>Search All</label></div>
             <div class='search-all-form-fields'>
-            <input id='query' type='text' size='40' maxlength='100' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
+            <input aria-label='Enter your search terms' id='query' type='text' size='40' maxlength='100' name='query' value='<?php print htmlspecialchars($_GET["query"], ENT_QUOTES) ?>' />
             <input type='submit' value='Search'/>
             </div>
       </form>

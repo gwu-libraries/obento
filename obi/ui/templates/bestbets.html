@@ -2,7 +2,9 @@
 
 {% if response.bbmatches %}
 <script type='text/javascript'>
-$('#bestbets-title').show(0)
+(function($) {
+  $('#bestbets-title').show(0)
+})(jQuery);
 </script>
 <ul id='summon' class='unstyled'>
     {% for match in response.bbmatches %}

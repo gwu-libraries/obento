@@ -17,9 +17,15 @@ Installation Instructions
 PART I - Basic server requirements
 ----------------------------------
 
-1. Install Apache and other dependencies
+1. Install Apache, OpenJDK8 and other dependencies
 
-        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev openjdk-7-jdk python-setuptools python-virtualenv
+        $ sudo apt-get install apache2 libapache2-mod-wsgi libaio-dev python-dev python-profiler postgresql postgresql-contrib libpq-dev git libxml2-dev libxslt-dev python-setuptools python-virtualenv
+
+        $ sudo add-apt-repository ppa:openjdk-r/ppa
+
+        $ sudo apt-get update 
+    
+        $ sudo apt-get install openjdk-8-jdk	
 
 2. Prepare Java JVM symlink for Jetty
 
@@ -27,7 +33,7 @@ PART I - Basic server requirements
 
         $ sudo mkdir /usr/java
 
-        $ sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
+        $ sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/java/default
 
 3. Download Jetty and unzip.  
 
@@ -35,7 +41,7 @@ PART I - Basic server requirements
 
    Go to http://download.eclipse.org/jetty/stable-9/dist/ and copy the link to the .tar.gz version of the latest download of Jetty 9.  Use this link in the following wget command to download the .tar.gz file (again, the URL may change):
 
-        $ sudo wget -O jetty.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.2.3.v20140905.tar.gz&r=1"
+        $ sudo wget -O jetty.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.6.v20151106.tar.gz&r=1"
 
         $ sudo mkdir jetty
 
@@ -66,7 +72,7 @@ PART I - Basic server requirements
 
     In production, jetty should be running on a port that won't be publicly exposed.  In development and testing, exposing Solr might be helpful; never expose it in production.
     
-    NOTE:  In the step above, JAVA is set to /usr/bin/java.  When upgrading from an environment that had Java 6 installed, /usr/bin/java may be a symbolic link (...to another symbolic link) which still points to a Java 6 JRE.  If that is the case, reconfigure to ensure that either /usr/bin/java resolves to a Java 7 JRE, or point JAVA in the jetty config file to wherever the Java 7 JRE is.
+    NOTE:  In the step above, JAVA is set to /usr/bin/java.  When upgrading from an environment that had Java 7 installed, /usr/bin/java may be a symbolic link (...to another symbolic link) which still points to a Java 7 JRE.  If that is the case, reconfigure to ensure that either /usr/bin/java resolves to a Java 8 JRE, or point JAVA in the jetty config file to wherever the Java 8 JRE is.
 
 7. Start jetty
 
@@ -166,8 +172,9 @@ your desired directory path and name: for instance ```/obento``` or
 
         $ source ENV/bin/activate
 
-5. Install project dependencies
+5. Upgrade to the latest pip and install project dependencies
 
+        (ENV)$ pip install pip --upgrade
         (ENV)$ pip install -r requirements.txt
         
    If the previous step encounters problems installing pytz, then it can be installed as follows
@@ -212,7 +219,7 @@ PART IV - Configure the web application
 5. Initialize database tables. WARNING: Be sure you are still using your virtualenv. DO NOT create a superuser when prompted!
 
         (ENV)$ cd <OBENTO_HOME>/obento/obi
-        (ENV)$ python manage.py syncdb
+        (ENV)$ python manage.py migrate
 
     If you encounter an authentication error with postgresql edit your local_settings.py file and set HOST = 'localhost'
 
@@ -233,20 +240,14 @@ PART IV - Configure the web application
 
         source ~/.bashrc
 
-    Now, rerun the syncdb command.
+    Now, rerun the migrate command.
 
-6. Migrate the database to the latest updates
-
-        $ python manage.py migrate
+        (ENV)$ python manage.py migrate
 
 7. Copy the Apache virtual host file to the Apache2 directory
 
         $ cd /<OBENTO_HOME>/obento
-        $ sudo cp apache/obento /etc/apache2/sites-available/obento
-
-8. Restart jetty
-
-        $ sudo service jetty restart
+        $ sudo cp apache/obento /etc/apache2/sites-available/obento.conf
 
 
 Part V - Start the server
@@ -260,7 +261,7 @@ If you choose to run obento in apache (versus django runserver):
     Edit your server name (base url)
     Edit the many instances of &lt;path to OBENTO_HOME&gt;. Beware: the line for the WSGI Daemon has two references to that path.
 
-        $ sudo vi /etc/apache2/sites-available/obento
+        $ sudo vi /etc/apache2/sites-available/obento.conf
 
     To change all of the path values at once use the global replace command in vim
 
