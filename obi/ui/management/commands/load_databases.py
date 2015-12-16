@@ -21,12 +21,12 @@ class Command(BaseCommand):
         print 'emptying DB'
         cursor.execute('DELETE FROM ui_database')
         cursor.execute('ALTER SEQUENCE ui_database_id_seq RESTART WITH 1')
-        transaction.commit_unless_managed()
+        cursor.close()
         time.sleep(1)
 
         try:
             r = requests.get(settings.LIBGUIDES_DB_URL)
-            soup = BeautifulSoup(r.json()['data']['html'])
+            soup = BeautifulSoup(r.json()['data']['html'], "lxml")
             itemlists = soup.find_all('div', class_='s-lg-az-result')
             loaded_count = 0
             for itemlist in itemlists:
