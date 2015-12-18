@@ -50,7 +50,6 @@
 	$(document).ready(function() {
             data="<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
 	    data = data.trim();
-	    data = data.replace(/ /g,'+');
             ignoresearch="<?php if (isset($_GET["ignoresearch"])) {print addslashes($_GET["ignoresearch"]);} else {print "false";}?>";
             count="<?php if (isset($_GET["count"])) {print $_GET["count"];} else {print "0";}?>";
             <?php
@@ -175,4 +174,3 @@ function load_bento_boxes(){
                 <h4>Got <a href="javascript:void(0);" onclick="formFeedback();">feedback</a>?</h4>
             </div>
         </div>
-
