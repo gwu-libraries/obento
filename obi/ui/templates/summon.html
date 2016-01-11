@@ -33,9 +33,9 @@
             {% endif %}
         {% endif %}
         {% if match.hasFullText and response.scope != 'research_guides' %}
-            <a href= "{{ match.url }}"  class="obento-button fa fa-book"  target="_blank">Online &nbsp;</a>
+            <button onclick="window.open('{{ match.url }}')" title="{{ match.url }}") target="_blank">Online <i class="fa fa-book"></i></button>
         {% endif %}
-        </p>
+        </p> 
     </li>
     {% endfor %}
 </ul>
