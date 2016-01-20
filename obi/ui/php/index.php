@@ -105,72 +105,103 @@ function load_bento_boxes(){
 <?php if (isset($_GET["query"]))
 {
 ?>
+
+<div class="mobile-show-720 row-fluid">
+  <div class="span12">
+    <div>Results by:</div>
+    <div class="bento-jumpto"><a href="#articles"><button>Articles</button></a><a href="#databases"><button>Databases</button></a><a href="#books-media"><button>Books & Media</button></a><a href="#journals"><button>Journals</button></a><a href="#website"><button>Website</button></a><a href="#research-guides"><button>Research Guides</button></a></div>
+  </div>
+</div>
+
 <div id='results' class='row-fluid'>
+
     <div id='bestbets-articles-databases' class='span4'>
-        <div class="mobile-show-720">
-          <div>Results by:</div>
-          <div class="bento-jumpto"><a href="#articles">Articles</a> &bull; <a href="#databases">Databases</a> &bull; <a href="#books-media">Books & Media</a> &bull; <a href="#journals">Journals</a> &bull; <a href="#website">Website</a> &bull; <a href="#research-guides">Research Guides</a></div>
-        </div>
-        <h2 id='bestbets-title' style='display:none;'>Best Bets</h2>
-        <div id='bestbets-response' class='row-fluid'>
+
+      <div id='bestbets-title' class='result-card' style='display:none;'>
+        <h2>Best Bets</h2>
+        <div id='bestbets-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <h2><a name="articles"></a>Articles</h2>
-        <div id='articles-response' class='row-fluid'>
+      </div>
+
+      <div id='articles' class='result-card'>
+        <h2>Articles</h2>
+        <div id='articles-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <hr />
-        <h2><a name="databases"></a>Databases</h2>
-        <div id='databases-solr-response' class='row-fluid'>
+        <!--<hr />-->
+      </div>
+
+      <div id='databases' class='result-card'>
+        <h2>Databases</h2>
+        <div id='databases-solr-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <hr class="mobile-show-720" />
+        <!--<hr class="mobile-show-720" />-->
+      </div>
+
     </div>
+
     <div id='books-journals' class='span4 left-border'>
-        <h2><a name="books-media"></a>Books &amp; Media</h2>
-        <div id='books-response' class='row-fluid'>
+
+      <div id='books-media' class='result-card'>
+        <h2>Books &amp; Media</h2>
+        <div id='books-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <hr />
-        <h2 class='separate-top'><a name="journals"></a>Journals</h2>
-        <div id='journals-solr-response' class='row-fluid'>
+        <!--<hr />-->
+      </div>
+
+      <div id='journals' class='result-card'>
+        <h2 class='separate-top'>Journals</h2>
+        <div id='journals-solr-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <hr class="mobile-show-720" />
+        <!--<hr class="mobile-show-720" />-->
+      </div>
+
     </div>
+
     <div id='website-other' class='span4 left-border'>
-        <h2><a name="website"></a>Library Website</h2>
-        <div id='libsite-response' class='row-fluid'>
+
+      <div id='website' class='result-card'>
+        <h2>Library Website</h2>
+        <div id='libsite-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
-        <hr />
-        <h2><a name="research-guides"></a>Research Guides</h2>
-        <div id='guides-response' class='row-fluid'>
+        <!--<hr />-->
+      </div>
+
+      <div id='research-guides' class='result-card'>      
+        <h2>Research Guides</h2>
+        <div id='guides-response'>
             <div class='span2 progress progress-striped active'>
                 <div class='bar' style='width: 100%;'></div>
             </div>
         </div>
+      </div>
+
     </div>
+
 </div>
 <?php
 }
 ?>
 
-        <div class='container'>
-            <div class='row-fluid'>
-                <hr />
-                <h4>Got <a href="javascript:void(0);" onclick="formFeedback();">feedback</a>?</h4>
-            </div>
-        </div>
+<div class='row-fluid' style="margin-top:3em;">
+  <div class="span12 feedback-link">
+    <a href="javascript:void(0);" onclick="formFeedback();"><button>Got feedback ?</button></a>
+  </div>
+</div>
