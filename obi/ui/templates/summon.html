@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load staticfiles %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/obento.css" type="text/css" media="all" />
 
 {% if response.matches %}
 <ul id='summon' class='unstyled'>
@@ -32,9 +33,9 @@
             {% endif %}
         {% endif %}
         {% if match.hasFullText and response.scope != 'research_guides' %}
-            <i class="fa fa-book" title="Full Text Available Online"></i> Full Text Online
+            <button onclick="window.open('{{ match.url }}')" title="{{ match.url }}") target="_blank">Online <i class="fa fa-book"></i></button>
         {% endif %}
-        </p>
+        </p> 
     </li>
     {% endfor %}
 </ul>
