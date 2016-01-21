@@ -87,7 +87,7 @@ function load_bento_boxes(){
 <div id='form'>
     <form action='{% url "home" %}' method='GET' class='form-search'>
         <fieldset>
-            <input id='q' type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' />
+            <input id='q' type='text' size='40' name='q' placeholder='Search...' value='{{ q }}' class='input-large search-query' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' />
             <input type='submit' class='btn' value='go'/>
         </fieldset>
     </form>
