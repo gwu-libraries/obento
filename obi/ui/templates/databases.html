@@ -27,7 +27,10 @@
             $('#show-remainder').hide();
         }
     }
-    })(jQuery);
+
+    document.getElementById("next-database-results").addEventListener("click", NextLinkDB);
+	
+   })(jQuery);
 </script>
 {% if response.matches %}
 <ul id='databases' class='unstyled'>
@@ -40,12 +43,12 @@
         <p id="partialdescriptioni{{ forloop.counter }}">
             {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
             {% if match.description and match.description|length > context.DESCRIPTION_DISPLAY_LENGTH %}
-                <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').hide();$('#completedescription{{ forloop.counter }}').show()">more</a>
+                <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').hide();$('#completedescription{{ forloop.counter }}').show()"; style="cursor: pointer;">more</a>
             {% endif %}
         </p>
         <p id="completedescription{{ forloop.counter }}" style="display:none">
             {{ match.description }}
-            <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').show();$('#completedescription{{ forloop.counter }}').hide()">less</a>    
+            <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').show();$('#completedescription{{ forloop.counter }}').hide()"; style="cursor: pointer;">less</a>    
         </p>
     </li>
     {% endfor %}
@@ -53,7 +56,7 @@
 {% if response.count_total > 3 %}
 <p id='show-remainder'>
     <i class='icon-arrow-right'></i>
-    <a id="next-database-results" onclick=NextLinkDB() >Next 5 Databases</a>
+    <a id="next-database-results" onclick=NextLinkDB(); style="cursor: pointer;" >Next 5 Databases</a>
 </p>
 
 <p class='x remainder'>
