@@ -1,6 +1,6 @@
 {% load humanize %}
 <script>
-  (function($) {
+    (function($) {
     $( document ).ready(function() {
         var x = parseInt($('#expand_size_j').val(),10);
         if ((y = $('#journals li').size() - x) == 1) { 
@@ -27,7 +27,10 @@
             $('#show-remainder-journals').hide();
         }
     }
-  })(jQuery);    
+    	
+    document.getElementById("next-journal-results").addEventListener("click", NextLinkJ);
+	
+  })(jQuery);  
 </script>
                                                                 
 {% if response.matches %}
@@ -47,7 +50,7 @@
 {% if response.count_total > 3 %}
 <p id='show-remainder-journals'>
     <i class='icon-arrow-right'></i>
-    <a id='next-journal-results' onclick=NextLinkJ()>Next 5 Journals</a>
+    <a id='next-journal-results' onclick=NextLinkJ(); style="cursor: pointer;">Next 5 Journals</a>
 </p>
 <p class='x remainder-journals'>
     <i class='icon-arrow-right'></i>
