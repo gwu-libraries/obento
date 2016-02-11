@@ -76,7 +76,7 @@ SUMMON_SCOPES = {
             ('s.fvf', 'ContentType,Newspaper Article,t'),
             ('s.ho', 'f')],
         'more_url':
-           'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf[]=ContentType,Journal+Article,f&s.fvf[]=IsScholarly,true,f&s.fvf[]=ContentType,Newspaper+Article,t&s.ho=f&s.role=none&s.q='},
+           'http://gw.summon.serialssolutions.com/search?s.cmd=setHoldingsOnly(true)&s.fvf[]=ContentType,Journal+Article,f&s.fvf[]=IsScholarly,true,f&s.fvf[]=ContentType,Newspaper+Article,t&s.ho=t&s.role=none&s.q='},
     'books_media': {
         'params': [
             ('s.fq', 'SourceType:(\"Library Catalog\")'),
