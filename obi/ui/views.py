@@ -162,7 +162,7 @@ def _databases_solr_query(request):
             response['more_url_plain'] = settings.DATABASES_URL
             if count == 0:
                 count = len(solr_response.results)
-            for db in solr_response.results[:count]:
+            for db in solr_response.results[:len(solr_response.results)]:
                 match = {'name': db['name'], 'url': db.get('url', ''),
                          'description': db.get('description', '')}
                 matches.append(match)
@@ -177,7 +177,11 @@ def _databases_solr_query(request):
             response['more_url_plain'] = settings.DATABASES_URL
             response['matches'] = []
     searchid = request.GET.get('searchid', 0)
-    save_result_count(searchid, "database", response['count_total'])
+    #try:
+    #    save_result_count(searchid, "database", response['count_total'])
+    #except KeyError, e:
+    #    print repr(e)
+    save_result_count(searchid, "database", len(solr_response.results))
     return response
 
 
@@ -270,7 +274,10 @@ def _journals_solr_query(request):
             response['more_url_plain'] = settings.JOURNALS_URL
             response['matches'] = []
     searchid = request.GET.get('searchid', 0)
-    save_result_count(searchid, "journals", response['count_total'])
+    try:
+        save_result_count(searchid, "journals", response['count_total'])
+    except KeyError, e:
+        print repr(e)
     return response
 
 
