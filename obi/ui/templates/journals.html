@@ -36,8 +36,8 @@
 {% if response.matches %}
 <ul id='journals' class='unstyled'>
     {% for match in response.matches %}
-    <li class='journal {% if forloop.counter > 3 %}remainder-journals{% endif %}'
-        {% if forloop.counter > 3 %}style='display:none;'{% endif %}>
+    <li class='journal {% if forloop.counter > response.display_count %}remainder-journals{% endif %}'
+        {% if forloop.counter > response.display_count %}style='display:none;'{% endif %}>
         <a href='{{ match.url }}' title='{{ match.title }}' onclick="window.open(this.href); return false;">
             {{ match.title|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
@@ -47,7 +47,7 @@
     </li>
     {% endfor %}
 </ul>
-{% if response.count_total > 3 %}
+{% if response.count_total > response.display_count %}
 <p id='show-remainder-journals'>
     <i class='icon-arrow-right'></i>
     <a id='next-journal-results' onclick=NextLinkJ(); style="cursor: pointer;">Next 5 Journals</a>
@@ -63,5 +63,5 @@
     </em>
 </p>
 {% endif %}
-<input id='expand_size_j' type='hidden' value='3' />
+<input id='expand_size_j' type='hidden' value='{{response.display_count}}' />
 
