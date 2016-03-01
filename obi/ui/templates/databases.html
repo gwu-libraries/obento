@@ -35,8 +35,8 @@
 {% if response.matches %}
 <ul id='databases' class='unstyled'>
     {% for match in response.matches %}
-    <li class='database {% if forloop.counter > 3 %}remainder{% endif %}'
-        {% if forloop.counter > 3 %}style='display:none;'{% endif %}>
+    <li class='database {% if forloop.counter > response.display_count %}remainder{% endif %}'
+        {% if forloop.counter > response.display_count %}style='display:none;'{% endif %}>
         <a href='{{ match.url }}' title='{{ match.name }}' onclick="window.open(this.href); return false;">
             {{ match.name|truncatechars:context.TITLE_DISPLAY_LENGTH }}
         </a>
@@ -53,7 +53,7 @@
     </li>
     {% endfor %}
 </ul>
-{% if response.count_total > 3 %}
+{% if response.count_total > response.display_count %}
 <p id='show-remainder'>
     <i class='icon-arrow-right'></i>
     <a id="next-database-results" onclick=NextLinkDB(); style="cursor: pointer;" >Next 5 Databases</a>
@@ -70,4 +70,4 @@
     </em>
 </p>
 {% endif %}
-<input id='expand_size' type='hidden' value='3' />
+<input id='expand_size' type='hidden' value='{{response.display_count}}' />
