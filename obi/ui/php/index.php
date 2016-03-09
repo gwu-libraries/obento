@@ -1,5 +1,6 @@
         <!-- feedback form -->
         <script type='text/javascript'>
+        <!--
         function formFeedback() {
             // TEST form - uncomment for TEST
             var formID = "1YNODxi35XiJEv80wOJDFV3H2IIfOYmU3K5hCU8SfunE";
@@ -8,11 +9,13 @@
             var formUrl = "https://docs.google.com/forms/d/" + formID + "/viewform?entry.229836285=" + encodeURIComponent(location.href);
                 window.open(formUrl);
         }
+        -->
         </script>
 
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
 
 	<script type='text/javascript'>
+	<!--
 	(function($) {
 	var searchid;
 	var data;
@@ -87,6 +90,7 @@ function load_bento_boxes(){
             }
 }
 	})(jQuery);
+	-->
 	</script>
 
 <div class='search-all-banner-outer'>
