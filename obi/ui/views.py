@@ -86,7 +86,11 @@ def _launchpad_query(request):
     if settings.DEBUG:
         response['source'] = d
         response['query_url'] = r.url
-        
+
+    q=q.replace("%20","%2b")
+    q=q.replace("+","%2b")
+    q=q.replace("#","%23")
+
     response['matches'] = matches
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
@@ -406,6 +410,10 @@ def _summon_query(request, scope='all'):
                 if bestbet.get('description', []):
                     match['description'] = bestbet['description']
                 bbmatches.append(match)
+
+    q=q.replace("%20","%2b")
+    q=q.replace("+","%2b")
+    q=q.replace("#","%23")
 
     if settings.DEBUG:
         response['source'] = d
