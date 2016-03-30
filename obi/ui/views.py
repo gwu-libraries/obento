@@ -83,6 +83,10 @@ def _launchpad_query(request):
                     match['institutions'] = 'Other WRLC Libraries'
         matches.append(match)
 
+    if settings.DEBUG:
+        response['source'] = d
+        response['query_url'] = r.url
+        
     response['matches'] = matches
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
     response['more_url_plain'] = settings.LAUNCHPAD_MORE_URL_PLAIN
