@@ -1,5 +1,15 @@
 {% load humanize %}
 
+{% if response.dym %}
+
+<script type='text/javascript'>
+(function($) {
+  $('#form').after("<div id=\"dym\" style=\" margin-left: 13px;padding-top: 0; padding-bottom: 0.6em;\" >Did you mean:&nbsp;<a href=\"/search-all?query={{response.dym}}\"><strong><em>{{ response.dym }}</em></strong>?</a> </div> ");
+})(jQuery);
+</script>
+
+{% endif %}
+
 {% if response.bbmatches %}
 <script type='text/javascript'>
 (function($) {

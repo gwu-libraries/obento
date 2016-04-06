@@ -402,6 +402,10 @@ def _summon_query(request, scope='all'):
                 if bestbet.get('description', []):
                     match['description'] = bestbet['description']
                 bbmatches.append(match)
+    
+    if d.get('didYouMeanSuggestions', {}):
+        dym = d['didYouMeanSuggestions'][0]['suggestedQuery']       
+        response['dym'] = dym
 
     if settings.DEBUG:
         response['source'] = d
