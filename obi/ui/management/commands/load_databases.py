@@ -24,11 +24,12 @@ class Command(BaseCommand):
         cursor.close()
         time.sleep(1)
 
+        loaded_count = 0
+
         try:
             r = requests.get(settings.LIBGUIDES_DB_URL)
             soup = BeautifulSoup(r.json()['data']['html'], "lxml")
             itemlists = soup.find_all('div', class_='s-lg-az-result')
-            loaded_count = 0
             for itemlist in itemlists:
                 name_div = itemlist.find('div', class_='s-lg-az-result-title')
                 if name_div is None:
