@@ -4,9 +4,17 @@
 
 <script type='text/javascript'>
 (function($) {
-  $('#form').after("<div id=\"dym\" style=\" margin-left: 13px;padding-top: 0; padding-bottom: 0.6em;\" >Did you mean:&nbsp;<a href=\"/search-all?query={{response.dym}}\"><strong><em>{{ response.dym }}</em></strong>?</a> </div> ");
+  $('#dym-dev').html("Did you mean <a href=\"/?q={{response.dym}}\"><strong><em>{{ response.dym }}</em></strong>?</a>");
 })(jQuery);
 </script>
+
+
+<script type='text/javascript'>
+(function($) {
+  $('#dym').html("Did you mean <a href=\"/search-all?query={{response.dym}}\"><strong><em>{{ response.dym }}</em></strong>?</a>");
+})(jQuery);
+</script>
+
 
 {% endif %}
 

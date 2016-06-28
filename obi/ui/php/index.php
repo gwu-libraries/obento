@@ -105,6 +105,7 @@ autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' />
       </form>
     </div>
   </div>
+ <div id='dym' style=' margin-left: 13px;padding-top: 0; padding-bottom: 0.6em;'></div>
 </div>
 <?php if (isset($_GET["query"]))
 {
