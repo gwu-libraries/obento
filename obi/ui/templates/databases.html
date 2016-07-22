@@ -43,12 +43,12 @@
         <p id="partialdescriptioni{{ forloop.counter }}">
             {{ match.description|truncatechars:context.DESCRIPTION_DISPLAY_LENGTH }}
             {% if match.description and match.description|length > context.DESCRIPTION_DISPLAY_LENGTH %}
-                <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').hide();$('#completedescription{{ forloop.counter }}').show()"; style="cursor: pointer;">more</a>
+            <a onclick="document.getElementById('partialdescriptioni{{ forloop.counter }}').style='display:none';document.getElementById('completedescription{{ forloop.counter }}').style='display:visible';" style="cursor: pointer;">more</a>
             {% endif %}
         </p>
         <p id="completedescription{{ forloop.counter }}" style="display:none">
             {{ match.description }}
-            <a  onclick="$('#partialdescriptioni{{ forloop.counter }}').show();$('#completedescription{{ forloop.counter }}').hide()"; style="cursor: pointer;">less</a>    
+            <a onclick="document.getElementById('partialdescriptioni{{ forloop.counter }}').style='display:visible';document.getElementById('completedescription{{ forloop.counter }}').style='display:none';" style="cursor: pointer;">less</a>    
         </p>
     </li>
     {% endfor %}
