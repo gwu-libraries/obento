@@ -16,52 +16,52 @@ API
 
 The current production Obento endpoint is at http://gwbento-prod.wrlc.org:8080 .  This can only be accessed directly from within the GW network.
 
-Query endpoints
----------------
+Query API
+---------
 
-Query endpoints are as follows:
+Query API endpoints are as follows:
 
 `/` - returns a results page with six boxes of results (seven if Best Bets contains a result)
 
-`/articles_html`
+`/articles_html` - returns an HTML page with only the articles results
 
-`/articles_json`
+`/articles_json` - returns article results as JSON
 
-`/books_media_html`
+`/books_media_html` - returns an HTML page with only the books & media results (wrapper for `/launchpad_html`)
 
-`/books_media_json`
+`/books_media_json` - returns books & media results as JSON (wrapper for `/launchpad_json`)
 
-`/databases_solr_html` 
+`/databases_solr_html` - returns an HTML page with database results retrieved by querying Solr
 
-`/databases_solr_json`
+`/databases_solr_json` - returns database results retrieved by querying Solr, as JSON
 
-`/journals_solr_html` 
+`/journals_solr_html` - returns an HTML page with journal title results retrieved by querying Solr 
 
-`/journals_solr_json`
+`/journals_solr_json` - returns journal title results retrieved by querying Solr, as JSON
 
-`/launchpad_html`
+`/launchpad_html` - returns an HTML page with launchpad query results
 
-`/launchpad_json`
+`/launchpad_json` - returns launchpad query results as JSON
 
-`/summon_html`
+`/summon_html` - returns an HTML page with Summon query results with a scope of `all` as defined in settings
 
-`/summon_json`
+`/summon_json` - returns Summon query results as JSON, with a scope of `all` as defined in settings
 
-`/summon_books_media_html`
+`/summon_books_media_html` - returns an HTML page with Summon query results with a scope of `books_media` as defined in settings
 
-`/summon_books_media_json`
+`/summon_books_media_json` - returns Summon query results as JSON, with a scope of `books_media` as defined in settings
 
-`/research_guides_html` 
+`/research_guides_html` - returns an HTML page with Summon query results with a scope of `research_guides` as defined in settings
 
-`/research_guides_json`
+`/research_guides_json` - returns Summon query results as JSON, with a scope of `research_guides` as defined in settings
 
-`/libsite_html`
+`/best_bets_html` - returns an HTML page with Summon query results with a scope of `best_bets` as defined in settings
 
-`/libsite_json`
+`/best_bets_json` - returns Summon query results as JSON, with a scope of `best_bets` as defined in settings
 
-`/best_bets_html`
+`/libsite_html` - returns an HTML page with library website query results
 
-`/best_bets_json`
+`/libsite_json` - returns library website query results as JSON
 
 
 **Request parameters** for the Query endpoints are as follows:
@@ -72,8 +72,8 @@ Query endpoints are as follows:
 
 *ignoresearch* (optional): if `true`, do not record the query in the Searches table, e.g. http://gwbento-prod.wrlc.org:8080?q=computer+science&ignore=true .  If this parameter is not specified, the query will be recorded.
 
-Searches endpoint
------------------
+Searches API
+------------
 
 `/searches` - returns an HTML page containing:
 * a paginated table of recorded queries
