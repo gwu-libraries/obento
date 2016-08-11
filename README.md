@@ -249,6 +249,9 @@ PART IV - Configure the web application
         $ cd /<OBENTO_HOME>/obento
         $ sudo cp apache/obento /etc/apache2/sites-available/obento.conf
 
+8. Configure self signed SSL certificates. Refer https://github.com/gwu-libraries/SSL_HowTo
+
+
 
 Part V - Start the server
 --------------------------
