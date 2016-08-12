@@ -1,14 +1,103 @@
-obento
+Obento
 ======
 
 A simple python/django search multiplexing backend for use in a bento-style
-frontend.  
+frontend for GW Libraries.
 
 
-requirements
+Requirements
 ============
 
-Developed using Python 2.7, Django 1.6, and PostgreSQL 9.1 on Ubuntu 12.04.
+Developed using Python 2.7, Django 1.8, and PostgreSQL 9.1 on Ubuntu 12.04.
+
+
+API
+===
+
+The current production Obento endpoint is at http://gwbento-prod.wrlc.org:8080 .  This can only be accessed directly from within the GW network.
+
+Query API
+---------
+
+Query API endpoints are as follows:
+
+`/` - returns a results page with six boxes of results (seven if Best Bets contains a result)
+
+`/articles_html` - returns an HTML page with only the articles results
+
+`/articles_json` - returns article results as JSON
+
+`/books_media_html` - returns an HTML page with only the books & media results (wrapper for `/launchpad_html`)
+
+`/books_media_json` - returns books & media results as JSON (wrapper for `/launchpad_json`)
+
+`/databases_solr_html` - returns an HTML page with database results retrieved by querying Solr
+
+`/databases_solr_json` - returns database results retrieved by querying Solr, as JSON
+
+`/journals_solr_html` - returns an HTML page with journal title results retrieved by querying Solr 
+
+`/journals_solr_json` - returns journal title results retrieved by querying Solr, as JSON
+
+`/launchpad_html` - returns an HTML page with launchpad query results
+
+`/launchpad_json` - returns launchpad query results as JSON
+
+`/summon_html` - returns an HTML page with Summon query results with a scope of `all` as defined in settings
+
+`/summon_json` - returns Summon query results as JSON, with a scope of `all` as defined in settings
+
+`/summon_books_media_html` - returns an HTML page with Summon query results with a scope of `books_media` as defined in settings
+
+`/summon_books_media_json` - returns Summon query results as JSON, with a scope of `books_media` as defined in settings
+
+`/research_guides_html` - returns an HTML page with Summon query results with a scope of `research_guides` as defined in settings
+
+`/research_guides_json` - returns Summon query results as JSON, with a scope of `research_guides` as defined in settings
+
+`/best_bets_html` - returns an HTML page with Summon query results with a scope of `best_bets` as defined in settings
+
+`/best_bets_json` - returns Summon query results as JSON, with a scope of `best_bets` as defined in settings
+
+`/libsite_html` - returns an HTML page with library website query results
+
+`/libsite_json` - returns library website query results as JSON
+
+
+**Request parameters** for the Query endpoints are as follows:
+
+*q* (optional): query string, e.g.  http://gwbento-prod.wrlc.org:8080?q=computer+science
+
+*count* (optional): the number of results to return in each box, e.g. http://gwbento-prod.wrlc.org:8080?q=computer+science&count=4 .  This overrides the default value configured `in local_settings.py`.
+
+*ignoresearch* (optional): if `true`, do not record the query in the Searches table, e.g. http://gwbento-prod.wrlc.org:8080?q=computer+science&ignore=true .  If this parameter is not specified, the query will be recorded.
+
+Searches API
+------------
+
+`/searches` - returns an HTML page containing:
+* a paginated table of recorded queries
+* a list of the terms most frequently queried in the recent period
+
+**Request parameters** for the Searches endpoint are as follows:
+
+* *token* (required):  the secret token required to access the /searches endpoint.
+* *last_n_days* (optional):  the number of days worth of searches (from the present date back) to aggregate in the "top searches" list
+* *top_n_searches* (optional):  the number of top searches to list in the "top searches" list
+* *page* (optional): pagination page
+* *per_page* (optional): number of results per paginated page
+* *sortby* (optional): primary column to sort by.  `-` prefix indicates reverse sort.  Sorting can also be accomplished by clicking on the column header.  Values may include:
+   * `q` / `-q`  sort by query text
+   * `date_searched` / `-date_searched`
+   * `articles_count` / `-articles_count`
+   * `books_count` / `-books_count`
+   * `database_count` / `-database_count`
+   * `journals_count` / `-journals_count`
+   * `researchguides_count` / `-researchguides_count`
+
+
+
+
 
 
 Installation Instructions
