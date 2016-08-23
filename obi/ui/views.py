@@ -586,6 +586,8 @@ def _is_request_local(request):
         if IPAddress(remote_addr) in IPGlob(ipg):
             found_ip = True
     return found_ip
+    searchid = request.GET.get('searchid', 0)
+    save_result_count(searchid, "islocal", found_ip)
 
 
 def _summon_healthcheck():
@@ -649,7 +651,8 @@ def searches(request):
                       'books_count', '-books_count',
                       'database_count', '-database_count',
                       'journals_count', '-journals_count',
-                      'researchguides_count', '-researchguides_count']:
+                      'researchguides_count', '-researchguides_count',
+		      'islocal', '-islocal']:
         sortby = '-id'
     searches = Search.objects.order_by(sortby)
 
@@ -721,6 +724,7 @@ def save_data(request):
     response = {}
     if querystring and not (request.GET.get('ignoresearch') == 'true'):
         s = Search(q=querystring)
+        s.islocal = _is_request_local(request)
         s.save()
         response['searchid'] = s.id
     return HttpResponse(json.dumps(response))
@@ -744,3 +748,6 @@ def save_result_count(searchid, section_name, count):
     elif(section_name == "researchguides"):
         Search.objects.filter(id=searchid).update(
             researchguides_count=count)
+    elif(section_name == "islocal"):
+        Search.objects.filter(id=searchid).update(
+            islocal=count)

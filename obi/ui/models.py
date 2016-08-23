@@ -41,6 +41,7 @@ class Search(models.Model):
     database_count = models.IntegerField(blank=True, default=0)
     journals_count = models.IntegerField(blank=True, default=0)
     researchguides_count = models.IntegerField(blank=True, default=0)
+    islocal = models.BooleanField(default=False)
     objects = models.Manager()
     searchTermManager = SearchTermManager()
 
