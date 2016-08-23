@@ -87,9 +87,9 @@ def _launchpad_query(request):
         response['source'] = d
         response['query_url'] = r.url
 
-    q=q.replace("%20","%2b")
-    q=q.replace("+","%2b")
-    q=q.replace("#","%23")
+    q = q.replace("%20", "%2b")
+    q = q.replace("+", "%2b")
+    q = q.replace("#", "%23")
 
     response['matches'] = matches
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
@@ -650,7 +650,7 @@ def searches(request):
                       'database_count', '-database_count',
                       'journals_count', '-journals_count',
                       'researchguides_count', '-researchguides_count',
-		      'islocal', '-islocal']:
+                      'islocal', '-islocal']:
         sortby = '-id'
     searches = Search.objects.order_by(sortby)
 
