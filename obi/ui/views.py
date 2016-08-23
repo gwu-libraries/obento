@@ -586,9 +586,7 @@ def _is_request_local(request):
         if IPAddress(remote_addr) in IPGlob(ipg):
             found_ip = True
     return found_ip
-    searchid = request.GET.get('searchid', 0)
-    save_result_count(searchid, "islocal", found_ip)
-
+   
 
 def _summon_healthcheck():
     headers = {}
