@@ -5,10 +5,16 @@ import hmac
 import json
 import logging
 import urllib
+import urllib2
+import urlfetch
+import simplejson
 
+from xml.dom import minidom
 from netaddr import IPAddress, IPGlob
 import requests
 import solr
+import xml.etree.ElementTree as ET
+from xml.etree import ElementTree
 
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
@@ -345,6 +351,7 @@ def _summon_query(request, scope='all'):
     d = r.json()
     matches = []
     response = {}
+    
     if d.get('recordCount'):
         response['count_total'] = d.get('recordCount')
     else:
@@ -385,6 +392,31 @@ def _summon_query(request, scope='all'):
             title_str = title_str[len(MATCH_TO_REMOVE):]
         match['name'] = title_str
 
+        match = {'xmlurl': 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']}
+
+        xmlurl = match['xmlurl']  
+        finalurl = {}
+        f = urllib2.urlopen( xmlurl )
+        tree = ET.ElementTree(file=f)
+        urlresults = tree.getroot()
+        final2 = dict((e.tag, e.text) for e in urlresults.getchildren())
+
+
+        #tree = ElementTree.parse(f) 
+       
+        
+#        for node in tree.iter('ssopenurl:url'):
+ #           name = node.text
+  #          #url = node.attrib.get('xmlUrl')      
+   #         match['final'] = name
+
+
+        #for node in tree.findall('.//ssopenurl:openURLResponse/ssopenurl:results/ssopenurl:result/ssopenurl:linkGroups/ssopenurl:linkGroup//ssopenurl:url/'):
+         #   url12 = node.type.get('articles')
+          #  match['final'] = url12 
+
+        match['final'] = final2
+
         if document.get('Publisher', []):
             match['publisher'] = document['Publisher'][0]
         if document.get('PublicationTitle', []):
@@ -398,6 +430,7 @@ def _summon_query(request, scope='all'):
         if document.get('Institution', []):
             match['institution'] = document['Institution'][0]
         matches.append(match)
+ 
 
     bbmatches = []
     if d.get('recommendationLists', []):
