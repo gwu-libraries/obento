@@ -746,6 +746,3 @@ def save_result_count(searchid, section_name, count):
     elif(section_name == "researchguides"):
         Search.objects.filter(id=searchid).update(
             researchguides_count=count)
-    elif(section_name == "islocal"):
-        Search.objects.filter(id=searchid).update(
-            islocal=count)
