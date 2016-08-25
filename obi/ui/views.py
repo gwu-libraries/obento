@@ -87,9 +87,9 @@ def _launchpad_query(request):
         response['source'] = d
         response['query_url'] = r.url
 
-    q=q.replace("%20","%2b")
-    q=q.replace("+","%2b")
-    q=q.replace("#","%23")
+    q = q.replace("%20", "%2b")
+    q = q.replace("+", "%2b")
+    q = q.replace("#", "%23")
 
     response['matches'] = matches
     response['more_url'] = '%s?q=%s' % (settings.LAUNCHPAD_API_URL, q)
@@ -586,7 +586,7 @@ def _is_request_local(request):
         if IPAddress(remote_addr) in IPGlob(ipg):
             found_ip = True
     return found_ip
-
+   
 
 def _summon_healthcheck():
     headers = {}
@@ -649,7 +649,8 @@ def searches(request):
                       'books_count', '-books_count',
                       'database_count', '-database_count',
                       'journals_count', '-journals_count',
-                      'researchguides_count', '-researchguides_count']:
+                      'researchguides_count', '-researchguides_count',
+                      'islocal', '-islocal']:
         sortby = '-id'
     searches = Search.objects.order_by(sortby)
 
@@ -721,6 +722,7 @@ def save_data(request):
     response = {}
     if querystring and not (request.GET.get('ignoresearch') == 'true'):
         s = Search(q=querystring)
+        s.islocal = _is_request_local(request)
         s.save()
         response['searchid'] = s.id
     return HttpResponse(json.dumps(response))

@@ -37,6 +37,10 @@
                              <a href="?sort={{ headersort.researchguides_count }}researchguides_count&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">
                                  Research Guides Count</a>
                          </th>
+ 			 <th align="left">
+                             <a href="?sort={{ headersort.islocal }}islocal&token={{ request.GET.token}}&per_page={{ request.GET.per_page }}&last_n_days={{ request.GET.last_n_days }}&top_n_searches={{ request.GET.top_n_searches }}">
+                                 Is IP Local</a>
+                         </th>
                       </tr>
                    </thead>
                    <tbody>
@@ -50,6 +54,7 @@
                         <td>{{s.database_count}}</td>
                         <td>{{s.journals_count}}</td>
                         <td>{{s.researchguides_count}}</td>
+			<td>{{s.islocal}}</td>
                      </tr>
                      {% endfor %}
                    </tbody>
