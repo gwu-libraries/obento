@@ -7,14 +7,13 @@ import logging
 import urllib
 import urllib2
 import urlfetch
-import simplejson
+import xmltodict
 
 from xml.dom import minidom
 from netaddr import IPAddress, IPGlob
 import requests
 import solr
 import xml.etree.ElementTree as ET
-from xml.etree import ElementTree
 
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
@@ -392,30 +391,34 @@ def _summon_query(request, scope='all'):
             title_str = title_str[len(MATCH_TO_REMOVE):]
         match['name'] = title_str
 
-        match = {'xmlurl': 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']}
-
-        xmlurl = match['xmlurl']  
-        finalurl = {}
+        xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
         f = urllib2.urlopen( xmlurl )
-        tree = ET.ElementTree(file=f)
-        urlresults = tree.getroot()
-        final2 = dict((e.tag, e.text) for e in urlresults.getchildren())
+        tree = f.read()
+        f.close()
+        xmldoc = xmltodict.parse(tree)
+        data = xmltodict.parse(tree)
 
+        try:
+            urlpos0 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][0]['@type']
+        except (TypeError, IndexError, KeyError):
+            urlpos0 = ''
 
-        #tree = ElementTree.parse(f) 
-       
-        
-#        for node in tree.iter('ssopenurl:url'):
- #           name = node.text
-  #          #url = node.attrib.get('xmlUrl')      
-   #         match['final'] = name
+        try:
+            urlpos1 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][1]['@type']
+        except (TypeError, IndexError, KeyError):
+            urlpos1 = ''
 
+        try:
+            urlpos2 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][2]['@type']
+        except (TypeError, IndexError, KeyError):
+            urlpos2 = ''
 
-        #for node in tree.findall('.//ssopenurl:openURLResponse/ssopenurl:results/ssopenurl:result/ssopenurl:linkGroups/ssopenurl:linkGroup//ssopenurl:url/'):
-         #   url12 = node.type.get('articles')
-          #  match['final'] = url12 
-
-        match['final'] = final2
+        if urlpos0 == 'article':
+            match['OpenUrlFinal'] = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][0]['#text']
+        if urlpos1 == "article":
+            match['OpenUrlFinal'] = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][1]['#text']
+        if urlpos2 == 'article':
+            match['OpenUrlFinal'] = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][2]['#text']
 
         if document.get('Publisher', []):
             match['publisher'] = document['Publisher'][0]
