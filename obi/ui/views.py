@@ -6,7 +6,6 @@ import json
 import logging
 import urllib
 import urllib2
-import urlfetch
 import xmltodict
 
 from xml.dom import minidom
@@ -391,6 +390,9 @@ def _summon_query(request, scope='all'):
             title_str = title_str[len(MATCH_TO_REMOVE):]
         match['name'] = title_str
 
+        #The following code returns the E-resource link obtained from OpenUrl XML response document
+        
+        #The final XML URL is constructed by appending OpenURL to the one below
         xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
         f = urllib2.urlopen( xmlurl )
         tree = f.read()
@@ -398,6 +400,7 @@ def _summon_query(request, scope='all'):
         xmldoc = xmltodict.parse(tree)
         data = xmltodict.parse(tree)
 
+        #The returned XML structure might not always be consistent- the index of the correct link (articles in this case) varies. Hence the multiple try blocks
         try:
             urlpos0 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][0]['@type']
         except (TypeError, IndexError, KeyError):
