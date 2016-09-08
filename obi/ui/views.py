@@ -192,7 +192,7 @@ def databases_solr_html(request):
         response = _databases_solr_query(request)
     except Exception as e:
         db_url = settings.DATABASES_MORE_URL + request.GET.get('q')
-        #db_url = "%s%s" % (settings.DATABASES_MORE_URL,request.GET.get('q', ''))
+        # db_url = "%s%s" % (settings.DATABASES_MORE_URL,request.GET.get('q', ''))
         return _render_cleanerror(request, 'databases', e,
                                   'databases list', db_url)
     return render(request, 'databases.html',
@@ -349,7 +349,7 @@ def _summon_query(request, scope='all'):
     d = r.json()
     matches = []
     response = {}
-    
+
     if d.get('recordCount'):
         response['count_total'] = d.get('recordCount')
     else:
@@ -390,38 +390,26 @@ def _summon_query(request, scope='all'):
             title_str = title_str[len(MATCH_TO_REMOVE):]
         match['name'] = title_str
 
-        #The following code returns the E-resource link obtained from OpenUrl XML response document
-        
-        #The final XML URL is constructed by appending OpenURL to the one below
+        # The following code returns the E-resource link obtained from OpenUrl XML response document
+        # The final XML URL is constructed by appending OpenURL to the one below
         xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
-        f = urllib2.urlopen( xmlurl )
+        f = urllib2.urlopen(xmlurl)
         tree = f.read()
         f.close()
-        xmldoc = xmltodict.parse(tree)
         data = xmltodict.parse(tree)
+        match['OpenUrl'] = xmlurl
 
-        #The returned XML structure might not always be consistent- the index of the correct link (articles in this case) varies. Hence the multiple try blocks
+        # returns a list:
         try:
-            urlpos0 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][0]['@type']
+            urlnodes = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url']
+            articleurls = [node['#text'] for node in urlnodes if '@type' in node and node['@type'] == 'article']
         except (TypeError, IndexError, KeyError):
-            urlpos0 = ''
+            articleurls = ''
 
-        try:
-            urlpos1 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][1]['@type']
-        except (TypeError, IndexError, KeyError):
-            urlpos1 = ''
-
-        try:
-            urlpos2 = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][2]['@type']
-        except (TypeError, IndexError, KeyError):
-            urlpos2 = ''
-
-        if urlpos0 == 'article':
-            match['OpenUrlFinal'] = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][0]['#text']
-        if urlpos1 == "article":
-            match['OpenUrlFinal'] = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][1]['#text']
-        if urlpos2 == 'article':
-            match['OpenUrlFinal'] = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url'][2]['#text']
+        if not articleurls:
+            match['url'] = document['link']
+        else:
+            match['url'] = articleurls[0]
 
         if document.get('Publisher', []):
             match['publisher'] = document['Publisher'][0]
@@ -436,7 +424,6 @@ def _summon_query(request, scope='all'):
         if document.get('Institution', []):
             match['institution'] = document['Institution'][0]
         matches.append(match)
- 
 
     bbmatches = []
     if d.get('recommendationLists', []):
@@ -450,14 +437,14 @@ def _summon_query(request, scope='all'):
                 if bestbet.get('description', []):
                     match['description'] = bestbet['description']
                 bbmatches.append(match)
-    
+
     if d.get('didYouMeanSuggestions', {}):
-        dym = d['didYouMeanSuggestions'][0]['suggestedQuery']       
+        dym = d['didYouMeanSuggestions'][0]['suggestedQuery']
         response['dym'] = dym
 
-    q=q.replace("%20","%2b")
-    q=q.replace("+","%2b")
-    q=q.replace("#","%23")
+    q = q.replace("%20", "%2b")
+    q = q.replace("+", "%2b")
+    q = q.replace("#", "%23")
 
     if settings.DEBUG:
         response['source'] = d
@@ -524,7 +511,7 @@ def books_media_json(request):
 
 def _is_non_roman(request):
     q = request.GET.get('q', '')
-    #TODO: Maybe there's a better way to do this. For now, it seems to work.
+    # TODO: Maybe there's a better way to do this. For now, it seems to work.
     try:
         q.encode("iso-8859-1")
         return False
@@ -549,8 +536,8 @@ def _libsite_query(request):
         count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
         count = settings.DEFAULT_HIT_COUNT
-    #----
-    #TODO: Remove this once the Drupal search json packaging stops
+    # ----
+    # TODO: Remove this once the Drupal search json packaging stops
     # choking on single quotes.  This wraps each word containing a '
     # in double quotes.  Not a perfect solution but it'll handle "most"
     # real-world queries
@@ -559,7 +546,7 @@ def _libsite_query(request):
         if qlist[i].find("\'") > -1:
             qlist[i] = '\"' + qlist[i] + '\"'
     q = ' '.join(qlist)
-    #----
+    # ----
     params = {'keys': q, 'fields': 'nid'}
     r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
                      timeout=settings.LIBSITE_TIMEOUT_SECONDS)

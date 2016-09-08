@@ -32,9 +32,6 @@
                 {{ match.institution }}
             {% endif %}
         {% endif %}
-        {% if match.hasFullText and response.scope != 'research_guides' and match.OpenUrlFinal %}
-            <button onclick="window.open('{{ match.OpenUrlFinal }}')" title="{{ match.OpenUrlFinal }}") target="_blank">Online <i class="fa fa-book"></i></button>
-        {% endif %}
         {% if match.hasFullText and response.scope != 'research_guides' %}
             <button onclick="window.open('{{ match.url }}')" title="{{ match.url }}") target="_blank">Online <i class="fa fa-book"></i></button>
         {% endif %}
