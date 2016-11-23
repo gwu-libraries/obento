@@ -328,6 +328,7 @@ def _summon_query(request, scope='all'):
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
+    auth_str = auth_str.replace('\n', '')
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST, settings.SUMMON_PATH)
     r = requests.get(url, params=params, headers=headers,
@@ -602,6 +603,7 @@ def _summon_healthcheck():
     hash_code = hmac.new(settings.SUMMON_API_KEY, id_str, hashlib.sha1)
     digest = base64.encodestring(hash_code.digest())
     auth_str = "Summon %s;%s" % (settings.SUMMON_API_ID, digest)
+    auth_str = auth_str.replace('\n', '')
     headers['Authorization'] = auth_str
     url = 'http://%s%s' % (settings.SUMMON_HOST,
                            settings.SUMMON_HEALTHCHECK_PATH)
