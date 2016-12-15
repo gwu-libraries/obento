@@ -49,6 +49,7 @@ LAUNCHPAD_URL = 'http://findit.library.gwu.edu'
 LAUNCHPAD_API_URL = 'http://findit.library.gwu.edu/search'
 LAUNCHPAD_MORE_URL_PLAIN = 'http://findit.library.gwu.edu/catalog'
 LAUNCHPAD_RETRIES = 2
+LAUNCHPAD_RETRY_SLEEP = 1 # seconds. This may be floating-point if desired.
 LAUNCHPAD_TIMEOUT_SECONDS = 5  # per try
 WRLC_CATALOG_LABEL = 'WRLC Catalog'
 WRLC_CATALOG_URL = \
@@ -62,7 +63,9 @@ SUMMON_PATH = '/2.0.0/search'
 SUMMON_HEALTHCHECK_PATH = '/2.0.0/search/ping'
 SUMMON_HEALTHCHECK_TIMEOUT_SECONDS = 5
 SUMMON_RETRIES = 2
+SUMMON_RETRY_SLEEP = 1 # seconds. This may be floating-point if desired.
 SUMMON_TIMEOUT_SECONDS = 5  # per try
+SUMMON_USER_AGENT = 'obento <http://github.com/gwu-libraries/obento>'
 SUMMON_SCOPES = {
     'all': {
         'params': [
