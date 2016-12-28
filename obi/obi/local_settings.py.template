@@ -66,30 +66,34 @@ SUMMON_TIMEOUT_SECONDS = 5  # per try
 SUMMON_SCOPES = {
     'all': {
         'params': [
-            ('s.ff', 'ContentType,or,1,15')],
+            ('s.ff', 'ContentType,or,1,15'),
+            ('s.light', 't')],
         'more_url': 'http://gw.summon.serialssolutions.com/search?s.q='},
     'articles': {
         'params': [
             ('s.fvf', 'IsScholarly,true,f'),
             ('s.fvf', 'ContentType,Journal Article,f'),
             ('s.fvf', 'ContentType,Newspaper Article,t'),
-            ('s.ho', 't')],
+            ('s.ho', 't'),
+            ('s.light', 't')],
         'more_url':
            'http://gw.summon.serialssolutions.com/search?s.fvf[]=ContentType,Journal+Article,f&s.fvf[]=IsScholarly,true,f&s.fvf[]=ContentType,Newspaper+Article,t&s.ho=t&s.role=none&s.q='},
     'books_media': {
         'params': [
             ('s.fq', 'SourceType:(\"Library Catalog\")'),
-            ('s.ho', 't')],
+            ('s.ho', 't'),
+            ('s.light', 't')],
         'more_url':
             'http://findit.library.gwu.edu/search?q='},
     'research_guides': {
         'params': [
             ('s.ho', 't'),
+            ('s.light', 't'),
             ('s.fvf', 'ContentType,Research Guide,f')],
         'more_url':
             'http://gw.summon.serialssolutions.com/search?s.ho=t&s.fvf=ContentType,Research+Guide,f&keep_r=true&s.q='},
     'best_bets': {
-        'params': [],
+        'params': [('s.light', 't')],
         'more_url':
             'http://gw.summon.serialssolutions.com/search?s.q='},
 }
