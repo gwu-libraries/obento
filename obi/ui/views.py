@@ -8,11 +8,9 @@ import urllib
 import urllib2
 import xmltodict
 
-from xml.dom import minidom
 from netaddr import IPAddress, IPGlob
 import requests
 import solr
-import xml.etree.ElementTree as ET
 
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
@@ -24,7 +22,6 @@ from django.template import RequestContext
 from ui.models import Database, Journal, Search
 
 
-# FIXME: make a local_setting
 RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 
@@ -360,7 +357,7 @@ def _summon_query(request, scope='all'):
     except:
         count = settings.DEFAULT_HIT_COUNT
     for document in d['documents'][:count]:
-        match = {'url': document['link']}
+        match = {}
         if document.get('Author', []):
             match['author'] = ", ".join(document['Author'])
         #  else:
@@ -390,27 +387,6 @@ def _summon_query(request, scope='all'):
             title_str = title_str[len(MATCH_TO_REMOVE):]
         match['name'] = title_str
 
-        # The following code returns the E-resource link obtained from OpenUrl XML response document
-        # The final XML URL is constructed by appending OpenURL to the one below
-        xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
-        f = urllib2.urlopen(xmlurl)
-        tree = f.read()
-        f.close()
-        data = xmltodict.parse(tree)
-        match['OpenUrl'] = xmlurl
-
-        # returns a list:
-        try:
-            urlnodes = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url']
-            articleurls = [node['#text'] for node in urlnodes if '@type' in node and node['@type'] == 'article']
-        except (TypeError, IndexError, KeyError):
-            articleurls = ''
-
-        if not articleurls:
-            match['url'] = document['link']
-        else:
-            match['url'] = articleurls[0]
-
         if document.get('Publisher', []):
             match['publisher'] = document['Publisher'][0]
         if document.get('PublicationTitle', []):
@@ -421,8 +397,57 @@ def _summon_query(request, scope='all'):
             match['publicationplace'] = document['PublicationPlace'][0]
         if document.get('hasFullText', []):
             match['hasFullText'] = document['hasFullText']
+        else:
+            match['hasFullText'] = False
         if document.get('Institution', []):
             match['institution'] = document['Institution'][0]
+
+        # Start with the result provided by Summon,
+        # but overwrite if we can do better
+        match['url'] = document['link']
+        if scope == 'articles' and match['hasFullText'] is True:
+            # Check whether Summon-provided link resolves to
+            # findit.library.gwu.edu.
+            # If it takes us elsewhere (to the resource), use that.
+            # But if it takes us to findit, attempt to resolve w/openURL.
+
+            # Send a HEAD request, not a GET request, to avoid the
+            # added time involved to provide the message body (which
+            # in this case could be an entire scholarly article)
+            r = requests.head(document['link'],
+                              timeout=settings.SUMMON_TIMEOUT_SECONDS)
+            if 200 <= r.status_code < 400:
+                resolved_url = r.headers['Location']
+                if not(resolved_url.startswith('http://findit.library.gwu') or
+                       resolved_url.startswith('https://findit.library.gwu')):
+                    # Summon already will resolve to the resource;
+                    # great, use that!
+                    match['url'] = resolved_url
+                else:
+                    # Construct the OpenURL request and get the OpenURL XML document
+                    xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
+                    f = urllib2.urlopen(xmlurl)
+                    tree = f.read()
+                    f.close()
+                    data = xmltodict.parse(tree)
+                    match['OpenUrl'] = xmlurl
+
+                    # Traverse the tree and look for the node(s) containing
+                    # article link, if present
+                    try:
+                        urlnodes = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url']
+                        articleurls = [node['#text'] for node in urlnodes if '@type' in node and node['@type'] == 'article']
+                    except (TypeError, IndexError, KeyError):
+                        articleurls = ''
+
+                    if articleurls:
+                        # If there is one, replace with the [first] OpenURL result.
+                        match['url'] = articleurls[0]
+                    else:
+                        # Otherwise, at least use the findit URL and
+                        # save the user an extra link resolution through Summon
+                        match['url'] = resolved_url
+
         matches.append(match)
 
     bbmatches = []
