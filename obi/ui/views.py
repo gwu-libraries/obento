@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import json
 import logging
+import time
 import urllib
 
 from netaddr import IPAddress, IPGlob
@@ -20,8 +21,9 @@ from django.template import RequestContext
 from ui.models import Database, Journal, Search
 
 
-# FIXME: make a local_setting
 RFC2616_DATEFORMAT = "%a, %d %b %Y %H:%M:%S GMT"
+
+logger = logging.getLogger('django.request')
 
 
 def home(request):
@@ -52,9 +54,11 @@ def _launchpad_query(request):
                      timeout=settings.LAUNCHPAD_TIMEOUT_SECONDS)
     retries_left = settings.LAUNCHPAD_RETRIES
     while r.status_code != requests.codes.ok and retries_left > 0:
+        logger.error('Retrying due to Launchpad  error: %s', r.text)
         r = requests.get(settings.LAUNCHPAD_API_URL, params=params,
                          timeout=settings.LAUNCHPAD_TIMEOUT_SECONDS)
         retries_left -= 1
+        time.sleep(settings.LAUNCHPAD_RETRY_SLEEP)
     r.raise_for_status()
     d = r.json()
     matches = []
@@ -307,6 +311,7 @@ def _summon_id_string(accept, xsummondate, host, path, params):
 def _summon_query(request, scope='all'):
     headers = {'Accept': 'application/json'}
     headers['Host'] = settings.SUMMON_HOST
+    headers['User-Agent'] = settings.SUMMON_USER_AGENT
     headers['x-summon-date'] = datetime.datetime.utcnow().strftime(
         RFC2616_DATEFORMAT)
     # TODO: API docs say to reuse this once it's set for a user, punt for now
@@ -338,9 +343,11 @@ def _summon_query(request, scope='all'):
     # don't ignore it; raise it as the appropriate exception
     retries_left = settings.SUMMON_RETRIES
     while r.status_code != requests.codes.ok and retries_left > 0:
+        logger.error('Retrying due to Summon error: %s', r.text)
         r = requests.get(url, params=params, headers=headers,
                          timeout=settings.SUMMON_TIMEOUT_SECONDS)
         retries_left -= 1
+        time.sleep(settings.SUMMON_RETRY_SLEEP)
     r.raise_for_status()
     d = r.json()
     matches = []
@@ -630,7 +637,7 @@ def summon_healthcheck_json(request):
 
 def _render_cleanerror(request, scope, exception, altsite_label='',
                        altsite_url=''):
-    logger = logging.getLogger('django.request')
+    # logger = logging.getLogger('django.request')
     logger.error("%s -- %s" % (request.get_full_path(), exception))
     # TODO: Log here
     return render(request, 'service_unavailable.html',
