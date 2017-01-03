@@ -6,6 +6,8 @@ import json
 import logging
 import time
 import urllib
+import urllib2
+import xmltodict
 
 from netaddr import IPAddress, IPGlob
 import requests
@@ -192,7 +194,7 @@ def databases_solr_html(request):
         response = _databases_solr_query(request)
     except Exception as e:
         db_url = settings.DATABASES_MORE_URL + request.GET.get('q')
-        #db_url = "%s%s" % (settings.DATABASES_MORE_URL,request.GET.get('q', ''))
+        # db_url = "%s%s" % (settings.DATABASES_MORE_URL,request.GET.get('q', ''))
         return _render_cleanerror(request, 'databases', e,
                                   'databases list', db_url)
     return render(request, 'databases.html',
@@ -352,6 +354,7 @@ def _summon_query(request, scope='all'):
     d = r.json()
     matches = []
     response = {}
+
     if d.get('recordCount'):
         response['count_total'] = d.get('recordCount')
     else:
@@ -362,7 +365,7 @@ def _summon_query(request, scope='all'):
     except:
         count = settings.DEFAULT_HIT_COUNT
     for document in d['documents'][:count]:
-        match = {'url': document['link']}
+        match = {}
         if document.get('Author', []):
             match['author'] = ", ".join(document['Author'])
         #  else:
@@ -402,8 +405,76 @@ def _summon_query(request, scope='all'):
             match['publicationplace'] = document['PublicationPlace'][0]
         if document.get('hasFullText', []):
             match['hasFullText'] = document['hasFullText']
+        else:
+            match['hasFullText'] = False
         if document.get('Institution', []):
             match['institution'] = document['Institution'][0]
+
+        # Start with the result provided by Summon,
+        # but overwrite if we can do better
+        match['url'] = document['link']
+        if scope == 'articles' and match['hasFullText'] is True:
+            # Check whether Summon-provided link resolves to
+            # findit.library.gwu.edu.
+            # If it takes us elsewhere (to the resource), use that.
+            # But if it takes us to findit, attempt to resolve w/openURL.
+
+            # Send a HEAD request, not a GET request, to avoid the
+            # added time involved to provide the message body (which
+            # in this case could be an entire scholarly article)
+            r = requests.head(document['link'],
+                              timeout=settings.SUMMON_TIMEOUT_SECONDS)
+            if 200 <= r.status_code < 400:
+                resolved_url = r.headers['Location']
+                match['url'] = resolved_url
+                # If summon isn't already resolving to the resource
+                # (in which case, great, use resolved_url!),
+                # then see if we can do better
+                if resolved_url.startswith('http://findit.library.gwu') or \
+                   resolved_url.startswith('https://findit.library.gwu'):
+                    # Construct the OpenURL request
+                    # and get the OpenURL XML document
+                    xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
+                    f = urllib2.urlopen(xmlurl)
+                    tree = f.read()
+                    f.close()
+                    # When there is a single child node of a given type,
+                    # xmltodict.parse generates {child-node-type: child-node}
+                    # but when there are mutiples it generates a list:
+                    # {child-node-type: [child-node, child-node, ...]}
+                    # We wish to force it to always create a list
+                    data = xmltodict.parse(tree,
+                                           force_list=('ssopenurl:result',
+                                                       'ssopenurl:linkGroup',
+                                                       'ssopenurl:url',))
+                    match['OpenUrl'] = xmlurl
+
+                    # Traverse the tree and look for the node(s) containing
+                    # article link, if present
+                    results = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']
+                    try:
+                        for result in results:
+                            if not 'ssopenurl:linkGroups' in result:
+                                break
+                            linkgroups = result['ssopenurl:linkGroups']['ssopenurl:linkGroup']
+                            found_article_url = False
+                            for lg in linkgroups:
+                                urlnodes = lg['ssopenurl:url']
+                                articleurls = [node['#text'] for node in urlnodes if '@type' in node and node['@type'] == 'article']
+                                if articleurls:
+                                    # If there is one, replace with
+                                    # the [first] OpenURL result.
+                                    match['url'] = articleurls[0]
+                                    # Done, stop here
+                                    found_article_url = True
+                                    break
+                            if found_article_url:
+                                # stop looping through results
+                                break
+                    except (TypeError, IndexError, KeyError):
+                        # If there's an error, just stick with the resolved url
+                        pass
+
         matches.append(match)
 
     bbmatches = []
@@ -418,14 +489,14 @@ def _summon_query(request, scope='all'):
                 if bestbet.get('description', []):
                     match['description'] = bestbet['description']
                 bbmatches.append(match)
-    
+
     if d.get('didYouMeanSuggestions', {}):
-        dym = d['didYouMeanSuggestions'][0]['suggestedQuery']       
+        dym = d['didYouMeanSuggestions'][0]['suggestedQuery']
         response['dym'] = dym
 
-    q=q.replace("%20","%2b")
-    q=q.replace("+","%2b")
-    q=q.replace("#","%23")
+    q = q.replace("%20", "%2b")
+    q = q.replace("+", "%2b")
+    q = q.replace("#", "%23")
 
     if settings.DEBUG:
         response['source'] = d
@@ -492,7 +563,7 @@ def books_media_json(request):
 
 def _is_non_roman(request):
     q = request.GET.get('q', '')
-    #TODO: Maybe there's a better way to do this. For now, it seems to work.
+    # TODO: Maybe there's a better way to do this. For now, it seems to work.
     try:
         q.encode("iso-8859-1")
         return False
@@ -517,8 +588,8 @@ def _libsite_query(request):
         count = int(request.GET.get('count', settings.DEFAULT_HIT_COUNT))
     except:
         count = settings.DEFAULT_HIT_COUNT
-    #----
-    #TODO: Remove this once the Drupal search json packaging stops
+    # ----
+    # TODO: Remove this once the Drupal search json packaging stops
     # choking on single quotes.  This wraps each word containing a '
     # in double quotes.  Not a perfect solution but it'll handle "most"
     # real-world queries
@@ -527,7 +598,7 @@ def _libsite_query(request):
         if qlist[i].find("\'") > -1:
             qlist[i] = '\"' + qlist[i] + '\"'
     q = ' '.join(qlist)
-    #----
+    # ----
     params = {'keys': q, 'fields': 'nid'}
     r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
                      timeout=settings.LIBSITE_TIMEOUT_SECONDS)
