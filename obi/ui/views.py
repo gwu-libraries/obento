@@ -306,6 +306,7 @@ def _summon_id_string(accept, xsummondate, host, path, params):
 
 
 def _summon_query(request, scope='all'):
+    logger = logging.getLogger('django.request')
     headers = {'Accept': 'application/json'}
     headers['Host'] = settings.SUMMON_HOST
     headers['x-summon-date'] = datetime.datetime.utcnow().strftime(
@@ -418,35 +419,59 @@ def _summon_query(request, scope='all'):
                               timeout=settings.SUMMON_TIMEOUT_SECONDS)
             if 200 <= r.status_code < 400:
                 resolved_url = r.headers['Location']
-                if not(resolved_url.startswith('http://findit.library.gwu') or
-                       resolved_url.startswith('https://findit.library.gwu')):
-                    # Summon already will resolve to the resource;
-                    # great, use that!
-                    match['url'] = resolved_url
-                else:
+                match['url'] = resolved_url
+                # If summon isn't already resolving to the resource
+                # (in which case, great, use resolved_url!),
+                # then see if we can do better
+                if (resolved_url.startswith('http://findit.library.gwu') or
+                   resolved_url.startswith('https://findit.library.gwu')):
                     # Construct the OpenURL request and get the OpenURL XML document
                     xmlurl = 'http://uz4ug4lz9g.openurl.xml.serialssolutions.com/openurlxml?version=1.0&' + document['openUrl']
                     f = urllib2.urlopen(xmlurl)
                     tree = f.read()
                     f.close()
-                    data = xmltodict.parse(tree)
+                    # When there is a single child node of a given type,
+                    # xmltodict.parse generates {child-node-type: child-node}
+                    # but when there are mutiples it generates a list:
+                    # {child-node-type: [child-node, child-node, ...]}
+                    # We wish to force it to always create a list
+                    data = xmltodict.parse(tree,
+                            force_list=('ssopenurl:result', 'ssopenurl:linkGroup',
+                                        'ssopenurl:url',))
                     match['OpenUrl'] = xmlurl
 
                     # Traverse the tree and look for the node(s) containing
                     # article link, if present
+                    results = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']
                     try:
-                        urlnodes = data['ssopenurl:openURLResponse']['ssopenurl:results']['ssopenurl:result']['ssopenurl:linkGroups']['ssopenurl:linkGroup']['ssopenurl:url']
-                        articleurls = [node['#text'] for node in urlnodes if '@type' in node and node['@type'] == 'article']
-                    except (TypeError, IndexError, KeyError):
-                        articleurls = ''
-
-                    if articleurls:
-                        # If there is one, replace with the [first] OpenURL result.
-                        match['url'] = articleurls[0]
-                    else:
-                        # Otherwise, at least use the findit URL and
-                        # save the user an extra link resolution through Summon
-                        match['url'] = resolved_url
+                        for result in results:
+                            if not 'ssopenurl:linkGroups' in result:
+                                logger.error("  TRIED BUT DIDN'T FIND ONE, USING FINDIT")
+                                break
+                            linkgroups = result['ssopenurl:linkGroups']['ssopenurl:linkGroup']
+                            foundone = False
+                            for lg in linkgroups:
+                                urlnodes = lg['ssopenurl:url']
+                                articleurls = [node['#text'] for node in urlnodes if '@type' in node and node['@type'] == 'article']
+                                if articleurls:
+                                    # If there is one, replace with the [first] OpenURL result.
+                                    match['url'] = articleurls[0]
+                                    # Done, stop here
+                                    logger.error("  FOUND ONE")
+                                    foundone = True
+                                    break
+                            if foundone:
+                                break
+                        else:
+                            logger.error("  TRIED BUT DIDN'T FIND ONE, USING FINDIT")
+                    except (TypeError, IndexError, KeyError) as e:
+                        # If there's an error, just stick with the resolved url
+                        logger.error("  TRIED BUT GOT ERROR, USING FINDIT")
+                        logger.error("  xmlurl = " + xmlurl)
+                        raise e
+                        pass
+                else:
+                    logger.error("  ALREADY HAVE RESOLVED LINK")
 
         matches.append(match)
 
