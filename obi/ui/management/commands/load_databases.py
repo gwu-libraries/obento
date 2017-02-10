@@ -36,8 +36,8 @@ class Command(BaseCommand):
                     continue
                 if name_div.a is None:
                     continue
-                url = settings.LIBGUIDES_URL+name_div.a.get('href')
-                name = name_div.a.string
+                url = name_div.a.get('href')
+                name = name_div.a.contents[0]
                 description = ''
                 if itemlist.find('div', class_='s-lg-az-result-description'):
                     description = itemlist.find('div', class_=
