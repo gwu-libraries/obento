@@ -8,7 +8,7 @@ frontend for GW Libraries.
 Requirements
 ============
 
-Developed using Python 2.7, Django 1.8, and PostgreSQL 9.1 on Ubuntu 12.04.
+Developed using Python 2.7, Django 1.8, and PostgreSQL 9.3 on Ubuntu 14.04.
 
 
 API
@@ -128,9 +128,9 @@ PART I - Basic server requirements
 
         $ cd /opt
 
-   Go to http://download.eclipse.org/jetty/stable-9/dist/ and copy the link to the .tar.gz version of the latest download of Jetty 9.  Use this link in the following wget command to download the .tar.gz file (again, the URL may change):
+   Go to http://www.eclipse.org/jetty/download.html and copy the link to the .tar.gz version of the latest download of Jetty 9.  Use this link in the following wget command to download the .tar.gz file (again, the URL may change):
 
-        $ sudo wget -O jetty.gz "http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-9.3.6.v20151106.tar.gz&r=1"
+        $ sudo wget -O jetty.gz "http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz"
 
         $ sudo mkdir jetty
 
@@ -171,6 +171,8 @@ PART I - Basic server requirements
 
         Starting Jetty: OK
 
+   A possible cause for a failed Jetty start is that `/var/run/jetty` and contents may need to be owned by the jetty user.  To set `jetty:jetty` as the owner, use `sudo chown jetty:jetty /var/run/jetty`
+
    Verify that MYSERVER:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
 
 8. Add jetty to startup
@@ -179,19 +181,19 @@ PART I - Basic server requirements
 
 9. Download and unzip solr
 
-   Go to http://www.apache.org/dyn/closer.cgi/lucene/solr and copy the link to the .tgz version of the latest download of Solr 4.  Use this link in the following wget command to download the .tgz file (again, the URL may change).  This may also require a --no-check-certificate option as well, depending on the download site:
+   Go to http://archive.apache.org/dist/lucene/solr/4.10.4/ and copy the link to the .tgz version of Solr 4.10.4.  Use this link in the following wget command to download the .tgz file (again, the URL may change).  This may also require a --no-check-certificate option as well, depending on the download site:
 
-        $ sudo wget -O solr.gz "https://www.carfab.com/apachesoftware/lucene/solr/4.10.2/solr-4.10.2.tgz"
+        $ sudo wget -O solr.gz "http://archive.apache.org/dist/lucene/solr/4.10.4/solr-4.10.4.tgz"
 
         $ sudo tar -xvf solr.gz
 
-    Copy solr contents (precise solr 4 version number may vary):
+    Copy solr contents:
 
-        $ sudo cp -R solr-4.10.2/example/solr /opt
+        $ sudo cp -r solr-4.10.4/example/solr /opt
 
-        $ sudo cp -r /opt/solr-4.10.2/dist /opt/solr
+        $ sudo cp -r solr-4.10.4/dist /opt/solr
 
-        $ sudo cp -r /opt/solr-4.10.2/contrib /opt/solr
+        $ sudo cp -r solr-4.10.4/contrib /opt/solr
 
     Copy ICU Tokenizer jars to /opt/solr/lib
 
@@ -203,9 +205,13 @@ PART I - Basic server requirements
 
 10. Copy solr .war and .jar files to jetty
 
-        $ sudo cp /opt/solr/dist/solr-4.10.2.war /opt/jetty/webapps/solr.war
+        $ sudo cp /opt/solr/dist/solr-4.10.4.war /opt/jetty/webapps/solr.war
 
-        $ sudo cp /opt/solr-4.10.2/example/lib/ext/* /opt/jetty/lib/ext
+        $ sudo cp solr-4.10.4/example/lib/ext/* /opt/jetty/lib/ext
+
+    Ensure that these are now owned by jetty:
+
+        $ sudo chown -R jetty:jetty /opt/jetty
 
 11. Update jetty settings
 
