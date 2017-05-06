@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import json
 import logging
+import re
 import time
 import urllib
 import urllib2
@@ -604,7 +605,6 @@ def _libsite_query(request):
                      timeout=settings.LIBSITE_TIMEOUT_SECONDS)
     if r.status_code != 404:
         r.raise_for_status()
-
     response = {'more_url': '%s%s' % (settings.LIBSITE_MORE_URL, q),
                 'more_url_plain': settings.LIBSITE_URL,
                 'q': q}
@@ -618,6 +618,10 @@ def _libsite_query(request):
     # Check for no-results case
     if rtext == "[\"Search returned no results.\"]":
         return response
+    
+    # Temporary fix to strip off HTML at end
+    fulljson, sep, htmltail = rtext.partition('<!DOCTYPE')
+    rtext = fulljson 
 
     j = json.loads(rtext)
     matches = []
