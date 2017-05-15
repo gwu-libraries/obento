@@ -43,15 +43,19 @@
                             $(vals[1]).html(response);
                         }
                     );
-
 	    }
-	
 	}
 	$(document).ready(function() {
-            data="<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
-	    data = data.trim();
-            ignoresearch="<?php if (isset($_GET["ignoresearch"])) {print addslashes($_GET["ignoresearch"]);} else {print "false";}?>";
-            count="<?php if (isset($_GET["count"])) {print $_GET["count"];} else {print "0";}?>";
+            data = "<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
+            data = data.trim();
+            ignoresearch = "<?php if (isset($_GET["ignoresearch"])) {
+                                        if (strtolower($_GET["ignoresearch"] == "true")) {print "true";}
+                                        else {print "false";}
+                                  }?>";
+            count = "<?php if (isset($_GET["count"])) {
+                               if (is_numeric($_GET["count"])) {print($_GET["count"]);}
+                               else {print "0";}
+                           }?>";
             <?php
   	      // checks to see if function exists and sets the Bento target (set in GW custom Catalog Pointer module) and if not sets a default value (the prod Bento server).
   	      if (function_exists('catalog_pointer_bento')) {$bentoTarget = catalog_pointer_bento();} else {$bentoTarget = "http://gwbento-prod.wrlc.org:8080/";} 
@@ -92,7 +96,7 @@ function load_bento_boxes(){
 <div class='search-all-banner-outer'>
   <div id='form' class='search-all-banner'>
     <div class='search-all-banner-inner' style=''>
-      <form action='search-beta' method='GET' class='search-form'>
+      <form action='search-all' method='GET' class='search-form'>
             <div class='search-all-label'><label>Search All</label></div>
             <div class='search-all-form-fields'>
             <input aria-label='Enter your search terms' id='query' type='text' size='40' maxlength='100' name='query' value='<?php
