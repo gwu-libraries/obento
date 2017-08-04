@@ -46,7 +46,7 @@
 	    }
 	}
 	$(document).ready(function() {
-            data = "<?php if (isset($_GET["query"])) {print addslashes($_GET["query"]);} ?>";
+            data = "<?php if (isset($_GET["query"])) {print filter_xss(addslashes($_GET["query"]));} ?>";
             data = data.trim();
             ignoresearch = "<?php if (isset($_GET["ignoresearch"])) {
                                         if (strtolower($_GET["ignoresearch"] == "true")) {print "true";}
@@ -101,7 +101,7 @@ function load_bento_boxes(){
             <div class='search-all-form-fields'>
             <input aria-label='Enter your search terms' id='query' type='text' size='40' maxlength='100' name='query' value='<?php
 if(isset($_GET["query"]))
-   print htmlspecialchars($_GET["query"], ENT_QUOTES);
+   print filter_xss(htmlspecialchars($_GET["query"], ENT_QUOTES));
 ?>'
 autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' />
             <input type='submit' value='Search'/>
