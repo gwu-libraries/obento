@@ -162,7 +162,6 @@ def _databases_solr_query(request):
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         if not q[0] == '\"':
-            q = " AND ".join(q.split())
             q = q.replace("\"", " ")
         query = u'+id:db-* +(name:(%s) OR description:(%s))' % (q, q)
         solr_response = s.query(query)
@@ -246,7 +245,6 @@ def _journals_solr_query(request):
         matches = []
         s = solr.SolrConnection(settings.SOLR_URL)
         if not q[0] == '\"':
-            q = " AND ".join(q.split())
             q = q.replace("\"", " ")
         query = u'+id:j-* +(name:(%s) OR text:(%s))' % (q, q)
         solr_response = s.query(query)
