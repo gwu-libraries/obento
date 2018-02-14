@@ -109,6 +109,7 @@ LIBGUIDES_DB_URL = 'http://libguides.gwu.edu/az_process.php?action=520'
 
 LIBSITE_SEARCH_ALL_URL = 'http://library.gwu.edu/search-all?query='
 LIBSITE_TIMEOUT_SECONDS = 10  # per try
+LIBSITE_SEARCH_LABEL = 'Library Site Search'
 LIBSITE_SEARCH_URL = \
     'http://library.gwu.edu/api/search/retrieve.json'
 LIBSITE_URL = 'http://library.gwu.edu/search/'

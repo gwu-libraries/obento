@@ -638,7 +638,10 @@ def libsite_html(request):
     try:
         response = _libsite_query(request)
     except Exception as e:
-        return _render_cleanerror(request, 'library website', e)
+        libsearch_url = settings.LIBSITE_MORE_URL + request.GET.get('q')
+        return _render_cleanerror(request, 'library website', e,
+                                  settings.LIBSITE_SEARCH_LABEL,
+                                  libsearch_url)
 
     return render(request, 'libsite.html',
                   {'response': response, 'context': default_context_params()})
