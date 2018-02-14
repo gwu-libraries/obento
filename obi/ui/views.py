@@ -600,13 +600,21 @@ def _libsite_query(request):
     q = ' '.join(qlist)
     # ----
     params = {'keys': q, 'fields': 'nid'}
-    r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
-                     timeout=settings.LIBSITE_TIMEOUT_SECONDS)
+    try:
+        r = requests.get(settings.LIBSITE_SEARCH_URL, params=params,
+                         timeout=settings.LIBSITE_TIMEOUT_SECONDS)
+        more_url = settings.LIBSITE_MORE_URL
+        site_url = settings.LIBSITE_URL
+    except requests.exceptions.ConnectionError:
+        r = requests.get(settings.LIBSITE_BACKUP_SEARCH_URL, params=params,
+                         timeout=settings.LIBSITE_TIMEOUT_SECONDS)
+        more_url = settings.LIBSITE_BACKUP_MORE_URL
+        site_url = settings.LIBSITE_BACKUP_URL
     if r.status_code != 404:
         r.raise_for_status()
 
-    response = {'more_url': '%s%s' % (settings.LIBSITE_MORE_URL, q),
-                'more_url_plain': settings.LIBSITE_URL,
+    response = {'more_url': '%s%s' % (more_url, q),
+                'more_url_plain': site_url,
                 'q': q}
 
     rtext = r.text

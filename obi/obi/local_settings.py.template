@@ -111,9 +111,13 @@ LIBSITE_SEARCH_ALL_URL = 'http://library.gwu.edu/search-all?query='
 LIBSITE_TIMEOUT_SECONDS = 10  # per try
 LIBSITE_SEARCH_LABEL = 'Library Site Search'
 LIBSITE_SEARCH_URL = \
-    'http://library.gwu.edu/api/search/retrieve.json'
+    'http://library.gwu.edu:8080/api/search/retrieve.json'
+LIBSITE_BACKUP_SEARCH_URL = \
+    'http://backup.library.gwu.edu/api/search/retrieve.json'
 LIBSITE_URL = 'http://library.gwu.edu/search/'
+LIBSITE_BACKUP_URL = 'http://backup.library.gwu.edu/search/'
 LIBSITE_MORE_URL = 'http://library.gwu.edu/search/node/'
+LIBSITE_BACKUP_MORE_URL = 'http://backup.library.gwu.edu/search/node/'
 LIBSITE_RESPONSE_BOM_PREFIX = u'\u010f\u0165\u017c'
 
 # number of characters to display before truncating with ellipsis
