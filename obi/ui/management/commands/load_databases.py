@@ -1,5 +1,9 @@
 import time
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import os
+
 from bs4 import BeautifulSoup
 import requests
 import traceback
@@ -16,6 +20,19 @@ SLEEP_SECONDS = 2
 class Command(BaseCommand):
     help = 'parse the a-z list of GW Libraries databases in libguides'
 
+    def retrieve_html(self):
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--window-size=1920x1080')
+        chrome_driver_path = os.path.abspath(settings.CHROME_DRIVER_PATH)
+        driver = webdriver.Chrome(chrome_options=chrome_options,
+                                  executable_path=chrome_driver_path)
+        driver.get(settings.DATABASES_URL)
+        time.sleep(5)
+        html = driver.execute_script("return document.documentElement.innerHTML")
+        return(html.encode('utf-8'))
+
     def handle(self, *args, **options):
         cursor = connection.cursor()
         print 'emptying DB'
@@ -27,8 +44,9 @@ class Command(BaseCommand):
         loaded_count = 0
 
         try:
-            r = requests.get(settings.LIBGUIDES_DB_URL)
-            soup = BeautifulSoup(r.json()['data']['html'], "lxml")
+            page_html = self.retrieve_html()
+            soup = BeautifulSoup(page_html, "lxml")
+
             itemlists = soup.find_all('div', class_='s-lg-az-result')
             for itemlist in itemlists:
                 name_div = itemlist.find('div', class_='s-lg-az-result-title')

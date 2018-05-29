@@ -36,8 +36,10 @@ ALLOWED_HOSTS = ['YOUR.PUBLIC.DOMAIN.NAME']
 
 LOCAL_IPS = ['YOUR.LOCAL1.*.*', 'YOUR.LOCAL.NETWORK2.*', 'YOUR.LOCAL.NET.WORK']
 
-DATABASES_URL = 'http://libguides.gwu.edu/databases'
-DATABASES_MORE_URL = 'http://libguides.gwu.edu/az.php?q='
+DATABASES_URL = 'https://libguides.gwu.edu/az.php'
+DATABASES_MORE_URL = 'https://libguides.gwu.edu/az.php?q='
+
+CHROME_DRIVER_PATH = 'PATH.TO.CHROMEDRIVER'
 
 JOURNALS_URL = 'http://findit.library.gwu.edu/'
 JOURNALS_MORE_URL = \

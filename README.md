@@ -116,7 +116,24 @@ PART I - Basic server requirements
     
         $ sudo apt-get install openjdk-8-jdk	
 
-2. Prepare Java JVM symlink for Jetty
+2. Install Chrome and ChromeDriver (needed for loading and scraping the libguides databases list)
+
+        $ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        $ sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+   If you encounter errors related to missing dependencies, then use:
+
+        $ sudo apt-get -f install
+
+   Now proceed with ChromeDriver installation:
+
+        $ sudo apt-get install unzip
+        $ wget https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip
+        $ unzip chromedriver_linux64.zip
+        $ sudo mv chromedriver /usr/local/bin
+        $ sudo chown root:root /usr/local/bin/chromedriver
+
+3. Prepare Java JVM symlink for Jetty
 
    Create a symlink to the java jvm
 
@@ -124,7 +141,7 @@ PART I - Basic server requirements
 
         $ sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/java/default
 
-3. Download Jetty and unzip.  
+4. Download Jetty and unzip.  
 
         $ cd /opt
 
@@ -136,17 +153,17 @@ PART I - Basic server requirements
 
         $ sudo tar -xvf jetty.gz -C jetty --strip-components=1
 
-4. Create jetty user and make it the owner of /opt/jetty
+5. Create jetty user and make it the owner of /opt/jetty
 
         $ sudo useradd jetty -U -s /bin/false
 
         $ sudo chown -R jetty:jetty /opt/jetty
 
-5. Set up jetty to run as a service
+6. Set up jetty to run as a service
 
         $ sudo cp /opt/jetty/bin/jetty.sh /etc/init.d/jetty
 
-6. Create the jetty settings file
+7. Create the jetty settings file
   
         $ sudo vi /etc/default/jetty
 
@@ -163,7 +180,7 @@ PART I - Basic server requirements
     
     NOTE:  In the step above, JAVA is set to /usr/bin/java.  When upgrading from an environment that had Java 7 installed, /usr/bin/java may be a symbolic link (...to another symbolic link) which still points to a Java 7 JRE.  If that is the case, reconfigure to ensure that either /usr/bin/java resolves to a Java 8 JRE, or point JAVA in the jetty config file to wherever the Java 8 JRE is.
 
-7. Start jetty
+8. Start jetty
 
         $ sudo service jetty start
 
@@ -175,11 +192,11 @@ PART I - Basic server requirements
 
    Verify that MYSERVER:8983 returns a page that is "Powered by Jetty" (even if it is a 404-Not Found page) 
 
-8. Add jetty to startup
+9. Add jetty to startup
 
         $ sudo update-rc.d jetty defaults
 
-9. Download and unzip solr
+10. Download and unzip solr
 
    Go to http://archive.apache.org/dist/lucene/solr/4.10.4/ and copy the link to the .tgz version of Solr 4.10.4.  Use this link in the following wget command to download the .tgz file (again, the URL may change).  This may also require a --no-check-certificate option as well, depending on the download site:
 
@@ -203,7 +220,7 @@ PART I - Basic server requirements
 
         $ sudo cp /opt/solr/contrib/analysis-extras/lucene-libs/lucene-analyzers-icu-* /opt/solr/lib
 
-10. Copy solr .war and .jar files to jetty
+11. Copy solr .war and .jar files to jetty
 
         $ sudo cp /opt/solr/dist/solr-4.10.4.war /opt/jetty/webapps/solr.war
 
@@ -213,7 +230,7 @@ PART I - Basic server requirements
 
         $ sudo chown -R jetty:jetty /opt/jetty
 
-11. Update jetty settings
+12. Update jetty settings
 
         $ sudo vi /etc/default/jetty
 
@@ -221,11 +238,11 @@ PART I - Basic server requirements
 
         JAVA_OPTIONS="-Dsolr.solr.home=/opt/solr $JAVA_OPTIONS"
     
-12. Change the owner of the solr folder and contents to jetty
+13. Change the owner of the solr folder and contents to jetty
         
         $ sudo chown -R jetty:jetty /opt/solr
 
-13. Change ``collection1`` in solr to ``obento``:
+14. Change ``collection1`` in solr to ``obento``:
 
         $ cd /opt/solr
             
@@ -235,7 +252,7 @@ PART I - Basic server requirements
             
         $ sudo vi obento/core.properties
             
-14. Restart jetty
+15. Restart jetty
 
         $ sudo service jetty restart
             
